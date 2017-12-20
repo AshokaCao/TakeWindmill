@@ -35,11 +35,11 @@
                 [self.addTextStr appendString:@"马上就走"];
                 self.messageTextField.text = self.addTextStr;
             } else {
-//                NSString *changeStr = self.addTextStr;
-                
+                NSString *changeStr = self.addTextStr;
+                [changeStr stringByReplacingOccurrencesOfString:@" " withString:@"马上就走"];
                 
                 NSLog(@"select - %@",self.addTextStr);
-                self.messageTextField.text = self.addTextStr;
+                self.messageTextField.text = changeStr;
             }
             NSLog(@"select this button - %@",self.addTextStr);
             break;
