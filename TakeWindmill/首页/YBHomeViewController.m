@@ -198,8 +198,30 @@
     
 }
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//     [self doAPPay];
+     //[self doAPPay];
 //    [self wechatPay];
+    [self aliPayAPP];
+}
+-(void)aliPayAPP{
+    WEAK_SELF;
+    
+    NSMutableDictionary *parm = [YBTooler dictinitWithMD5];
+    
+    
+    YBLog(@"AliPay==%@",AliPay);
+    YBLog(@"parm==%@",parm);
+    
+    [YBRequest postWithURL:AliPay MutableDict:nil success:^(id dataArray) {
+        YBLog(@"dataArray==%@",dataArray);
+        
+        YBPayconfigModel *paymodel = [YBPayconfigModel yy_modelWithJSON:dataArray];
+        
+     
+    } failure:^(id dataArray) {
+        //YBLog(@"failureDataArray==%@",dataArray);
+        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
+    
 }
 - (void)wechatPay {
     

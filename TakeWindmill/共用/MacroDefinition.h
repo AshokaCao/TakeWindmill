@@ -234,5 +234,8 @@
 //
 #define WeixinPay (ServerPath@"pay/travelweixinorderunifyapp")
 
+//支付宝发起支付接口（APP）
+#define AliPay (ServerPath@"pay/travelalipayorderapp")
+
 #define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
 
