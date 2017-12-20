@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YBMyPublicDetailsViewController">
+            <connections>
+                <outlet property="myPublicTableView" destination="8qL-yp-n8s" id="0M3-LP-1Qk"/>
+                <outlet property="topImageView" destination="fgE-oj-iwf" id="vt6-NP-mYD"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="8qL-yp-n8s">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <view key="tableHeaderView" contentMode="scaleToFill" id="zvb-Ng-O6K">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="120"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="公益" translatesAutoresizingMaskIntoConstraints="NO" id="fgE-oj-iwf">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="120"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fgE-oj-iwf" firstAttribute="top" secondItem="zvb-Ng-O6K" secondAttribute="top" id="7Qp-JC-Vsf"/>
+                            <constraint firstAttribute="bottom" secondItem="fgE-oj-iwf" secondAttribute="bottom" id="K6A-3d-llB"/>
+                            <constraint firstItem="fgE-oj-iwf" firstAttribute="leading" secondItem="zvb-Ng-O6K" secondAttribute="leading" id="atj-yA-F06"/>
+                            <constraint firstAttribute="trailing" secondItem="fgE-oj-iwf" secondAttribute="trailing" id="cKa-5R-JTu"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="lfX-Ei-pGW"/>
+                        <outlet property="delegate" destination="-1" id="zAS-NU-ZnS"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="8qL-yp-n8s" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="4QJ-b2-fqL"/>
+                <constraint firstAttribute="bottom" secondItem="8qL-yp-n8s" secondAttribute="bottom" id="NB2-Qh-SMk"/>
+                <constraint firstAttribute="trailing" secondItem="8qL-yp-n8s" secondAttribute="trailing" id="PaU-dT-lfG"/>
+                <constraint firstItem="8qL-yp-n8s" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="gp5-J3-KbG"/>
+            </constraints>
+            <point key="canvasLocation" x="4" y="34"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="公益" width="374" height="196"/>
+    </resources>
+</document>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YBCertifiedViewController">
+            <connections>
+                <outlet property="certifiedButton" destination="eLn-O5-eqE" id="haY-Ge-3rd"/>
+                <outlet property="imageView" destination="QvE-ua-LZ4" id="aGD-w6-wAB"/>
+                <outlet property="view" destination="WPY-Oz-a2l" id="T1N-zB-tcR"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" restorationIdentifier="YBCertifiedView" id="QvE-ua-LZ4">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="注册车主宣传页面" translatesAutoresizingMaskIntoConstraints="NO" id="WPY-Oz-a2l">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&quot;顺路借一点，油费全省了，每月多赚1500&quot;" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="boN-EA-P3m">
+                    <rect key="frame" x="25" y="447" width="324" height="86"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="86" id="EqF-Ay-u7e"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eLn-O5-eqE">
+                    <rect key="frame" x="16" y="607" width="343" height="40"/>
+                    <color key="backgroundColor" red="0.2470588235" green="0.6588235294" blue="0.87450980389999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="731-c0-Zg7"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                    <state key="normal" title="立即成为车主">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="乘客图标" translatesAutoresizingMaskIntoConstraints="NO" id="5xm-gc-BTE">
+                    <rect key="frame" x="31" y="557" width="25" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="bdi-5V-ZRg"/>
+                        <constraint firstAttribute="width" constant="25" id="p1N-qW-Cat"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="海量乘客认选" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vag-e5-djI">
+                    <rect key="frame" x="64" y="557" width="116" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="多重安全保障" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2hF-Jl-FVF">
+                    <rect key="frame" x="231" y="557" width="115" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="115" id="Z4g-UY-T1W"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="保护" translatesAutoresizingMaskIntoConstraints="NO" id="N1i-BM-xG1">
+                    <rect key="frame" x="203" y="557" width="20" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="20" id="dhR-e9-3vy"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="N1i-BM-xG1" firstAttribute="leading" secondItem="Vag-e5-djI" secondAttribute="trailing" constant="23" id="6SL-Oi-gUZ"/>
+                <constraint firstAttribute="bottom" secondItem="eLn-O5-eqE" secondAttribute="bottom" constant="20" id="6bY-Ip-3vL"/>
+                <constraint firstAttribute="bottom" secondItem="WPY-Oz-a2l" secondAttribute="bottom" id="6hg-WV-Ryv"/>
+                <constraint firstItem="Vag-e5-djI" firstAttribute="firstBaseline" secondItem="2hF-Jl-FVF" secondAttribute="firstBaseline" id="7wV-8n-YeC"/>
+                <constraint firstItem="2hF-Jl-FVF" firstAttribute="leading" secondItem="N1i-BM-xG1" secondAttribute="trailing" constant="8" symbolic="YES" id="8nC-0F-wpp"/>
+                <constraint firstItem="WPY-Oz-a2l" firstAttribute="top" secondItem="QvE-ua-LZ4" secondAttribute="top" id="Awx-cI-HJU"/>
+                <constraint firstItem="5xm-gc-BTE" firstAttribute="top" secondItem="boN-EA-P3m" secondAttribute="bottom" constant="24" id="EYf-aj-Cv7"/>
+                <constraint firstItem="eLn-O5-eqE" firstAttribute="leading" secondItem="QvE-ua-LZ4" secondAttribute="leading" constant="16" id="IJN-cJ-Zj0"/>
+                <constraint firstAttribute="trailing" secondItem="WPY-Oz-a2l" secondAttribute="trailing" id="PoP-ao-Asg"/>
+                <constraint firstItem="eLn-O5-eqE" firstAttribute="top" secondItem="Vag-e5-djI" secondAttribute="bottom" constant="29" id="QXq-LT-3JN"/>
+                <constraint firstItem="5xm-gc-BTE" firstAttribute="top" secondItem="Vag-e5-djI" secondAttribute="top" id="Se3-YI-csn"/>
+                <constraint firstAttribute="trailing" secondItem="2hF-Jl-FVF" secondAttribute="trailing" constant="29" id="ToS-cO-d2c"/>
+                <constraint firstItem="WPY-Oz-a2l" firstAttribute="centerX" secondItem="boN-EA-P3m" secondAttribute="centerX" id="Y2o-Bg-svh"/>
+                <constraint firstItem="boN-EA-P3m" firstAttribute="centerX" secondItem="eLn-O5-eqE" secondAttribute="centerX" id="a3f-PV-kUZ"/>
+                <constraint firstItem="WPY-Oz-a2l" firstAttribute="leading" secondItem="QvE-ua-LZ4" secondAttribute="leading" id="clR-lQ-iz2"/>
+                <constraint firstItem="boN-EA-P3m" firstAttribute="leading" secondItem="QvE-ua-LZ4" secondAttribute="leading" constant="25" id="g7C-e8-YnZ"/>
+                <constraint firstItem="5xm-gc-BTE" firstAttribute="leading" secondItem="QvE-ua-LZ4" secondAttribute="leading" constant="31" id="oH2-Fn-Zut"/>
+                <constraint firstItem="N1i-BM-xG1" firstAttribute="top" secondItem="2hF-Jl-FVF" secondAttribute="top" id="qkV-VB-px2"/>
+                <constraint firstItem="Vag-e5-djI" firstAttribute="leading" secondItem="5xm-gc-BTE" secondAttribute="trailing" constant="8" symbolic="YES" id="uWr-Mo-oYr"/>
+                <constraint firstItem="5xm-gc-BTE" firstAttribute="bottom" secondItem="N1i-BM-xG1" secondAttribute="bottom" id="ynS-3p-tzw"/>
+            </constraints>
+            <point key="canvasLocation" x="33.5" y="111.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="乘客图标" width="29" height="24"/>
+        <image name="保护" width="24" height="26"/>
+        <image name="注册车主宣传页面" width="540" height="677"/>
+    </resources>
+</document>

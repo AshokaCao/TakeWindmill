@@ -1,0 +1,60 @@
+//
+//  totalPrefixHeader.pch
+//  TakeWindmill
+//
+//  Created by 靳亚彬 on 2017/8/7.
+//  Copyright © 2017年 浙江承御天泽公司. All rights reserved.
+//
+//MD5加密
+#import "YBMD5.h"
+#import "LEEAlert.h"
+#import "YBTooler.h"
+#import "YBRequest.h"
+#import "YBBaseView.h"
+#import "YBBaseButton.h"
+#import "colourHeader.h"
+#import "YBAboutButton.h"
+#import "YBUpDownButton.h"
+#import "FSCustomButton.h"
+#import "MacroDefinition.h"
+#import "MBProgressHUD+NHAdd.h"
+#import "NSDictionary+SetNullWithStr.h"
+
+#import "MJRefresh.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "MJExtension.h"
+#import "AFNetworking.h"
+#import "PPNetworkHelper.h"
+
+#import "HSHString.h"
+#import "HXPhotoViewController.h"
+#import "HXPhotoView.h"
+#import "RCDataManager.h"
+#import "FLPayManager.h"
+//cocoapods
+#import <Masonry.h>
+#import <BRPickerView.h>
+#import <YYModel.h>
+#import <YMCitySelect.h>
+#import <RongIMKit/RongIMKit.h>//融云
+#import <SPPageMenu.h>
+#import <DSAlert.h>
+#import <AlipaySDK/AlipaySDK.h>
+#import <YQSlideMenuController.h>
+#import <UIViewController+YQSlideMenu.h>
+#import <ZXingWrapper.h>
+
+
+//百度
+#import <BaiduMapAPI_Map/BMKMapComponent.h>//引入地图功能所有的头文件
+#import <BaiduMapAPI_Location/BMKLocationComponent.h>//引入定位功能所有的头文件
+#import <BaiduMapAPI_Search/BMKSearchComponent.h>//引入检索功能所有的头文件
+#import <BaiduMapAPI_Base/BMKBaseComponent.h>//引入base相关所有的头文件
+#import <BaiduMapAPI_Cloud/BMKCloudSearchComponent.h>//引入云检索功能所有的头文件
+#import <BaiduMapAPI_Utils/BMKUtilsComponent.h>//引入计算工具所有的头文件
+#import <BaiduMapAPI_Radar/BMKRadarComponent.h>//引入周边雷达功能所有的头文件
+//#import <BaiduMapAPI_Map/BMKMapView.h>//只引入所需的单个头文件
+#import <BaiduMapAPI_Map/BMKPolylineView.h>
+#import <BaiduMapAPI_Utils/BMKGeometry.h>
+
+#import "UIView+Extension.h"
