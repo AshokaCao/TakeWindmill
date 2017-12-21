@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *againBtn;
 @property (weak, nonatomic) IBOutlet UIButton *jointBtn;
 @property (weak, nonatomic) IBOutlet UIButton *anJointBtn;
+@property (weak, nonatomic) IBOutlet UIButton *isCome;
 @property (nonatomic, assign) id<YBTaxiChooseViewDelegate> delegate;
 
 @end

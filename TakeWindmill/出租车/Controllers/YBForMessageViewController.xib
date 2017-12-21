@@ -45,8 +45,11 @@
                         <button opaque="NO" tag="100" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="is9-hH-vVe">
                             <rect key="frame" x="10" y="49" width="98.5" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" title="马上就走" backgroundImage="chongzhi_btg_selected">
+                            <state key="normal" title="马上就走">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="selected">
+                                <color key="titleColor" red="0.97254901959999995" green="0.4431372549" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="didselectBtn:" destination="-1" eventType="touchUpInside" id="N8w-jE-56D"/>
@@ -58,6 +61,9 @@
                             <state key="normal" title="愿等15分钟">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <state key="selected">
+                                <color key="titleColor" red="0.97254901959999995" green="0.4431372549" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
                             <connections>
                                 <action selector="didselectBtn:" destination="-1" eventType="touchUpInside" id="W99-sa-Wus"/>
                             </connections>
@@ -67,6 +73,9 @@
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <state key="normal" title="打车往返">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="selected">
+                                <color key="titleColor" red="0.97254901959999995" green="0.4431372549" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="didselectBtn:" destination="-1" eventType="touchUpInside" id="An9-q2-eU3"/>
@@ -78,6 +87,9 @@
                             <state key="normal" title="不爱聊天">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <state key="selected">
+                                <color key="titleColor" red="0.97254901959999995" green="0.4431372549" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
                             <connections>
                                 <action selector="didselectBtn:" destination="-1" eventType="touchUpInside" id="3Ub-09-sNc"/>
                             </connections>
@@ -88,6 +100,9 @@
                             <state key="normal" title="在线支付">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <state key="selected">
+                                <color key="titleColor" red="0.97254901959999995" green="0.4431372549" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
                             <connections>
                                 <action selector="didselectBtn:" destination="-1" eventType="touchUpInside" id="WE4-qL-qXB"/>
                             </connections>
@@ -97,6 +112,9 @@
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <state key="normal" title="现金支付">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="selected">
+                                <color key="titleColor" red="0.97254901959999995" green="0.4431372549" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="didselectBtn:" destination="-1" eventType="touchUpInside" id="WWH-N7-Hbk"/>
@@ -160,7 +178,4 @@
             <point key="canvasLocation" x="-437" y="-40"/>
         </view>
     </objects>
-    <resources>
-        <image name="chongzhi_btg_selected" width="102" height="28"/>
-    </resources>
 </document>

@@ -45,7 +45,7 @@
 - (UIView *)specificLocationView {
     if (!_specificLocationView) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(10,CGRectGetMaxY(self.Positioning.frame) + 20 , YBWidth - 20, 80)];
-        view.backgroundColor = [UIColor whiteColor];
+        view.backgroundColor = [UIColor redColor];
         [self.view addSubview:view];
         _specificLocationView = view;
 
@@ -166,6 +166,7 @@
 - (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
     
     CGPoint touchPoint = self.locAtionView.center;
+    NSLog(@"- %f",touchPoint.x);
     CLLocationCoordinate2D touchMapCoordinate =
     [self.mapView convertPoint:touchPoint toCoordinateFromView:self.mapView];//这里touchMapCoordinate就是该点的经纬度了
     

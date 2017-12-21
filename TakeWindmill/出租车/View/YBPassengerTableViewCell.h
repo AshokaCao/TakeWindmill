@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "YBTaxiStrokeModel.h"
+@class YBPassengerTableViewCell;
+
+@protocol YBPassengerTableViewCellDelegate <NSObject>
+
+- (void)didselectTaxiTralveBtn:(NSInteger )sender andYBPassengerTableViewCell:(YBPassengerTableViewCell *)cell;
+
+@end
 
 @interface YBPassengerTableViewCell : UITableViewCell
 @property (nonatomic, strong) YBTaxiStrokeModel *routeModel;
@@ -20,7 +27,7 @@
 @property (nonatomic, strong) UILabel *endLabel;
 @property (nonatomic, strong) UIImageView *userHeaderImage;
 @property (nonatomic, strong) UILabel *userNameLabel;
-
+@property (nonatomic, assign) id<YBPassengerTableViewCellDelegate> delegate;
 
 - (void)showDetailsWith:(YBTaxiStrokeModel *)model;
 

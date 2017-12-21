@@ -22,7 +22,7 @@
 #import "FirstPointAnnotation.h"
 #import "MyAnnotionView.h"
 
-@interface YBRouteDetailsViewController () <UITableViewDelegate, UITableViewDataSource, BMKMapViewDelegate, BMKLocationServiceDelegate, BMKGeoCodeSearchDelegate, BMKPoiSearchDelegate, BMKRouteSearchDelegate>
+@interface YBRouteDetailsViewController () <UITableViewDelegate, UITableViewDataSource, BMKMapViewDelegate, BMKLocationServiceDelegate, BMKGeoCodeSearchDelegate, BMKPoiSearchDelegate, BMKRouteSearchDelegate, YBPassengerTableViewCellDelegate>
 @property (nonatomic, strong) UIView *bottomView;
 @property (nonatomic, strong) UITableView *passengerTableView;
 @property (nonatomic, strong) NSMutableArray *strokeArray;
@@ -77,7 +77,7 @@
     _mapAnnoView = [[BMKAnnotationView alloc] init];
     _mapView = [[BMKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 200)];
     [self.view addSubview:_mapView];
-        [self selfLoction];
+    [self selfLoction];
     
     [self.passengerTableView registerClass:[YBPassengerTableViewCell class] forCellReuseIdentifier:@"YBPassengerTableViewCell"];
     [self passengerDetails];
@@ -130,27 +130,31 @@
     return cell;
 }
 
-- (void)sendTaxiMessage:(UIButton *)sender
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
 }
 
-- (void)callTaxi:(UIButton *)sender
+- (void)didselectTaxiTralveBtn:(NSInteger)sender andYBPassengerTableViewCell:(YBPassengerTableViewCell *)cell
 {
+    [self selfLoction];
+    NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
+    YBTaxiStrokeModel *model = self.strokeArray[path.row];
+//    model.SysNo
     
-}
-
-- (void)destinationClick:(UIButton *)sender
-{
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    dict[@"travelsysno"] = @"";
-    dict[@"currentlat"] = @"";
-    dict[@"currentlng"] = @"";
-    //    CurrentLng：经度，CurrentLat：纬度
+    dict[@"travelsysno"] = model.SysNo;
+    dict[@"steptype"] = [NSString stringWithFormat:@"%ld",sender];
+//    dict[@"currentlng"] =
+//    dict[@"currentlat"] =
+    
+    [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
+        
+    } failure:^(id dataArray) {
+        
+    }];
+    NSLog(@"------");
 }
-
-
-
 
 
 

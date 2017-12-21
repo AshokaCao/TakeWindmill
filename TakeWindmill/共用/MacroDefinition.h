@@ -234,5 +234,13 @@
 //
 #define WeixinPay (ServerPath@"pay/travelweixinorderunifyapp")
 
+//打车费用计算（出租车）
 #define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
 
+//保存行程信息
+#define TaxiTravel (ServerPath@"travel/travelinfosave")
+
+#define TaxiTraveling (ServerPath@"travel/travelinfodetailinprogress")
+
+//乘客行程步骤更新
+#define TaxiUpload (ServerPath@"travel/travelinfostepupdate")

@@ -168,6 +168,23 @@
     self.endLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.EndAddress];
     self.userNameLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.NickName];
 }
+
+- (void)sendTaxiMessage:(UIButton *)sender
+{
+    [self.delegate didselectTaxiTralveBtn:1 andYBPassengerTableViewCell:self];
+}
+
+- (void)callTaxi:(UIButton *)sender
+{
+    [self.delegate didselectTaxiTralveBtn:2 andYBPassengerTableViewCell:self];
+}
+
+- (void)destinationClick:(UIButton *)sender
+{
+    [self.delegate didselectTaxiTralveBtn:3 andYBPassengerTableViewCell:self];
+}
+
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     
