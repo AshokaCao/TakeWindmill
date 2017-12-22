@@ -26,13 +26,6 @@
 #import "YBConversationListVC.h"
 #import "YBChatVC.h"
 
-//支付
-#import "YBPayconfigModel.h"
-#import "APAuthInfo.h"
-#import "APOrderInfo.h"
-#import "APRSASigner.h"
-#import "HBRSAHandler.h"
-
 
 
 @interface YBHomeViewController ()<SDCycleScrollViewDelegate,YBReceiveMsgValueDelegate>
@@ -58,13 +51,11 @@
 
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-     [self aliPay];
+    // [self aliPay];
 //    [self wechatPay];
 }
-- (void)wechatPay {
-    
+- (void)wechatPay{
     WEAK_SELF;
-
     NSMutableDictionary *parm = [YBTooler dictinitWithMD5];
     parm[@"orderno"] = @"kjdfljfjf";
     [YBRequest postWithURL:WeixinPay MutableDict:parm success:^(id dataArray) {
