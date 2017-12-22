@@ -96,7 +96,7 @@
         //make.width.lessThanOrEqualTo(@300);
         //make.right.equalTo(weakSelf.time.mas_left).priority(600);
         //指定宽度为父视图的
-        make.width.equalTo(weakSelf.contentView).multipliedBy(0.6);
+        make.width.equalTo(weakSelf.contentView).multipliedBy(0.55);
     }];
     weakSelf.info = ins;
     

@@ -239,3 +239,9 @@
 
 #define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
 
+//我的名片信息
+#define userMycardinfo (ServerPath@"user/mycardinfo")
+
+//获取系统信息
+#define sysinfoGetsysinfo (ServerPath@"sysinfo/getsysinfo")
+

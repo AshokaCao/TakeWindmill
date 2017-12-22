@@ -287,6 +287,7 @@
 		58FE7E301FC7CA770000D7DB /* YBSystemHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E261FC7CA770000D7DB /* YBSystemHelpViewController.m */; };
 		58FE7E311FC7CA770000D7DB /* YBOwnerInView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E2A1FC7CA770000D7DB /* YBOwnerInView.m */; };
 		58FE7E341FC7E2240000D7DB /* YBHelpInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */; };
+		59DF021D1FECF59400392472 /* YBSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DF021C1FECF59400392472 /* YBSettingModel.m */; };
 		7703235E1FD909D200CB03BC /* FirstAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 770323581FD909D000CB03BC /* FirstAnnotationView.m */; };
 		7703235F1FD909D200CB03BC /* MyAnnotionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 770323591FD909D100CB03BC /* MyAnnotionView.m */; };
 		770323601FD909D200CB03BC /* FirstPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7703235A1FD909D100CB03BC /* FirstPointAnnotation.m */; };
@@ -927,6 +928,8 @@
 		58FE7E2A1FC7CA770000D7DB /* YBOwnerInView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBOwnerInView.m; sourceTree = "<group>"; };
 		58FE7E321FC7E2240000D7DB /* YBHelpInfoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBHelpInfoVC.h; sourceTree = "<group>"; };
 		58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBHelpInfoVC.m; sourceTree = "<group>"; };
+		59DF021B1FECF59400392472 /* YBSettingModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBSettingModel.h; sourceTree = "<group>"; };
+		59DF021C1FECF59400392472 /* YBSettingModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBSettingModel.m; sourceTree = "<group>"; };
 		770323561FD909D000CB03BC /* Mymodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mymodel.h; sourceTree = "<group>"; };
 		770323571FD909D000CB03BC /* FirstAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirstAnnotationView.h; sourceTree = "<group>"; };
 		770323581FD909D000CB03BC /* FirstAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstAnnotationView.m; sourceTree = "<group>"; };
@@ -1956,6 +1959,8 @@
 			children = (
 				5836CF601F395BFB00D8F2F9 /* YBCommenItem.h */,
 				5836CF611F395BFB00D8F2F9 /* YBCommenItem.m */,
+				59DF021B1FECF59400392472 /* YBSettingModel.h */,
+				59DF021C1FECF59400392472 /* YBSettingModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2925,6 +2930,7 @@
 				58D3466D1F3A93AE001E8582 /* YBTakeWindmillViewController.m in Sources */,
 				5836CF6E1F3967D400D8F2F9 /* YBMessageTableViewCell.m in Sources */,
 				5822EB0D1FCBD711007EF7F1 /* TTTAttributedLabel.m in Sources */,
+				59DF021D1FECF59400392472 /* YBSettingModel.m in Sources */,
 				58154F871F3C25A400FDE5D8 /* YBCarpoolTableViewCell.m in Sources */,
 				5822EAFC1FCBD711007EF7F1 /* LEETheme.m in Sources */,
 				585F56E41F3805A4005F30F0 /* YBBaseNavigationController.m in Sources */,
