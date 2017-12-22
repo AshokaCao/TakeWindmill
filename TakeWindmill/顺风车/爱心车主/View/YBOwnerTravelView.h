@@ -11,21 +11,6 @@
 @interface YBOwnerTravelView : UIView
 
 /**
- * 单程按钮
- */
-@property (nonatomic, weak) UIButton *oneWayButton;
-
-/**
- * 跨城按钮
- */
-@property (nonatomic, weak) UIButton *roundTripButton;
-
-/**
- * 下划线
- */
-@property (nonatomic, weak) UIView *line;
-
-/**
  * 起点
  */
 @property (nonatomic, weak) YBBaseView *startPoint;

@@ -63,7 +63,7 @@
     self.imageView.frame = CGRectMake(0, 0,viewH, viewH);
     self.imageView.layer.cornerRadius = viewH/2;
     self.imageView.clipsToBounds = YES;
-    self.imageView.image = [UIImage imageNamed:@"小草"];
+    self.imageView.image = [UIImage imageNamed:@"headimg.gif"];
     
     self.nameLabel.frame = CGRectMake(CGRectGetMaxX(self.imageView.frame) + interval, 0, self.OwnerView.frame.size.width - viewH - interval, viewH);
     self.nameLabel.text = @"李师傅";

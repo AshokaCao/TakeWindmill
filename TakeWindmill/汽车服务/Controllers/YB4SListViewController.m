@@ -108,7 +108,7 @@
             [self.workerArray addObject:foldCellModel];
         }
         YBCommentModels *foldCellModel = [self.workerArray firstObject];
-        [self.commenterheaderImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",foldCellModel.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"小草"]];
+        [self.commenterheaderImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",foldCellModel.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
         self.commentLabel.text = [NSString stringWithFormat:@"%@",foldCellModel.CommnentContent];
         self.commentTimeLabel.text = [NSString stringWithFormat:@"%@",foldCellModel.AddTime];
         [self addStarCountWithCount:foldCellModel.Stars andEnable:NO];

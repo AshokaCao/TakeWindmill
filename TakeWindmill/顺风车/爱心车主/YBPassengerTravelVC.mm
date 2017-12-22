@@ -7,6 +7,7 @@
 //
 
 #import "YBPassengerTravelVC.h"
+#import "YBPassengerCanBeBuiltVC.h"
 #import "YBEvaluationPassengersVC.h"
 
 #import "YBWaitingView.h"
@@ -14,7 +15,9 @@
 #import "YBThanksTheFee.h"
 #import "RouteAnnotation.h"
 
-@interface YBPassengerTravelVC ()<BMKRouteSearchDelegate>
+@interface YBPassengerTravelVC ()<BMKRouteSearchDelegate> {
+    UIButton *passengerButton;
+}
 
 //线路规划搜搜
 @property (nonatomic, strong) BMKRouteSearch *routeSearch;
@@ -30,6 +33,11 @@
 @property (nonatomic, strong) NSDictionary *passengerDict;
 
 /**
+ * 司机的行程
+ */
+@property (nonatomic, strong) NSDictionary *driverDict;
+
+/**
  * 线路颜色
  */
 @property (nonatomic, copy) NSString *lineColor;
@@ -42,7 +50,9 @@
 /**
  * 导航栏按钮
  */
-@property (nonatomic, weak) UIView *navigationView;
+@property (nonatomic, strong) UIView *navigationView;
+
+@property (nonatomic, strong) UIView *navV;
 
 @end
 
@@ -61,8 +71,61 @@
 - (UIView *)navigationView
 {
     if (!_navigationView) {
-        //        UIView *navigationView = [[UIView alloc] init];
+        _navigationView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth / 2, 44)];
+
+        passengerButton  = [UIButton new];
+        passengerButton.imageView.layer.cornerRadius = 15;
+//        passengerButton.imageView.layer.borderColor  = BtnBlueColor.CGColor;
+//        passengerButton.imageView.layer.borderWidth  = 1;
+        passengerButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;//使图片和文字水平居中显示
+        [passengerButton setImage:[UIImage imageNamed:@"headimg.gif"] forState:UIControlStateNormal];
+        [_navigationView addSubview:passengerButton];
         
+        [passengerButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(_navigationView).with.offset(20);
+            make.top.equalTo(_navigationView);
+            make.size.mas_equalTo(CGSizeMake(34, 34));
+        }];
+        
+        UILabel *passengerLabel = [UILabel new];
+        passengerLabel.text     = @"乘客一";
+        passengerLabel.font     = YBFont(10);
+        passengerLabel.textColor = [UIColor lightGrayColor];
+        [_navigationView addSubview:passengerLabel];
+        
+        [passengerLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(passengerButton.mas_bottom);
+            make.bottom.equalTo(_navigationView.mas_bottom);
+            make.left.equalTo(passengerButton.mas_left);
+            make.width.equalTo(passengerButton);
+        }];
+        
+
+        UIButton *add = [UIButton new];
+        add.imageView.layer.borderColor  = LineLightColor.CGColor;
+        add.imageView.layer.cornerRadius = 17;
+        add.imageView.layer.borderWidth  = 1;
+        [add setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+        [add addTarget:self action:@selector(addButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_navigationView addSubview:add];
+        [add mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(passengerButton.mas_right).with.offset(20);
+            make.top.equalTo(passengerButton.mas_top);
+            make.size.equalTo(passengerButton);
+        }];
+        
+        UILabel *addLabel = [UILabel new];
+        addLabel.text     = @"可拼乘客";
+        addLabel.font     = YBFont(10);
+        addLabel.textColor = [UIColor lightGrayColor];
+        [_navigationView addSubview:addLabel];
+        
+        [addLabel  mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(add.mas_bottom);
+            make.bottom.equalTo(_navigationView.mas_bottom);
+            make.left.equalTo(passengerButton.mas_right).with.offset(17);
+//            make.width.mas_equalTo(50);
+        }];
     }
     return _navigationView;
 }
@@ -89,21 +152,35 @@
                 [self.navigationController pushViewController:ebalu animated:YES];
             }
             else {
+                NSArray *timeArray = [self.passengerDict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
+                NSString *messageStr = [NSString stringWithFormat:@"乘客 %@ %@ 出发,是否确认?",timeArray[0],timeArray[1]];
                 
-                [waitingS passengerTravel_ConfirmPeer];
+                [LEEAlert alert].config
+                .LeeTitle(@"提示")
+                .LeeContent(messageStr)
+                .LeeCancelAction(@"取消", ^{
+                    // 取消点击事件Block
+                })
+                .LeeAction(@"确认", ^{
+                    // 确认点击事件Block
+                    [waitingS passengerTravel_ConfirmPeer];
+                })
+                .LeeShow();
             }
         };
+        
+        //给车主打电话
+        [waiting.formationView.phoneButton addTarget:self action:@selector(phoneButtonActoin:) forControlEvents:UIControlEventTouchUpInside];
         _waitingView = waiting;
     }
     return _waitingView;
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
-    self.title = @"乘客行程";
-    //
-    [self.waitingView driverPassengerTravel:nil];
+    self.navigationItem.titleView = self.navigationView;
     //请求乘客行程信息
     [self networkRequestPassengerTravel];
     //请求司机信息
@@ -116,31 +193,41 @@
     _routeSearch.delegate = nil;
 }
 
+#pragma mark - 可拼乘客
+- (void)addButtonAction:(UIButton *)sender {
+    YBPassengerCanBeBuiltVC *passenger = [[YBPassengerCanBeBuiltVC alloc] init];
+    passenger.strokeSysNo              = self.driverDict[@"SysNo"];
+    passenger.travelSysNo              = self.passengerDict[@"SysNo"];
+    [self.navigationController pushViewController:passenger animated:YES];
+}
+
+#pragma mark - 给乘客打电话
+- (void)phoneButtonActoin:(UIButton *)sender {
+    [YBTooler dialThePhoneNumber:_passengerDict[@"Mobile"] displayView:self.view];
+}
+
+
 #pragma mark - 邀请乘客行程信息
 - (void)networkRequestPassengerTravel
 {
-    //    [self.waitingView passengerPriceWithDict:nil];
+    _passengerDict = [NSDictionary dictionary];
     
-    //    _passengerDict = [NSDictionary dictionary];
-    //
-    //    NSString *urlStr          = travelinfodetailbysysnoPath;
-    //    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    //    [dict setObject:self.TravelSysNo forKey:@"travelsysno"];
-    //    [dict setObject:@"1" forKey:@"userid"];
-    //
-    //    [YBRequest postWithURL:urlStr MutableDict:dict View:self.waitingView success:^(id dataArray) {
-    //        YBLog(@"%@",dataArray);
-    //        _passengerDict = dataArray;
-    //        //订单详情
-    //        CLLocationCoordinate2D start = CLLocationCoordinate2DMake([dataArray[@"StartLat"] doubleValue], [dataArray[@"StartLng"] doubleValue]);
-    //        CLLocationCoordinate2D end = CLLocationCoordinate2DMake([dataArray[@"EndLat"] doubleValue], [dataArray[@"EndLng"] doubleValue]);
-    //        [self openMapViewStartCityName:dataArray[@"StartCity"] startPT:start endCityName:dataArray[@"EndCity"] endPT:end];
-    //        //
-    //        [self.waitingView passengerPriceWithDict:dataArray];
-    //    } failure:^(id dataArray) {
-    //        YBLog(@"%@",dataArray);
-    //
-    //    }];
+    NSString *urlStr          = travelinfodetailbysysnoPath;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:self.TravelSysNo forKey:@"travelsysno"];
+    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+    
+    [YBRequest postWithURL:urlStr MutableDict:dict View:self.waitingView success:^(id dataArray) {
+        YBLog(@"乘客行程信息%@",dataArray);
+        _passengerDict = dataArray;
+        //显示乘客信息
+        [self.waitingView driverPassengerTravel:_passengerDict];
+        [passengerButton.imageView sd_setImageWithURL:[NSURL URLWithString:_passengerDict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
+    } failure:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+    }];
+    
+    
 }
 
 #pragma mark - 司机行程
@@ -148,48 +235,21 @@
 {
     [self DriversTripDcit:nil PassengerDict:nil];
     
-    //    NSString *urlStr          = travelinfodriverdetailPath;
-    //    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    //    [dict setObject:self.SysNo forKey:@"sysno"];
-    //    [dict setObject:@"1" forKey:@"userid"];
-    //
-    //    [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
-    //        YBLog(@"%@",dataArray);
-    //        //订单详情
-    //        [self.waitingView inviteColleagues:dataArray];
-    //        [self DriversTripDcit:dataArray PassengerDict:self.passengerDict];
-    //    } failure:^(id dataArray) {
-    //        YBLog(@"%@",dataArray);
-    //
-    //    }];
-}
-
-#pragma mark - 乘客行程行程规划
-- (void)openMapViewStartCityName:(NSString *)cityName startPT:(CLLocationCoordinate2D)startPt endCityName:(NSString *)city endPT:(CLLocationCoordinate2D)endPt
-{
-    _routeSearch = [[BMKRouteSearch alloc]init];
-    _routeSearch.delegate = self;
-    //发起检索
-    BMKPlanNode* start = [[BMKPlanNode alloc]init] ;
-    start.cityName = cityName;
-    start.pt = startPt;
+    NSString *urlStr          = travelinfodriverdetailPath;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:self.SysNo forKey:@"travelsysno"];
+    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
     
-    BMKPlanNode* end = [[BMKPlanNode alloc]init];
-    end.cityName = city;
-    end.pt = endPt;
-    
-    BMKDrivingRoutePlanOption *driveRouteSearchOption =[[BMKDrivingRoutePlanOption alloc]init];
-    driveRouteSearchOption.from = start;
-    driveRouteSearchOption.to = end;
-    
-    BOOL flag = [_routeSearch drivingSearch:driveRouteSearchOption];
-    if (flag) {
-        YBLog(@"查询成功");
-        self.lineColor = @"乘客";//乘客
-    }
-    else {
-        YBLog(@"查询失败");
-    }
+    [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
+        YBLog(@"司机行程信息%@",dataArray);
+        self.driverDict = dataArray;
+        //订单详情
+//        [self.waitingView inviteColleagues:dataArray];
+        [self DriversTripDcit:dataArray PassengerDict:self.passengerDict];
+    } failure:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+        
+    }];
 }
 
 #pragma mark - 司机的行程
@@ -327,7 +387,7 @@
             polylineView.strokeColor = BtnBlueColor;
             
         }
-        polylineView.lineWidth = 10.0;
+        polylineView.lineWidth = 5.0;
         return polylineView;
     }
     return nil;

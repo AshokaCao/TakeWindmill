@@ -22,7 +22,7 @@
 - (void)setModel:(YBMessageModel *)model {
     _model = model;
     
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:model.icon]  placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:model.icon]  placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.nameLabel.text = model.nameStr;
     self.contentLabel.text = model.content;
 }

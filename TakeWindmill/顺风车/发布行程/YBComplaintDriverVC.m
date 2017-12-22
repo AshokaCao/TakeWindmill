@@ -103,7 +103,7 @@
 - (void)itineraryComplaints:(NSDictionary *)dict
 {
     YBLog(@"%@",dict);
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:dict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:dict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.nameLabel.text      = dict[@"NickName"];
     
     NSArray *timeArray = [dict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];

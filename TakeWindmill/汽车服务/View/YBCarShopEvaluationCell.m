@@ -92,7 +92,7 @@
     [super layoutSubviews];
     
     self.iconImageView.frame = CGRectMake(10, 10, 60, 60);
-    self.iconImageView.image = [UIImage imageNamed:@"小草"];
+    self.iconImageView.image = [UIImage imageNamed:@"headimg.gif"];
     
     self.starView.frame = CGRectMake(CGRectGetMaxX(self.iconImageView.frame) + 10, 10, 60, 20);
 

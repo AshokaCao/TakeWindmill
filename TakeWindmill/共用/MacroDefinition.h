@@ -78,7 +78,8 @@
 #define commonaddressdriverdeletePath (ServerPath@"travel/commonaddressdriverdelete?")
 //司机常用路线保存
 #define commonaddressdriversavePath (ServerPath@"travel/commonaddressdriversave?")
-
+//乘客行程起点附近乘客检索（可拼座）
+#define passengerstartpointnearbypassengerlistPath (ServerPath@"travel/passengerstartpointnearbypassengerlist?")
 
 //路况直播列表
 #define RoadListPath (ServerPath@"roadcondition/roadconditionlist?")

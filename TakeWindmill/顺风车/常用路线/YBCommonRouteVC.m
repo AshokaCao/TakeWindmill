@@ -196,6 +196,11 @@
 @property (nonatomic, weak) UIButton * submitButton;
 
 /**
+ * 提交按钮
+ */
+@property (nonatomic, assign) BOOL isSubmit;
+
+/**
  * 起点位置信息
  */
 @property (nonatomic, strong) NSDictionary *startingPointDict;
@@ -362,6 +367,7 @@
         //把当前定位的经纬度换算为了View上的坐标
         CLLocationCoordinate2D pt = CLLocationCoordinate2DMake([self.endPointDict[@"Lat"] doubleValue],[self.endPointDict[@"Lng"] doubleValue]);
         [self.mapView setCenterCoordinate:pt animated:YES];
+        
         NSString *StarStr = [NSString stringWithFormat:@"%@·%@",self.endPointDict[@"City"],self.endPointDict[@"Name"]];
         [self.routeView.startPoint initLabelStr:StarStr];
         
@@ -371,6 +377,8 @@
         NSDictionary *dict     = self.startingPointDict;
         self.startingPointDict = self.endPointDict;
         self.endPointDict      = dict;
+        
+        self.isSubmit          = YES;//是否
     }else {
         [MBProgressHUD showError:@"请完成行程选择" toView:self.view];
     }
@@ -398,8 +406,8 @@
             [self.routeView.startPoint initLabelStr:[NSString stringWithFormat:@"%@·%@",self.startingPointDict[@"City"],self.startingPointDict[@"Name"]]];
             
             CLLocationCoordinate2D pt = CLLocationCoordinate2DMake([self.startingPointDict[@"Lat"] doubleValue], [self.startingPointDict[@"Lng"] doubleValue]);
-            [self createLocationSignImage:pt];
-            
+            [self.mapView setCenterCoordinate:pt animated:YES];
+
             if ([self.routeView.endPoint.label.text isEqualToString:@"请选择终点信息"]) {
                 [MBProgressHUD showError:@"请输入终点位置" toView:self.view];
                 return ;
@@ -436,34 +444,34 @@
 
 - (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    
-//    CGPoint touchPoint = self.locAtionView.center;
-//    CLLocationCoordinate2D touchMapCoordinate = [self.mapView convertPoint:touchPoint toCoordinateFromView:self.mapView];//这里touchMapCoordinate就是该点的经纬度了
-//
-//    BMKReverseGeoCodeOption *reverseGeocodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];//初始化反编码请求
-//    reverseGeocodeSearchOption.reverseGeoPoint = touchMapCoordinate;//设置反编码的店为pt
-//    BOOL flag =   [self.geocodesearch reverseGeoCode:reverseGeocodeSearchOption];
-//    if (flag) {
-//        YBLog(@"定位搜索成功");
-//    }
-//    else {
-//        [MBProgressHUD showError:@"定位搜索失败" toView:self.view];
-//    }
+    if (!self.isSubmit) {//拖动地图 点击按钮
+        MKCoordinateRegion region;
+        CLLocationCoordinate2D centerCoordinate = mapView.region.center;
+        region.center = centerCoordinate;
+        BMKReverseGeoCodeOption *reverseGeocodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];//初始化反编码请求
+        reverseGeocodeSearchOption.reverseGeoPoint = centerCoordinate;//设置反编码的店为pt
+        BOOL flag =   [self.geocodesearch reverseGeoCode:reverseGeocodeSearchOption];
+        if (flag) {
+            YBLog(@"定位搜索成功");
+        }
+    }
+    self.isSubmit = NO;
 }
 
 -(void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
 {
-    NSString *starStr = [NSString stringWithFormat:@"%@·%@",result.addressDetail.city,result.sematicDescription];
-    [self.routeView.startPoint initLabelStr:starStr];
-    
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:result.cityCode forKey:@"CityId"];
     [dict setObject:[NSString stringWithFormat:@"%f",result.location.longitude] forKey:@"Lng"];
     [dict setObject:result.address forKey:@"Address"];
     [dict setObject:result.addressDetail.district forKey:@"District"];
     [dict setObject:[NSString stringWithFormat:@"%f",result.location.latitude] forKey:@"Lat"];
-    [dict setObject:result.sematicDescription forKey:@"Name"];
+    NSArray *nameStr = [result.sematicDescription componentsSeparatedByString:@","];
+    [dict setObject:nameStr[0] forKey:@"Name"];
     [dict setObject:result.addressDetail.city forKey:@"City"];
+    
+    NSString *starStr = [NSString stringWithFormat:@"%@·%@",dict[@"City"],dict[@"Name"]];
+    [self.routeView.startPoint initLabelStr:starStr];
     
     self.startingPointDict = dict;
 }

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^YBTakeWindmollBlock)(UIButton *sender);
 
 @interface YBTakeWindmollView : UIView
 
@@ -15,6 +16,11 @@
  * 需要改变的view
  */
 @property (nonatomic, weak) UIScrollView *scrollView;
+
+/**
+ * 点击按钮
+ */
+@property (nonatomic, strong) YBTakeWindmollBlock buttonBlok;
 
 /**
  * 改变下划线

@@ -47,7 +47,7 @@
     [super layoutSubviews];
     
     self.iconImageView.frame = CGRectMake(20, 10, 60, 60);
-//    self.iconImageView.image = [UIImage imageNamed:@"小草"];
+//    self.iconImageView.image = [UIImage imageNamed:@"headimg.gif"];
     
     self.technicianLabel.frame = CGRectMake(CGRectGetMaxX(self.iconImageView.frame) + 10, 0, YBWidth / 6, self.contentView.frame.size.height);
     self.technicianLabel.textAlignment = NSTextAlignmentCenter;

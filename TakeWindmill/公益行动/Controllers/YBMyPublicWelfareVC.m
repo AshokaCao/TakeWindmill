@@ -58,7 +58,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor whiteColor];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"小草"]];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"headimg.gif"]];
     imageView.frame = CGRectMake(20, 10, 40, 40);
     [view addSubview:imageView];
     

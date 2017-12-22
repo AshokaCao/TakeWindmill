@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -21,17 +17,17 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z3m-Xp-Kas">
-                        <rect key="frame" x="10" y="5" width="300" height="129.5"/>
+                        <rect key="frame" x="18" y="8" width="284" height="123.5"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="佣金" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nve-f8-313">
-                                <rect key="frame" x="8" y="8" width="42" height="30"/>
+                                <rect key="frame" x="8" y="8" width="42" height="27"/>
                                 <color key="backgroundColor" red="0.1019607843" green="0.63529411759999999" blue="0.98823529409999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5元" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ZR-Ja-r7m">
-                                <rect key="frame" x="51" y="8" width="35" height="30"/>
+                                <rect key="frame" x="51" y="8" width="35" height="27"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="35" id="UQp-81-7fF"/>
                                 </constraints>
@@ -40,43 +36,43 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10:30 顺路匹配度80%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pLJ-Xx-Kcj">
-                                <rect key="frame" x="84" y="8" width="160" height="30"/>
+                                <rect key="frame" x="84" y="8" width="144" height="27"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pcD-AO-6mn">
-                                <rect key="frame" x="246" y="6" width="40" height="30"/>
+                                <rect key="frame" x="230" y="6" width="40" height="27"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <state key="normal" title="匹配">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="小草" translatesAutoresizingMaskIntoConstraints="NO" id="Hpc-1N-fal">
-                                <rect key="frame" x="17" y="55" width="25" height="25"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="headimg.gif" translatesAutoresizingMaskIntoConstraints="NO" id="Hpc-1N-fal">
+                                <rect key="frame" x="17" y="52" width="25" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="25" id="Vyv-0w-Mee"/>
                                     <constraint firstAttribute="width" constant="25" id="tNp-IM-tbd"/>
                                 </constraints>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="小草" translatesAutoresizingMaskIntoConstraints="NO" id="umf-bj-MHq">
-                                <rect key="frame" x="17" y="90" width="25" height="25"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="headimg.gif" translatesAutoresizingMaskIntoConstraints="NO" id="umf-bj-MHq">
+                                <rect key="frame" x="17" y="87" width="25" height="22"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="花花神  第一医院    颐高广场" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="26U-hX-b39">
-                                <rect key="frame" x="51" y="55" width="187" height="25"/>
+                                <rect key="frame" x="51" y="52" width="171" height="25"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="大丸子  奔驰c级 嘉兴学院 颐高广场" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kw2-3T-5Uf">
-                                <rect key="frame" x="52" y="90" width="186" height="25"/>
+                                <rect key="frame" x="52" y="87" width="170" height="22"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XQf-Ws-Fpt">
-                                <rect key="frame" x="251" y="55" width="30" height="25"/>
+                                <rect key="frame" x="235" y="52" width="30" height="25"/>
                                 <color key="backgroundColor" red="0.1019607843" green="0.63529411759999999" blue="0.98823529409999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="QYT-HW-sMn"/>
@@ -87,7 +83,7 @@
                                 </state>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8rZ-cl-YiW">
-                                <rect key="frame" x="251" y="90" width="30" height="25"/>
+                                <rect key="frame" x="235" y="87" width="30" height="22"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="同意">
@@ -153,6 +149,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="小草" width="202" height="202"/>
+        <image name="headimg.gif" width="16" height="16"/>
     </resources>
 </document>

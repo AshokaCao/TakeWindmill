@@ -134,6 +134,9 @@
             self.scrollView.contentOffset = CGPointMake(sender.tag *YBWidth, 0);
             self.lineView.frame = CGRectMake(10 + sender.tag * (60 + 10), CGRectGetMaxY(self.passengerButton.frame), 60, 2);
         }];
+        if (_buttonBlok) {
+            _buttonBlok(sender);
+        }
     }
 }
 

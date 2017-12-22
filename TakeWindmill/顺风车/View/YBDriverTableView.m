@@ -67,46 +67,16 @@
     [[self viewController].navigationController pushViewController:manage animated:YES];
 }
 
-#pragma mark - tableViewDelegate
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (UIView *)addTitleViewStr:(NSString *)str
 {
-    return self.isDriverNotCompleted + 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    NSInteger sect = -1;
-    if (self.isDriverNotCompleted == 2) {//有未完成行程
-        sect ++;
-        if (section == sect) return 1;
-    }
-    if (section == sect + 1) {
-        return 2;
-    }
-    else {
-        return self.commonRoute.count > 0 ? self.commonRoute.count : 1;
-    }
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if (self.isDriverNotCompleted == 2  && section == 0) { //发布行程
-        UIView *view    = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
-        
-        UILabel *label  = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 80, 20)];
-        label.font      = YBFont(15);
-        label.text      = @"已发布行程";
-        [view addSubview:label];
-        return view;
-    }
-    else if (section == self.isDriverNotCompleted){ //常用路线
-        UIView *view    = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
-        
-        UILabel *label  = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 80, 20)];
-        label.font      = YBFont(15);
-        label.text      = @"常用路线";
-        [view addSubview:label];
-        
+    UIView *view    = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
+    
+    UILabel *label  = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 80, 20)];
+    label.font      = YBFont(15);
+    label.text      = str;
+    [view addSubview:label];
+    
+    if ([str isEqualToString:@"常用路线"]) {
         CGFloat btnW = 60;
         UIButton *managementBtn  = [[UIButton alloc] initWithFrame:CGRectMake(YBWidth - btnW - 10, 10, btnW, 20)];
         managementBtn.titleLabel.font = YBFont(13);
@@ -117,28 +87,75 @@
         [managementBtn setImageEdgeInsets:UIEdgeInsetsMake(3, managementBtn.titleLabel.bounds.size.width + 20 ,3, 5)];
         [managementBtn addTarget:self action:@selector(managementBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:managementBtn];
-        
-        return view;
     }
-    else { //
-        UIView *view    = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
-        
-        UILabel *label  = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 80, 20)];
-        label.font      = YBFont(15);
-        label.text      = @"发现";
-        [view addSubview:label];
-        return view;
+    return view;
+}
+
+#pragma mark - tableViewDelegate
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    NSInteger sect = 2;//发现和常用路线
+    if (self.driverDict) sect ++;//有未完成行程
+    if (self.myOrderArray.count != 0) sect ++;//我的行程
+    return sect;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (self.isDriverNotCompleted == 2) {//有未完成行程
+        if (self.myOrderArray.count != 0) {//有我的行程
+            if (section == 0) return 1;
+            if (section == 1) return self.myOrderArray.count;
+            if (section == 2) return 2;
+            if (section == 3) return self.commonRoute.count;
+        }
+        else {
+            if (section == 0) return 1;
+            if (section == 1) return 2;
+            if (section == 2) return self.commonRoute.count;
+        }
+    }
+    if (section == 0) return 2;
+    else return self.commonRoute.count;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (self.isDriverNotCompleted == 2) { //有未完成行程
+        if (self.myOrderArray.count != 0) {//有我的行程
+            if (section == 0) return [self addTitleViewStr:@"已发布行程"];
+            if (section == 1) return [self addTitleViewStr:@"我的行程"];
+            if (section == 2) return [self addTitleViewStr:@"发现"];
+            else              return [self addTitleViewStr:@"常用路线"];
+        }
+        else {
+            if (section == 0) return [self addTitleViewStr:@"已发布行程"];
+            if (section == 1) return [self addTitleViewStr:@"发现"];
+            else              return [self addTitleViewStr:@"常用路线"];
+        }
+    }
+    else {
+        if (section == 0) return [self addTitleViewStr:@"发现"];
+        else              return [self addTitleViewStr:@"常用路线"];
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 40;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 1;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0 && self.isDriverNotCompleted == 2) { // 未完成行程
+    
+    if (self.isDriverNotCompleted == 2 && indexPath.section == 0) { // 未完成行程
+        
         YBPublishedTripCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBPublishedTripCell"];
         if (!cell) {
             cell = [[[NSBundle mainBundle] loadNibNamed:@"YBPublishedTripCell" owner:self options:nil] firstObject];

@@ -264,7 +264,7 @@
     //头像
     self.backgroundColor = [UIColor whiteColor];
     self.avatarImageView.frame    = CGRectMake(15, 10, 40,40);//头像
-    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:dict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:dict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     //昵称
     self.ownerNameLabel.frame           = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 10, 15, nameW, 15);//昵称
     self.ownerNameLabel.text            = [NSString stringWithFormat:@"%@",dict[@"NickName"]];
@@ -309,7 +309,7 @@
     self.SMSButton.frame = CGRectMake(self.frame.size.width - 80, self.ownerNameLabel.frame.origin.y + 5, self.frame.size.height - 30, self.frame.size.height - 30);
     self.phoneButton.frame = CGRectMake(CGRectGetMaxX(self.SMSButton.frame) + 10, self.ownerNameLabel.frame.origin.y + 5, self.frame.size.height - 30, self.frame.size.height - 30);
     
-    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     
    
     self.ownerNameLabel.text             = dict[@"NickName"];
@@ -327,7 +327,7 @@
     //用户头像
     self.avatarImageView.frame = CGRectMake(30, 10, heit, heit);
     self.avatarImageView.layer.cornerRadius = heit / 2;
-    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
 
     //用户姓名
     CGFloat ownerW = [YBTooler calculateTheStringWidth:dict[@"NickName"] font:16];
@@ -360,7 +360,7 @@
     self.backgroundColor = [UIColor whiteColor];
     //用户头像
     self.avatarImageView.frame = CGRectMake(10, 10, heit, heit);
-    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:image] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:image] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     //用户姓名
     self.ownerNameLabel.frame = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 10, self.avatarImageView.frame.origin.y, self.frame.size.width / 2, heit);
     self.ownerNameLabel.text = name;
@@ -368,36 +368,24 @@
     self.phoneButton.hidden = YES;
 }
 
-#pragma mark - 附近乘客
+#pragma mark - 附近乘客(正在寻找乘客的下一个界面)
 -(void)nearbyPassengersFrame
 {
     self.backgroundColor = [UIColor whiteColor];
     CGFloat heit = self.frame.size.height - 20;
     //用户头像
-    self.avatarImageView.frame = CGRectMake(10, 10, heit, heit);
+    self.avatarImageView.frame = CGRectMake(20, 10, heit, heit);
     //用户姓名
-    self.ownerNameLabel.frame = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 10, self.avatarImageView.frame.origin.y , 40, heit / 2);
-    //用户性别
-    self.genderImageView.frame = CGRectMake(CGRectGetMaxX(self.ownerNameLabel.frame), self.avatarImageView.frame.origin.y , heit / 2 - 2, heit / 2 - 2);
-    //车牌号
-    self.numberPlateLabel.frame = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 10, CGRectGetMaxY(self.ownerNameLabel.frame) + 2, 60, heit / 2);
-    //车主车型详情
-    self.modelsLabel.frame = CGRectMake(CGRectGetMaxX(self.numberPlateLabel.frame) + 10, CGRectGetMaxY(self.ownerNameLabel.frame) + 2, 70, heit/2);
-
-    self.SMSButton.hidden = YES;
-    self.phoneButton.hidden = YES;
+    self.ownerNameLabel.frame = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 10, self.avatarImageView.frame.origin.y , self.frame.size.width / 2, heit);
+    self.SMSButton.frame        = CGRectMake(self.frame.size.width - 90, self.avatarImageView.frame.origin.y + 5 , 30, 30);
+    self.phoneButton.frame      = CGRectMake(CGRectGetMaxX(self.SMSButton.frame) + 10, self.SMSButton.frame.origin.y, 30, 30);
 }
 
-#pragma mark -
+#pragma mark 司机端- 寻找乘客的下一个界面
 - (void)dictWitihDataDict:(NSDictionary *)dict
 {
-    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.ownerNameLabel.text                 = dict[@"NickName"];
-    self.genderImageView.image               = [UIImage imageNamed:@"男士"];
-    self.numberPlateLabel.text               = dict[@"VehicleNumber"];
-    self.numberPlateLabel.backgroundColor    = LightGreyColor;
-    self.modelsLabel.text                    = [NSString stringWithFormat:@"%@ %@",dict[@"ColorName"],dict[@"VehicleBrand"]];
-    self.ownerTypeLabel.text                 = @"90后";
 }
 
 #pragma mark - 乘客评价
@@ -425,7 +413,7 @@
 
 - (void)evaluatioOfPassengersDict:(NSDictionary *)dict
 {
-    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.ownerNameLabel.text        = @"木星";
     self.impressionLabel.text       = @"90后·贸易 物流·外贸";
     self.genderImageView.image      = [UIImage imageNamed:@"男士"];
@@ -456,7 +444,7 @@
 }
 - (void)completeTheEvaluationOfPassengersDict:(NSDictionary *)dict
 {
-    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.ownerNameLabel.text        = @"木星";
     self.numberPlateLabel.text      = @"一个月前同行";
     self.numberPlateLabel.textColor = [UIColor lightGrayColor];
@@ -657,11 +645,23 @@
 
 - (void)LookingPassengersDict:(NSDictionary *)dict
 {
+//    YBLog(@"%@",dict);
     NSString *isJoin = [dict[@"IsJoin"] intValue] == 1 ? @"愿拼座" : @"不愿拼座";
-    NSString * ste = [NSString stringWithFormat:@"%@人  %@",dict[@"PeopleNumber"],isJoin];
+    NSString *byWay  = [NSString stringWithFormat:@"顺路程度%@",dict[@"MatchRateStr"]];
+    NSString *ste = [NSString stringWithFormat:@"%@人 %@",dict[@"PeopleNumber"],isJoin];
+    NSString *str = [NSString stringWithFormat:@"%@ %@",ste,byWay];
+
     NSArray *array = [dict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
     NSString *timeStr = [NSString stringWithFormat:@"%@ %@",array[0],array[1]];
-    [self.timeView aboutViewImage:[UIImage imageNamed:@"时间"] imageFrame:CGSizeMake(10, 10) imageBacColor:nil LabelTitle:timeStr titleFont:13 titleColor:[UIColor grayColor] subTitle:ste subTitleFont:12 subtitleColor:[UIColor lightGrayColor]];
+    
+    [self.timeView aboutViewImage:[UIImage imageNamed:@"时间"] imageFrame:CGSizeMake(10, 10) imageBacColor:nil LabelTitle:timeStr titleFont:13 titleColor:[UIColor grayColor] subTitle:str subTitleFont:12 subtitleColor:[UIColor lightGrayColor]];
+    //改变顺路程度的颜色
+    NSMutableAttributedString *hintString = [[NSMutableAttributedString alloc]initWithString:str];
+    //获取要调整颜色的文字位置,调整颜色
+    NSRange range1=[[hintString string]rangeOfString:byWay];
+    [hintString addAttribute:NSForegroundColorAttributeName value:BtnOrangeColor range:range1];
+    self.timeView.subLabel.attributedText = hintString;
+    
     [self.startingPointView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnBlueColor LabelTitle:[NSString stringWithFormat:@"%@·%@",dict[@"StartCity"],dict[@"StartAddress"]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
     [self.endView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnGreenColor LabelTitle:[NSString stringWithFormat:@"%@·%@",dict[@"EndCity"],dict[@"EndAddress"]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
     self.spellLabel.text            = [NSString stringWithFormat:@"%@元",[dict[@"IsJoin"] intValue] == 1 ? dict[@"TravelCostJoin"] : dict[@"TravelCost"]];//愿拼座
@@ -684,7 +684,7 @@
 
 - (void)noPriceItineraryWithDict:(NSDictionary *)dict
 {
-    NSString * ste = [NSString stringWithFormat:@"%@人",dict[@"SeatNumber"]];
+    NSString * ste = [NSString stringWithFormat:@"%@座",dict[@"SeatNumber"]];
     NSArray *timeArray = [dict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
     [self.timeView aboutViewImage:[UIImage imageNamed:@"时间"] imageFrame:CGSizeMake(10, 10) imageBacColor:nil LabelTitle:[NSString stringWithFormat:@"%@ %@",timeArray[0],timeArray[1]] titleFont:13 titleColor:[UIColor grayColor] subTitle:ste subTitleFont:12 subtitleColor:[UIColor lightGrayColor]];
     [self.startingPointView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnBlueColor LabelTitle:[NSString stringWithFormat:@"%@·%@",dict[@"StartCity"],dict[@"StartAddress"]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
@@ -1047,16 +1047,16 @@
     self.contentLabel.hidden = YES;
 }
 
-#pragma mark - 司机_乘客行程
+#pragma mark - 司机_乘客行程(正在寻找乘客的下一个界面)
 - (void)driverPassengerTravel:(NSDictionary *)driverDict
 {
     self.backgroundColor     = LightGreyColor;
     self.headView.frame      = CGRectMake(0, 0, self.frame.size.width, 15);
-    //司机信息
+    //乘客的信息
     self.formationView.frame = CGRectMake(0, CGRectGetMaxY(self.headView.frame), self.frame.size.width, 60);
     [self.formationView nearbyPassengersFrame];
     [self.formationView dictWitihDataDict:driverDict];
-    //司机行程信息
+    //乘客行程信息
     self.detailsView.frame   = CGRectMake(0, CGRectGetMaxY(self.formationView.frame) + 1, self.frame.size.width, 90);
     [self.detailsView basseView];
     [self.detailsView InvitePeersWithDict:driverDict];

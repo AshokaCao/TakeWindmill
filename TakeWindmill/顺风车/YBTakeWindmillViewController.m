@@ -1,4 +1,3 @@
-
 //
 //  YBTakeWindmillViewController.m
 //  TakeWindmill
@@ -114,6 +113,11 @@
     if (!_titleView) {
         _titleView = [[YBTakeWindmollView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
         [self.view addSubview:_titleView];
+        
+        __weak typeof(self) weakSelf = self;
+        _titleView.buttonBlok = ^(UIButton *sender) {
+            [weakSelf updateDataPageNumber:sender.tag];
+        };
     }
     return _titleView;
 }
@@ -328,8 +332,7 @@
  *用户位置更新后，会调用此函数
  *@param userLocation 新的用户位置
  */
-- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
-{
+- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation {
     if (userLocation.location) {//定位成功 关闭定位
         [self.locService stopUserLocationService];
         //开启反地理编码
@@ -341,7 +344,8 @@
         BOOL flag =   [self.geocodesearch reverseGeoCode:reverseGeocodeSearchOption];
         if (flag) {
             YBLog(@"搜索成功");
-        }else {
+        }
+        else {
             [MBProgressHUD showError:@"城市搜索失败" toView:self.view];
         }
     }
@@ -365,7 +369,6 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-
 {
     if ([scrollView isEqual:_scrollView]) {
         _currentPage = _scrollView.contentOffset.x / YBWidth;

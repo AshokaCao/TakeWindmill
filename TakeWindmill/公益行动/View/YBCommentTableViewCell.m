@@ -17,7 +17,7 @@
 
 - (void)showDetailsWithModel:(YBCommentModels *)model
 {
-    [self.userHeaderImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.userHeaderImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     NSString *nickName = [NSString stringWithFormat:@"%@",model.NickName];
     if (model.NickName) {
         self.userNameLabel.text = nickName;

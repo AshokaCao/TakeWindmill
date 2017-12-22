@@ -1,24 +1,24 @@
 //
-//  YBLookingPassengersrVC.m
+//  YBPassengerCanBeBuiltVC.m
 //  TakeWindmill
 //
-//  Created by 靳亚彬 on 2017/9/12.
+//  Created by 靳亚彬 on 2017/12/20.
 //  Copyright © 2017年 浙江承御天泽公司. All rights reserved.
 //
 
-#import "YBLookingPassengersrVC.h"
-#import "YBAutomaticSynchronizationVC.h"
-#import "YBTakeWindmillViewController.h"
+#import "YBPassengerCanBeBuiltVC.h"
 #import "YBPassengerTravelVC.h"
+#import "YBTakeWindmillViewController.h"
 
-#import "YBWaitingView.h"
-#import "DropMenuView.h"
 #import "YBPopupMenu.h"
+#import "YBWaitingView.h"
 #import "YBNearbyCell.h"
 
-@interface YBLookingPassengersrVC ()<UITableViewDelegate, UITableViewDataSource,BMKRouteSearchDelegate,YBPopupMenuDelegate>
+@interface YBPassengerCanBeBuiltVC ()<UITableViewDelegate,UITableViewDataSource,BMKRouteSearchDelegate,YBPopupMenuDelegate>
 
-//线路规划搜搜
+/**
+ *线路规划搜搜
+ */
 @property (nonatomic, strong) BMKRouteSearch *routeSearch;
 
 /**
@@ -26,19 +26,15 @@
  */
 @property (nonatomic, weak) YBOrderAddressDetails *strokeView;
 
-///**
-// * 系统自动帮忙接单
-// */
-//@property (nonatomic, weak) UIView *bottomView;
-
-@property (nonatomic, weak) UITableView *lookingTableVIew;
+/**
+ * 显示乘客
+ */
+@property (nonatomic, weak) UITableView *passengerTableView;
 
 /**
- * UITableView的头部试图
+ * 乘客数量
  */
-//@property (nonatomic, strong) YBNearbyTitleView *heardView;
-@property (nonatomic, strong) UIView *heardView;
-@property (nonatomic, strong) UILabel *countLabel;
+@property (nonatomic, weak) UILabel *heardLabel;
 
 /**
  * 乘客行程数组
@@ -77,38 +73,27 @@
 
 @end
 
-@implementation YBLookingPassengersrVC
+@implementation YBPassengerCanBeBuiltVC
 
-#pragma mark -lazy
-////头部试图
-- (UIView *)heardView
+#pragma mark - lzay
+- (UILabel *)heardLabel
 {
-    if (!_heardView) {
-        _heardView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
-        _heardView.backgroundColor  = LineLightColor;
-        
-        _countLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, YBWidth / 2, 30)];
-        _countLabel.text     = @"当前有0位乘客";
-        _countLabel.font     = YBFont(13);
-        _countLabel.textColor = [UIColor lightGrayColor];
-        [_heardView addSubview:_countLabel];
+    if (!_heardLabel) {
+        UILabel *label          = [[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(self.strokeView.frame), YBWidth, 20)];
+        label.text              = @"当前有0位乘客";
+        label.font              = YBFont(14);
+        label.textColor         = [UIColor lightGrayColor];
+        label.backgroundColor   = [UIColor clearColor];
+        [self.view addSubview:label];
+        _heardLabel = label;
     }
-    return _heardView;
+    return _heardLabel;
 }
 
-//- (YBNearbyTitleView *)heardView
-//{
-//    if (!_heardView) {
-//        _heardView                  = [[YBNearbyTitleView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
-//        _heardView.backgroundColor  = LineLightColor;
-//    }
-//    return _heardView;
-//}
-
-- (UITableView *)lookingTableVIew
+- (UITableView *)passengerTableView
 {
-    if (!_lookingTableVIew) {
-        UITableView *tableView    = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.strokeView.frame), YBWidth, YBHeight - CGRectGetMaxY(self.strokeView.frame)) style:UITableViewStyleGrouped];
+    if (!_passengerTableView) {
+        UITableView *tableView    = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.heardLabel.frame), YBWidth, YBHeight - CGRectGetMaxY(self.heardLabel.frame)) style:UITableViewStyleGrouped];
         tableView.delegate        = self;
         tableView.dataSource      = self;
         tableView.rowHeight       = 200;
@@ -116,38 +101,10 @@
         tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;//取消分割线
         tableView.mj_header       =  [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refresh)];
         [self.view addSubview:tableView];
-        _lookingTableVIew = tableView;
+        _passengerTableView = tableView;
     }
-    return _lookingTableVIew;
+    return _passengerTableView;
 }
-
-////自动设置
-//- (UIView *)bottomView
-//{
-//    if (!_bottomView) {
-//        UIView *bottomView         = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.strokeView.frame) + 5, YBWidth, 40)];
-//        bottomView.backgroundColor = [UIColor whiteColor];
-//        [self.view addSubview:bottomView];
-//
-//        UILabel *contentLabel      = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, bottomView.frame.size.width - 90, bottomView.frame.size.height)];
-//        contentLabel.text          = @"开启自动同行,系统自动帮你抢单";
-//        contentLabel.font          = YBFont(13);
-//        [bottomView addSubview:contentLabel];
-//
-//        UIButton *immediatelyBtn            = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(contentLabel.frame), 10, 70, bottomView.frame.size.height - 20)];
-//        immediatelyBtn.titleLabel.font      = YBFont(12);
-//        immediatelyBtn.layer.cornerRadius   = 5;
-//        [immediatelyBtn setBackgroundColor:BtnBlueColor];
-//        [immediatelyBtn setTitle:@"立即设置" forState:UIControlStateNormal];
-//        [immediatelyBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//        [immediatelyBtn addTarget:self action:@selector(immediatelyBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-//        [bottomView addSubview:immediatelyBtn];
-//
-//
-//        _bottomView = bottomView;
-//    }
-//    return _bottomView;
-//}
 
 - (YBOrderAddressDetails *)strokeView
 {
@@ -156,21 +113,6 @@
         strokeView.backgroundColor        = [UIColor whiteColor];
         [strokeView noPriceItinerary:NO];
         [self.view addSubview:strokeView];
-        
-//        UIButton *subscript = [[UIButton alloc] init];
-//        [subscript setImage:[UIImage imageNamed:@"下角"] forState:UIControlStateNormal];
-//        [subscript setBackgroundColor:[UIColor whiteColor]];
-//        [subscript addTarget:self action:@selector(subscriptAction:) forControlEvents:UIControlEventTouchUpInside];
-//        [self.view addSubview:subscript];
-        
-//        [subscript mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.width.equalTo(self.view);
-//            make.top.equalTo(strokeView.mas_bottom).offset(0);
-//            make.bottom.equalTo(strokeView.mas_bottom).offset(4);
-//
-//            make.size.mas_equalTo(CGSizeMake(8, 4));
-//        }];
-        
         _strokeView = strokeView;
     }
     return _strokeView;
@@ -181,8 +123,10 @@
     
     //界面搭建
     [self interfaceToBuild];
-    [self travelInformation];
 
+    //请求司机当前行程
+    [self travelInformation];
+    
     //请求附近乘客
     [self nearbyPassengers];
 }
@@ -193,10 +137,39 @@
 }
 
 #pragma mark - 下拉刷新
-- (void)refresh
-{
+- (void)refresh {
     [self nearbyPassengers];
-    [self.lookingTableVIew.mj_header endRefreshing];
+    [self.passengerTableView.mj_header endRefreshing];
+}
+
+#pragma mark - 界面搭建
+- (void)interfaceToBuild {
+    self.title                             = @"可拼乘客乘客";
+    self.view.backgroundColor              = LineLightColor;
+    
+    UIButton *cancelButton       = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 20, 20)];
+    cancelButton.titleLabel.font = YBFont(14);
+    [cancelButton setBackgroundImage:[UIImage imageNamed:@"更多"] forState:UIControlStateNormal];
+    [cancelButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [cancelButton addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancelButton];    
+}
+
+#pragma mark - 请求当前行程信息
+- (void)travelInformation {
+    NSString *urlStr = travelinfodriverdetailPath;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户id
+    [dict setObject:self.strokeSysNo forKey:@"travelsysno"];//行程id
+    
+    [YBRequest postWithURL:urlStr MutableDict:dict View:self.passengerTableView success:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+        self.orderInformation = dataArray;
+        [self.strokeView noPriceItineraryWithDict:dataArray];
+    } failure:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+    }];
 }
 
 #pragma mark - 检索附近乘客
@@ -205,12 +178,12 @@
     _routeSearch = [[BMKRouteSearch alloc]init];
     _routeSearch.delegate = self;
     
-    NSString *urlStr = driverstartpointnearbypassengerlistPath;
+    NSString *urlStr = passengerstartpointnearbypassengerlistPath;
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户id
+    [dict setObject:self.travelSysNo forKey:@"travelsysno"];//乘客的sysyNo
     
     [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
-//        YBLog(@"%@",dataArray);
+        //        YBLog(@"%@",dataArray);
         self.passengerTravel = dataArray[@"TravelInfoList"];
         if (self.passengerTravel.count != 0) {
             self.strokeRow = 0;
@@ -218,52 +191,26 @@
             self.isDriver = YES;
             [self DriversTripDcit:self.orderInformation PassengerDict:self.passengerTravel[self.strokeRow]];
         }else{
-            [MBProgressHUD showError:@"附近暂无乘客" toView:self.lookingTableVIew];
+            [MBProgressHUD showError:@"附近暂无乘客" toView:self.passengerTableView];
         }
     } failure:^(id dataArray) {
         YBLog(@"%@",dataArray);
-        [self.lookingTableVIew reloadData];
+        [self.passengerTableView reloadData];
     }];
-
+    
 }
 
-#pragma mark - 界面搭建
-- (void)interfaceToBuild
+#pragma mark - 返回
+- (void)returnToTheWindmill:(UIButton *)sender
 {
-    self.title                             = @"正在寻找乘客";
-    self.view.backgroundColor              = LineLightColor;
-    
-    UIButton *leftButton         = [[UIButton alloc] initWithFrame:CGRectMake(-10, 0, 10, 20)];
-    [leftButton setBackgroundImage:[UIImage imageNamed:@"箭头2"] forState:UIControlStateNormal];
-    [leftButton addTarget:self action:@selector(returnToTheWindmill:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *cancelButton       = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 20, 20)];
-    cancelButton.titleLabel.font = YBFont(14);
-    [cancelButton setBackgroundImage:[UIImage imageNamed:@"更多"] forState:UIControlStateNormal];
-    [cancelButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [cancelButton addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.navigationItem.leftBarButtonItem  = nil;
-    self.navigationItem.leftBarButtonItem  = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancelButton];
-
-}
-
-#pragma mark - 请求当前行程信息
-- (void)travelInformation
-{
-    NSString *urlStr = travelinfodriverdetailPath;
-    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户id
-    [dict setObject:self.strokeSysNo forKey:@"travelsysno"];//行程id
-
-    [YBRequest postWithURL:urlStr MutableDict:dict View:self.lookingTableVIew success:^(id dataArray) {
-        YBLog(@"%@",dataArray);
-        self.orderInformation = dataArray;
-        [self.strokeView noPriceItineraryWithDict:dataArray];
-    } failure:^(id dataArray) {
-        YBLog(@"%@",dataArray);
-    }];
+    NSArray *temArray = self.navigationController.viewControllers;
+    for(UIViewController *temVC in temArray)
+    {
+        if ([temVC isKindOfClass:[YBTakeWindmillViewController class]])
+        {
+            [self.navigationController popToViewController:temVC animated:YES];
+        }
+    }
 }
 
 #pragma mark - 取消行程
@@ -281,27 +228,13 @@
         [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户id
         [dict setObject:self.strokeSysNo forKey:@"travelsysno"];//行程id
         
-        [YBRequest postWithURL:urlStr MutableDict:dict View:self.lookingTableVIew success:^(id dataArray) {
+        [YBRequest postWithURL:urlStr MutableDict:dict View:self.passengerTableView success:^(id dataArray) {
             //        YBLog(@"%@",dataArray);
             [self returnToTheWindmill:nil];
         } failure:^(id dataArray) {
             [self returnToTheWindmill:nil];
             //        YBLog(@"%@",dataArray);
         }];
-    }
-}
-
-
-#pragma mark - 返回
-- (void)returnToTheWindmill:(UIButton *)sender
-{
-    NSArray *temArray = self.navigationController.viewControllers;
-    for(UIViewController *temVC in temArray)
-    {
-        if ([temVC isKindOfClass:[YBTakeWindmillViewController class]])
-        {
-            [self.navigationController popToViewController:temVC animated:YES];
-        }
     }
 }
 
@@ -330,13 +263,13 @@
     else {
         YBLog(@"乘客里程查询失败");
     }
-
+    
 }
 
 #pragma mark - 司机与乘客行程匹配
 - (void)DriversTripDcit:(NSDictionary *)dreverDit PassengerDict:(NSDictionary *)passDict
 {
-
+    
     CLLocationCoordinate2D start1 = CLLocationCoordinate2DMake([dreverDit[@"StartLat"] doubleValue], [dreverDit[@"StartLng"] doubleValue]);
     CLLocationCoordinate2D end1 = CLLocationCoordinate2DMake([dreverDit[@"EndLat"] doubleValue], [dreverDit[@"EndLng"] doubleValue]);
     //发起检索
@@ -406,9 +339,9 @@
                 [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
                     YBLog(@"规划后的匹配度%@",dataArray);
                     self.travelArray = dataArray[@"TravelInfoList"];
-                    [self.lookingTableVIew reloadData];
+                    [self.passengerTableView reloadData];
                     //结束刷新
-                    [self.lookingTableVIew.mj_header endRefreshing];
+                    [self.passengerTableView.mj_header endRefreshing];
                 } failure:^(id dataArray) {
                 }];
             }else {
@@ -418,48 +351,11 @@
     }
 }
 
-//#pragma mark - 点击事件
-//- (void)immediatelyBtnAction:(UIButton *)sender
-//{
-//    YBAutomaticSynchronizationVC *aut = [[YBAutomaticSynchronizationVC alloc] init];
-//    [self.navigationController pushViewController:aut animated:YES];
-//}
-
-//- (void)subscriptAction:(UIButton *)sender
-//{
-//    [UIView animateWithDuration:0.2 animations:^{
-//        if (!sender.selected) {
-//            sender.imageView.transform  = CGAffineTransformMakeRotation(M_PI);
-//            self.strokeView.frame       = CGRectMake(0, 0, YBWidth, 80);
-//        }
-//        else{
-//            sender.imageView.transform  = CGAffineTransformIdentity;
-//            self.strokeView.frame       = CGRectMake(0, 0, YBWidth, 60);
-//        }
-//        [self.strokeView noPriceItinerary:sender.selected];
-//        sender.selected             = !sender.selected;
-////        self.bottomView.frame       = CGRectMake(0, CGRectGetMaxY(self.strokeView.frame) + 5, YBWidth, 40);
-////        self.lookingTableVIew.frame = CGRectMake(0, CGRectGetMaxY(self.bottomView.frame), YBWidth, YBHeight - CGRectGetMaxY(self.bottomView.frame));
-////        [self.strokeView noPriceItineraryWithDict:nil];
-//
-//    }];
-//}
-
 #pragma mark - delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    self.heardLabel.text = [NSString stringWithFormat:@"当前有%lu位乘客",self.travelArray.count];
     return self.travelArray.count;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 40;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    self.countLabel.text = [NSString stringWithFormat:@"当前有%lu位乘客",self.travelArray.count];
-    return self.heardView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -485,4 +381,5 @@
     peersVC.TravelSysNo          = self.travelArray[indexPath.row][@"SysNo"];
     [self.navigationController pushViewController:peersVC animated:YES];
 }
+
 @end

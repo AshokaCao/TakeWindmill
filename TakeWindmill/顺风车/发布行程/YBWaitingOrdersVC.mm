@@ -10,7 +10,6 @@
 
 #import "YBOnTheTrainVC.h"
 #import "YBAskForPeersVC.h"
-#import "YBHisHomePageVC.h"
 #import "YBWaitingOrdersVC.h"
 #import "YBMapViewController.h"
 #import "YBTakeWindmillViewController.h"
@@ -78,7 +77,7 @@
         tableView.backgroundColor   = RGBA(245, 245, 245, 1);
         tableView.separatorStyle    = UITableViewCellSeparatorStyleNone;
 //        UIView *viewal = [[UIView alloc] init];
-//        [viewal addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"小草"]]];
+//        [viewal addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"headimg.gif"]]];
 //        tableView.placeHolderView   = viewal;
         [self.view addSubview:tableView];
         _waitingTableView           = tableView;

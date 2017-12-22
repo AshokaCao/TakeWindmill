@@ -16,6 +16,7 @@
 #import "YBAboutButton.h"
 #import "YBUpDownButton.h"
 #import "FSCustomButton.h"
+#import "YBHisHomePageVC.h"
 #import "MacroDefinition.h"
 #import "MBProgressHUD+NHAdd.h"
 #import "NSDictionary+SetNullWithStr.h"

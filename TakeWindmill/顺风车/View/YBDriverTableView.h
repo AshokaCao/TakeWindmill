@@ -16,6 +16,11 @@
 @property (nonatomic, strong) NSDictionary *driverDict;
 
 /**
+ * 我的订单数据
+ */
+@property (nonatomic, strong) NSArray *myOrderArray;
+
+/**
  * 车主附近乘客
  */
 @property (nonatomic, strong) NSArray *passengersNearby;

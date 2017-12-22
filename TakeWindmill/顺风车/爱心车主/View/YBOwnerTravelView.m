@@ -10,11 +10,45 @@
 
 @interface YBOwnerTravelView ()
 
+/**
+ * 下划线
+ */
+@property (nonatomic, weak) UIView *line;
+
+/**
+ * 标题
+ */
+@property (nonatomic, weak) UILabel *titleLable;
+
+/**
+ * 单程按钮
+ */
+@property (nonatomic, weak) UIButton *oneWayButton;
+
+/**
+ * 跨城按钮
+ */
+@property (nonatomic, weak) UIButton *roundTripButton;
+
 @end
 
 @implementation YBOwnerTravelView
 
 #pragma mark - lazy
+- (UILabel *)titleLable
+{
+    if (!_titleLable) {
+        UILabel *label          = [[UILabel alloc] init];
+        label.text              = @"我的行程";
+        label.font              = YBFont(14);
+        label.textAlignment     = NSTextAlignmentCenter;
+        label.backgroundColor   = [UIColor whiteColor];
+        [self addSubview:label];
+        _titleLable = label;
+    }
+    return _titleLable;
+}
+
 - (UIButton *)oneWayButton
 {
     if (!_oneWayButton) {
@@ -55,7 +89,7 @@
 {
     if (!_line) {
         UIView *line = [[UIView alloc] init];
-        line.backgroundColor = BtnBlueColor;
+        line.backgroundColor = LightGreyColor;
         [self addSubview:line];
         
         _line = line;
@@ -119,10 +153,11 @@
     CGFloat viewH = self.frame.size.height / 4;
    
     self.backgroundColor       = LineLightColor;
-    self.oneWayButton.frame    = CGRectMake(0, 0, viewW / 2, viewH);
-    self.roundTripButton.frame = CGRectMake(CGRectGetMaxX(self.oneWayButton.frame), 0, viewW / 2, viewH);
-    self.line.frame            = CGRectMake(0, CGRectGetMaxY(self.oneWayButton.frame) - 1, viewW / 2, 3);
-    self.startPoint.frame      = CGRectMake(0, CGRectGetMaxY(self.oneWayButton.frame) + 2, viewW, viewH);
+    self.titleLable.frame      = CGRectMake(0, 0, viewW, viewH);
+//    self.oneWayButton.frame    = CGRectMake(0, 0, viewW / 2, viewH);
+//    self.roundTripButton.frame = CGRectMake(CGRectGetMaxX(self.oneWayButton.frame), 0, viewW / 2, viewH);
+    self.line.frame            = CGRectMake(0, CGRectGetMaxY(self.titleLable.frame) - 1, viewW, 1);
+    self.startPoint.frame      = CGRectMake(0, CGRectGetMaxY(self.line.frame) + 1, viewW, viewH);
     self.endPoint.frame        = CGRectMake(0, CGRectGetMaxY(self.startPoint.frame) + 1, viewW, viewH);
     self.seatView.frame        = CGRectMake(0, CGRectGetMaxY(self.endPoint.frame) + 1, viewW / 2, viewH);
     self.timeView.frame        = CGRectMake(CGRectGetMaxX(self.seatView.frame), CGRectGetMaxY(self.endPoint.frame) + 1, viewW / 2, viewH);
@@ -155,6 +190,11 @@
     }];
 }
 @end
+
+
+
+
+
 
 //*************************************************正在寻找乘客(司机端)*************************************************//
 @interface YBLookingView ()

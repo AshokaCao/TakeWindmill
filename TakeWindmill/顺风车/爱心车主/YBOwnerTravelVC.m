@@ -19,6 +19,11 @@
 @interface YBOwnerTravelVC ()<BMKRouteSearchDelegate,YBAddressSearchSelectionVCDelegate,YBCitySelectionVCDelegate>
 
 /**
+ * 中心点图片
+ */
+@property (nonatomic, strong) UIImageView * locnImageView;
+
+/**
  * 搜索view
  */
 @property (nonatomic, weak) YBOwnerTravelView *travelView;
@@ -44,6 +49,11 @@
 @property (nonatomic, strong) BMKRouteSearch *routeSearch;
 
 /**
+ * 搜索
+ */
+@property (nonatomic, strong) BMKGeoCodeSearch *codSearch;
+
+/**
  * 座位数量
  */
 @property (nonatomic, strong) NSString *seatsNumber;
@@ -60,6 +70,18 @@
 @implementation YBOwnerTravelVC
 
 #pragma mark - lazy
+- (UIImageView *)locnImageView
+{
+    if (!_locnImageView) {
+        UIImageView *imageView = [[UIImageView alloc] init];
+        imageView.image = [UIImage imageNamed:@"定位图标"];
+        [self.view addSubview:imageView];
+        _locnImageView = imageView;
+    }
+    return _locnImageView;
+}
+
+
 - (YBOwnerTravelView *)travelView
 {
     if (!_travelView) {
@@ -93,18 +115,49 @@
     [self scrollViewUI];
     //通知
     [self notificationCenter];
+    //显示地图中心点
+    [self createLocationSignImage:self.mapView.centerCoordinate];   
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"passengerSide_pointSelection" object:nil];
     self.routeSearch.delegate = nil;
+    self.codSearch.delegate = nil;
 }
 
 - (void)notificationCenter
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setTheStartingPoint:) name:@"passengerSide_pointSelection" object:nil];
+}
 
+- (void)createLocationSignImage:(CLLocationCoordinate2D)pt
+{
+    self.codSearch.delegate = self;
+    
+    //把当前定位的经纬度换算为了View上的坐标
+    CGPoint point = [self.mapView convertCoordinate:pt toPointToView:self.mapView];
+    
+    //当解析出现错误的时候，会出现超出屏幕的情况，一种是大于了屏幕，一种是小于了屏幕
+    if(point.x > YBWidth || point.x < YBWidth/5){
+        point.x = YBWidth / 2;
+        point.y = (YBHeight + 64) / 2 ;
+    }
+    self.locnImageView.center = point;
+    [self.locnImageView setFrame:CGRectMake( point.x - 10, point.y - 29, 20, 29)];
+}
+
+- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    MKCoordinateRegion region;
+    CLLocationCoordinate2D centerCoordinate = mapView.region.center;
+    region.center = centerCoordinate;
+    BMKReverseGeoCodeOption *reverseGeocodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];//初始化反编码请求
+    reverseGeocodeSearchOption.reverseGeoPoint = centerCoordinate;//设置反编码的店为pt
+    BOOL flag =   [self.geocodesearch reverseGeoCode:reverseGeocodeSearchOption];
+    if (flag) {
+        YBLog(@"定位搜索成功");
+    }
 }
 
 #pragma mark - 初始化UI
@@ -116,7 +169,7 @@
     
     //点击了终点
     self.travelView.endPoint.selectBlock = ^(YBBaseView *view) {
-        if (self.travelView.oneWayButton.selected) {
+//        if (self.travelView.oneWayButton.selected) {
             YBAddressSearchSelectionVC *selec = [[YBAddressSearchSelectionVC alloc] init];
             selec.addDelegate                 = self;
             selec.typesOf = @"终点";
@@ -127,13 +180,13 @@
                 selec.cityname = [self.travelView.endPoint.label.text componentsSeparatedByString:@"·"][0];
             }
             [self presentViewController:selec animated:YES completion:nil];
-        }
-        if (self.travelView.roundTripButton.selected) {
-            YBCitySelectionVC *city = [[YBCitySelectionVC alloc] init];
-            city.isPush             = 1;
-            city.cross_City         = @"跨城";
-            [self presentViewController:city animated:YES completion:nil];
-        }
+//        }
+//        if (self.travelView.roundTripButton.selected) {
+//            YBCitySelectionVC *city = [[YBCitySelectionVC alloc] init];
+//            city.isPush             = 1;
+//            city.cross_City         = @"跨城";
+//            [self presentViewController:city animated:YES completion:nil];
+//        }
     };
     
     //点击了几座
@@ -177,7 +230,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
 
         self.endPointDict = [notificatin.userInfo objectForKey:@"startingPoint"];
-        YBLog(@"%@",self.startingPointDict);
         NSString *progress = [NSString stringWithFormat:@"%@·%@",self.endPointDict[@"City"],self.endPointDict[@"Name"]];
         [self.travelView.endPoint initLabelStr:progress];
         
@@ -365,7 +417,7 @@
         [dict setObject:self.startingPointDict[@"Lat"] forKey:@"startlat"];//起点维度
         [dict setObject:self.startingPointDict[@"CityId"] forKey:@"startcityid"];//起点城市的id
         [dict setObject:self.startingPointDict[@"City"] forKey:@"startcity"];//起点城市
-        [dict setObject:self.startingPointDict[@"Address"] forKey:@"startaddress"];//起点地址
+        [dict setObject:self.startingPointDict[@"Name"] forKey:@"startaddress"];//起点地址
         [dict setObject:self.endPointDict[@"Lng"] forKey:@"endlng"];//终点经度
         [dict setObject:self.endPointDict[@"Lat"] forKey:@"endlat"];//终点纬度
         [dict setObject:self.endPointDict[@"CityId"] forKey:@"endcityid"];//终点城市的id
@@ -376,7 +428,6 @@
         [dict setObject:@"杭州市" forKey:@"passcitys"];//途径城市写死了
         
         [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
-
             YBLookingPassengersrVC *looking = [[YBLookingPassengersrVC alloc] init];
             looking.strokeSysNo             = dataArray[@"SysNo"];
             [self.navigationController pushViewController:looking animated:YES];
@@ -393,18 +444,21 @@
 -(void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
 {
     if (result.sematicDescription) {
-        NSString *str = [NSString stringWithFormat:@"%@·%@",result.addressDetail.city,result.sematicDescription];
-        [self.travelView.startPoint initLabelStr:str];
-        
+      
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         [dict setObject:result.cityCode forKey:@"CityId"];//城市id
         [dict setObject:[NSString stringWithFormat:@"%f",result.location.longitude ] forKey:@"Lng"];//
         [dict setObject:[NSString stringWithFormat:@"%f",result.location.latitude ] forKey:@"Lat"];//
         [dict setObject:result.address forKey:@"Address"];//地址名称
         [dict setObject:result.addressDetail.district forKey:@"District"];//所在区域
-        [dict setObject:result.sematicDescription forKey:@"Name"];
+        NSArray *nameStr = [result.sematicDescription componentsSeparatedByString:@","];
+        [dict setObject:nameStr[0] forKey:@"Name"];
         [dict setObject:result.addressDetail.city forKey:@"City"];
         self.startingPointDict = dict;
+        
+        NSString *str = [NSString stringWithFormat:@"%@·%@",dict[@"City"],dict[@"Name"]];
+        [self.travelView.startPoint initLabelStr:str];
+        
     }
 }
 

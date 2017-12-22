@@ -43,7 +43,7 @@
     
     
     UIImageView *userHeaderImage = [[UIImageView alloc] init];
-    [userHeaderImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.routeModel.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [userHeaderImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.routeModel.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     [userHeaderImage setContentMode:UIViewContentModeScaleAspectFill];
     
     userHeaderImage.layer.cornerRadius = 25;
@@ -162,7 +162,7 @@
 - (void)showDetailsWith:(YBTaxiStrokeModel *)model
 {
     self.routeModel = model;
-    [self.userHeaderImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.routeModel.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"小草"]];
+    [self.userHeaderImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.routeModel.HeadImgUrl]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.timeLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.SetoutTime];
     self.beginLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.StartAddress];
     self.endLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.EndAddress];
