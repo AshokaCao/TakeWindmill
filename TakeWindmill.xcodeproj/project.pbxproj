@@ -316,6 +316,8 @@
 		776EAFD31FBABC4B00FDAA5C /* YBCheckOutListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 776EAFBA1FBAB6C300FDAA5C /* YBCheckOutListViewController.xib */; };
 		776EAFD41FBABC4D00FDAA5C /* YBBankTaleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 776EAFBB1FBAB6C300FDAA5C /* YBBankTaleViewController.xib */; };
 		776EAFD51FBABC5000FDAA5C /* YBBankCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 776EAFC91FBAB6C600FDAA5C /* YBBankCardViewController.xib */; };
+		7785EEA61FF0C8F100B9321D /* YZBackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7785EEA21FF0C8F000B9321D /* YZBackgroundTaskManager.m */; };
+		7785EEA71FF0C8F100B9321D /* YZLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7785EEA41FF0C8F000B9321D /* YZLocationManager.m */; };
 		778F683C1FE11D1E009BAA32 /* YBTaxiChooseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 778F683A1FE11D1D009BAA32 /* YBTaxiChooseView.m */; };
 		778F683D1FE11D1E009BAA32 /* YBTaxiChooseView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 778F683B1FE11D1E009BAA32 /* YBTaxiChooseView.xib */; };
 		779B1D2E1FE4FD17005912FA /* YBForMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 779B1D2C1FE4FD17005912FA /* YBForMessageViewController.m */; };
@@ -995,6 +997,11 @@
 		776EAFC71FBAB6C500FDAA5C /* YBRedEnvelopesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBRedEnvelopesViewController.h; sourceTree = "<group>"; };
 		776EAFC81FBAB6C500FDAA5C /* YBBankCardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBBankCardViewController.m; sourceTree = "<group>"; };
 		776EAFC91FBAB6C600FDAA5C /* YBBankCardViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = YBBankCardViewController.xib; sourceTree = "<group>"; };
+		7785EEA11FF0C8F000B9321D /* YZBackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZBackgroundTaskManager.h; sourceTree = "<group>"; };
+		7785EEA21FF0C8F000B9321D /* YZBackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZBackgroundTaskManager.m; sourceTree = "<group>"; };
+		7785EEA31FF0C8F000B9321D /* YZLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZLocationManager.h; sourceTree = "<group>"; };
+		7785EEA41FF0C8F000B9321D /* YZLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZLocationManager.m; sourceTree = "<group>"; };
+		7785EEA51FF0C8F000B9321D /* YZLocationManagerMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZLocationManagerMacro.h; sourceTree = "<group>"; };
 		778F68391FE11D1D009BAA32 /* YBTaxiChooseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBTaxiChooseView.h; sourceTree = "<group>"; };
 		778F683A1FE11D1D009BAA32 /* YBTaxiChooseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBTaxiChooseView.m; sourceTree = "<group>"; };
 		778F683B1FE11D1E009BAA32 /* YBTaxiChooseView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = YBTaxiChooseView.xib; sourceTree = "<group>"; };
@@ -2297,6 +2304,7 @@
 		585F56E91F380772005F30F0 /* 工具类 */ = {
 			isa = PBXGroup;
 			children = (
+				7785EEA01FF0C8F000B9321D /* YZLocationManager */,
 				5810BB951FDB6C3F009521D7 /* AlipaySDK */,
 				5817FDF11FD7CB2400B66EB0 /* LEEStarRating */,
 				5817FDE51FD7CB2300B66EB0 /* MLMSegmentPageView */,
@@ -2537,6 +2545,18 @@
 				5849A50B1FD2781700182B16 /* YBHelpMessageCell.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		7785EEA01FF0C8F000B9321D /* YZLocationManager */ = {
+			isa = PBXGroup;
+			children = (
+				7785EEA11FF0C8F000B9321D /* YZBackgroundTaskManager.h */,
+				7785EEA21FF0C8F000B9321D /* YZBackgroundTaskManager.m */,
+				7785EEA31FF0C8F000B9321D /* YZLocationManager.h */,
+				7785EEA41FF0C8F000B9321D /* YZLocationManager.m */,
+				7785EEA51FF0C8F000B9321D /* YZLocationManagerMacro.h */,
+			);
+			path = YZLocationManager;
 			sourceTree = "<group>";
 		};
 		77FB36B21FB1839A00C6BDD6 /* Models */ = {
@@ -3018,6 +3038,7 @@
 				5822EB121FCBD711007EF7F1 /* SDRefreshFooterView.m in Sources */,
 				5822EB281FCBD711007EF7F1 /* YBPeripheryViewController.m in Sources */,
 				5817FE3E1FD7CE9100B66EB0 /* YBCommentModels.m in Sources */,
+				7785EEA61FF0C8F100B9321D /* YZBackgroundTaskManager.m in Sources */,
 				5822EB081FCBD711007EF7F1 /* MLLabelLayoutManager.m in Sources */,
 				5822EB0A1FCBD711007EF7F1 /* MLLinkLabel.m in Sources */,
 				58F3663C1FB59C29006A3235 /* YBWaitingCell.m in Sources */,
@@ -3083,6 +3104,7 @@
 				5817FEE81FD7D09600B66EB0 /* YBCarShopIntroductionCell.m in Sources */,
 				582777481F4AD05F0053C8B9 /* Foundation+Log.m in Sources */,
 				5883A8821FCD3482003367F8 /* YBHelpWithMeVC.m in Sources */,
+				7785EEA71FF0C8F100B9321D /* YZLocationManager.m in Sources */,
 				58111D031F41738C008DFB94 /* LEEAlert.m in Sources */,
 				5817FEA41FD7CF9800B66EB0 /* YBRouteDetailsViewController.mm in Sources */,
 				E71830121FBAC8D30089F79C /* HSHString.m in Sources */,
@@ -3244,6 +3266,7 @@
 			baseConfigurationReference = 24549F5771E83340720CD605 /* Pods-TakeWindmill.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = TakeWindmill/TakeWindmill.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -3397,6 +3420,7 @@
 			baseConfigurationReference = BE0262D1BFE9C36BEEEF3D42 /* Pods-TakeWindmill.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = TakeWindmill/TakeWindmill.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
