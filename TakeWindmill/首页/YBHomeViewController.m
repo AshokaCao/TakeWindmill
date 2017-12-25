@@ -25,18 +25,9 @@
 #import "YBRoadTestVC.h"
 #import "YBConversationListVC.h"
 #import "YBChatVC.h"
-
-<<<<<<< HEAD
-=======
-//支付
-#import "YBPayconfigModel.h"
-#import "APAuthInfo.h"
-#import "APOrderInfo.h"
-#import "APRSASigner.h"
-#import "HBRSAHandler.h"
 #import "YZLocationManager.h"
 
->>>>>>> 52e75ba3d1861f09d155d2cc9f27e4bc492aea37
+
 
 
 @interface YBHomeViewController ()<SDCycleScrollViewDelegate,YBReceiveMsgValueDelegate>

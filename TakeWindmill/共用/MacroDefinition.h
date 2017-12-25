@@ -279,8 +279,6 @@
 //司机抢单（出租车）
 #define TaxiRob (ServerPath@"travel/drivertaxigrab")
 
-<<<<<<< HEAD
-=======
 //用户位置信息保存（单个，实时）
 #define TaxiSaveLocation (ServerPath@"userruntime/setuserposition")
->>>>>>> 52e75ba3d1861f09d155d2cc9f27e4bc492aea37
+
