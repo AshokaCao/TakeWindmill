@@ -34,6 +34,8 @@
 @property (nonatomic, strong) BMKPointAnnotation *pointAnnotation;
 @property (nonatomic, strong) BMKPoiSearch *poiSearch;
 @property (nonatomic, strong) BMKRouteSearch *routeSearch;
+@property (nonatomic, assign) CLLocationCoordinate2D currLocation;;
+
 @end
 
 @implementation YBRouteDetailsViewController
@@ -126,6 +128,7 @@
     YBPassengerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBPassengerTableViewCell"];
     YBTaxiStrokeModel *model = self.strokeArray[indexPath.row];
     [cell showDetailsWith:model];
+    cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -134,26 +137,41 @@
 {
     
 }
-
+#pragma mark 消息 电话 状态
 - (void)didselectTaxiTralveBtn:(NSInteger)sender andYBPassengerTableViewCell:(YBPassengerTableViewCell *)cell
 {
-    [self selfLoction];
-    NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
-    YBTaxiStrokeModel *model = self.strokeArray[path.row];
-//    model.SysNo
-    
-    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    dict[@"travelsysno"] = model.SysNo;
-    dict[@"steptype"] = [NSString stringWithFormat:@"%ld",sender];
-//    dict[@"currentlng"] =
-//    dict[@"currentlat"] =
-    
-    [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
-        
-    } failure:^(id dataArray) {
-        
-    }];
-    NSLog(@"------");
+    switch (sender) {
+        case 1:
+            
+            break;
+        case 2:
+            
+            break;
+        case 3:
+        {
+            
+            [self selfLoction];
+            NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
+            YBTaxiStrokeModel *model = self.strokeArray[path.row];
+            NSString *drivType = model.Stat;
+            
+            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+            dict[@"travelsysno"] = model.SysNo;
+            dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
+            dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
+            dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
+            
+            [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
+                NSLog(@"self.currLocation. - %@",dataArray);
+            } failure:^(id dataArray) {
+                
+            }];
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 
@@ -310,12 +328,6 @@
 
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error
 {
-    //    NSArray* array = [NSArray arrayWithArray:self.mapView.annotations];
-    //    [self.mapView removeAnnotations:array];
-    //
-    //    array = [NSArray arrayWithArray:self.mapView.overlays];
-    //    [self.mapView removeOverlays:array];
-    
     if (error == BMK_SEARCH_NO_ERROR) {
         
         BMKDrivingRouteLine* plan = (BMKDrivingRouteLine*)[result.routes objectAtIndex:0];
@@ -432,18 +444,18 @@
         }
     }
 }
-
-- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    
-    CLLocationCoordinate2D carLocation = [_mapView convertPoint:self.view.center toCoordinateFromView:self.view];
-    BMKReverseGeoCodeOption *option = [[BMKReverseGeoCodeOption alloc] init];
-    option.reverseGeoPoint = CLLocationCoordinate2DMake(carLocation.latitude, carLocation.longitude);
-    NSLog(@"%f - %f", option.reverseGeoPoint.latitude, option.reverseGeoPoint.longitude);
-    //调用发地址编码方法，让其在代理方法onGetReverseGeoCodeResult中输出
-    [_geoCodeSearch reverseGeoCode:option];
-    
-    
-}
+//
+//- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+//    
+//    CLLocationCoordinate2D carLocation = [_mapView convertPoint:self.view.center toCoordinateFromView:self.view];
+//    BMKReverseGeoCodeOption *option = [[BMKReverseGeoCodeOption alloc] init];
+//    option.reverseGeoPoint = CLLocationCoordinate2DMake(carLocation.latitude, carLocation.longitude);
+//    NSLog(@"%f - %f", option.reverseGeoPoint.latitude, option.reverseGeoPoint.longitude);
+//    //调用发地址编码方法，让其在代理方法onGetReverseGeoCodeResult中输出
+//    [_geoCodeSearch reverseGeoCode:option];
+//    
+//    
+//}
 
 //返回地理反编码
 - (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error {
@@ -467,42 +479,8 @@
     //定位
     [_locService startUserLocationService];
     
-    [_mapView removeAnnotation:_pointAnnotation];
+//    [_mapView removeAnnotation:_pointAnnotation];
 }
-
-- (void)position:(UIButton *)btn {
-    
-    _locService.delegate = self;
-    //启动LocationService
-    
-    _mapView.zoomLevel = 14.1;
-    _mapView.showsUserLocation = NO;//是否显示小蓝点，no不显示，我们下面要自定义的
-    _mapView.userTrackingMode = BMKUserTrackingModeNone;
-    //定位
-    [_locService startUserLocationService];
-    
-    [_mapView removeAnnotation:_pointAnnotation];
-    //添加大头针
-    
-    //    _pointAnnotation = [[BMKPointAnnotation alloc] init];
-    //    _pointAnnotation.coordinate = _locService.userLocation.location.coordinate;
-    //    _pointAnnotation.title = @"我在这个地方";
-    //    _pointAnnotation.subtitle = @"你在哪呢";
-    //    [_mapView addAnnotation:_pointAnnotation];
-    //    [_mapView selectAnnotation:_pointAnnotation animated:YES];
-}
-
-- (void)custome:(UIButton *)btn {
-    [_mapView removeAnnotation:_pointAnnotation];
-    [_locService startUserLocationService];
-    NSLog(@"定位的经度:%f,定位的纬度:%f",_locService.userLocation.location.coordinate.longitude,_locService.userLocation.location.coordinate.latitude);
-    //    FirstAnnotationView *firstView = [[FirstAnnotationView alloc] init];
-    FirstPointAnnotation *pointA = [[FirstPointAnnotation alloc] initWithLatitude:_locService.userLocation.location.coordinate.latitude andLongtude:_locService.userLocation.location.coordinate.longitude];
-    pointA.title = @"123";
-    [_mapView addAnnotation:(BMKPointAnnotation *)pointA];
-    [_mapView selectAnnotation:(BMKPointAnnotation *)pointA animated:YES];
-}
-
 
 //生成对应的气泡时候触发的方法
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id<BMKAnnotation>)annotation {

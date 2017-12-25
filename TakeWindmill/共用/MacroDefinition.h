@@ -22,9 +22,10 @@
 #define kPersonreloadData @"PersonreloadData"
 
 
-
+// 测试端口 121.40.76.10:88
+// 正式端口 www.bibizl.com
 //接口地址(临时)
-#define ServerPath @"http://www.bibizl.com/Service/"
+#define ServerPath @"http://121.40.76.10:88/Service/"
 
 //用户检测验证
 #define CheckuserPath (ServerPath@"user/checkuser?")
@@ -110,8 +111,10 @@
 #define passengeroverareadriverlistPath (ServerPath@"travel/passengeroverareadriverlist?")
 
 
+// 测试端口 121.40.76.10:93
+// 正式端口 img.bibizl.com
 //长传图片
-#define UploadPhoto @"http://img.bibizl.com/UploadService.ashx"
+#define UploadPhoto @"http://121.40.76.10:93/UploadService.ashx"
 
 //下载图片
 #define DownloadPhoto(name)      [NSString stringWithFormat:@"http://img.bibizl.com/images/driver/%@.png",name]
@@ -244,3 +247,9 @@
 
 //乘客行程步骤更新
 #define TaxiUpload (ServerPath@"travel/travelinfostepupdate")
+
+//司机附近乘客有效行程列表（出租车）
+#define TaxiNear (ServerPath@"travel/drivernearbypassengertaxitravelvalidlist")
+
+//司机抢单（出租车）
+#define TaxiRob (ServerPath@"travel/drivertaxigrab")

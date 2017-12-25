@@ -293,6 +293,10 @@
 		770323611FD909D200CB03BC /* Mymodel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7703235B1FD909D100CB03BC /* Mymodel.m */; };
 		771ED1A91FC6C51F001F640F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 771ED1A81FC6C51F001F640F /* libc++.tbd */; };
 		771ED1AB1FC6C528001F640F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 771ED1AA1FC6C528001F640F /* libz.tbd */; };
+		7729E01F1FECC99300830055 /* YBNearPassgerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7729E01D1FECC99300830055 /* YBNearPassgerViewController.m */; };
+		7729E0201FECC99300830055 /* YBNearPassgerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7729E01E1FECC99300830055 /* YBNearPassgerViewController.xib */; };
+		7729E0241FECC9C700830055 /* YBNearPassTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7729E0221FECC9C700830055 /* YBNearPassTableViewCell.m */; };
+		7729E0251FECC9C700830055 /* YBNearPassTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7729E0231FECC9C700830055 /* YBNearPassTableViewCell.xib */; };
 		775CA0D01FEA2D9200CB76E3 /* YBCanceltaxiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CA0CE1FEA2D9200CB76E3 /* YBCanceltaxiViewController.m */; };
 		775CA0D11FEA2D9200CB76E3 /* YBCanceltaxiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 775CA0CF1FEA2D9200CB76E3 /* YBCanceltaxiViewController.xib */; };
 		775CA0D51FEA351C00CB76E3 /* YBChooseCauseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CA0D31FEA351C00CB76E3 /* YBChooseCauseTableViewCell.m */; };
@@ -953,6 +957,12 @@
 		771ED1BA1FC6C579001F640F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		771ED1BC1FC6C583001F640F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		771ED1BE1FC6C5A6001F640F /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = "../../Downloads/WS_APP_PAY_SDK_BASE_2.0/Demo/iOSDemo_2.0(SDK_15.5.0)/AlipaySDK.framework"; sourceTree = "<group>"; };
+		7729E01C1FECC99300830055 /* YBNearPassgerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBNearPassgerViewController.h; sourceTree = "<group>"; };
+		7729E01D1FECC99300830055 /* YBNearPassgerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBNearPassgerViewController.m; sourceTree = "<group>"; };
+		7729E01E1FECC99300830055 /* YBNearPassgerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = YBNearPassgerViewController.xib; sourceTree = "<group>"; };
+		7729E0211FECC9C700830055 /* YBNearPassTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBNearPassTableViewCell.h; sourceTree = "<group>"; };
+		7729E0221FECC9C700830055 /* YBNearPassTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBNearPassTableViewCell.m; sourceTree = "<group>"; };
+		7729E0231FECC9C700830055 /* YBNearPassTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = YBNearPassTableViewCell.xib; sourceTree = "<group>"; };
 		775CA0CD1FEA2D9200CB76E3 /* YBCanceltaxiViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBCanceltaxiViewController.h; sourceTree = "<group>"; };
 		775CA0CE1FEA2D9200CB76E3 /* YBCanceltaxiViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBCanceltaxiViewController.m; sourceTree = "<group>"; };
 		775CA0CF1FEA2D9200CB76E3 /* YBCanceltaxiViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = YBCanceltaxiViewController.xib; sourceTree = "<group>"; };
@@ -1450,6 +1460,9 @@
 				775CA0CD1FEA2D9200CB76E3 /* YBCanceltaxiViewController.h */,
 				775CA0CE1FEA2D9200CB76E3 /* YBCanceltaxiViewController.m */,
 				775CA0CF1FEA2D9200CB76E3 /* YBCanceltaxiViewController.xib */,
+				7729E01C1FECC99300830055 /* YBNearPassgerViewController.h */,
+				7729E01D1FECC99300830055 /* YBNearPassgerViewController.m */,
+				7729E01E1FECC99300830055 /* YBNearPassgerViewController.xib */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1494,6 +1507,9 @@
 				775CA0D71FEA38BB00CB76E3 /* YBCancelTraveView.h */,
 				775CA0D81FEA38BB00CB76E3 /* YBCancelTraveView.m */,
 				775CA0DA1FEA38CC00CB76E3 /* YBCancelTraveView.xib */,
+				7729E0211FECC9C700830055 /* YBNearPassTableViewCell.h */,
+				7729E0221FECC9C700830055 /* YBNearPassTableViewCell.m */,
+				7729E0231FECC9C700830055 /* YBNearPassTableViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2677,6 +2693,7 @@
 				5822EAFE1FCBD711007EF7F1 /* MLEmoji_Expression.plist in Resources */,
 				77E4A0841FB3F4D500B13A3C /* YBCardTableViewCell.xib in Resources */,
 				5822EB261FCBD711007EF7F1 /* YBTrafficTableViewCell.xib in Resources */,
+				7729E0251FECC9C700830055 /* YBNearPassTableViewCell.xib in Resources */,
 				5822EAFD1FCBD711007EF7F1 /* MLEmoji_Expression.bundle in Resources */,
 				5817FE461FD7CE9100B66EB0 /* YBMyPubTableViewCell.xib in Resources */,
 				585F56BC1F38017C005F30F0 /* LaunchScreen.storyboard in Resources */,
@@ -2731,6 +2748,7 @@
 				5817FEAA1FD7CF9800B66EB0 /* YBTaxiMineViewController.xib in Resources */,
 				5817FEA61FD7CF9800B66EB0 /* YBTaxiDriverViewController.xib in Resources */,
 				5822EB231FCBD711007EF7F1 /* YBAVPlayerTableViewCell.xib in Resources */,
+				7729E0201FECC99300830055 /* YBNearPassgerViewController.xib in Resources */,
 				58D3467E1F3AD369001E8582 /* YBFindTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2885,6 +2903,8 @@
 				77FB36B51FB183B100C6BDD6 /* YBUserListModel.m in Sources */,
 				583D0C9C1F73D5B2000C4166 /* YBCompleteEvaluationPassengersVC.m in Sources */,
 				5822EB061FCBD711007EF7F1 /* NSAttributedString+MLExpression.m in Sources */,
+				7729E01F1FECC99300830055 /* YBNearPassgerViewController.m in Sources */,
+				7729E0241FECC9C700830055 /* YBNearPassTableViewCell.m in Sources */,
 				582A31821F971F97003EF939 /* YBPublishedTripCell.m in Sources */,
 				583E426C1F63D3E10013E1C7 /* YBOwnerTravelVC.m in Sources */,
 				583EDBDD1F6A5D0300D18F1B /* YBAutomaticSynchronizationVC.m in Sources */,

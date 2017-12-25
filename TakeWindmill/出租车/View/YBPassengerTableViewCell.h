@@ -27,6 +27,8 @@
 @property (nonatomic, strong) UILabel *endLabel;
 @property (nonatomic, strong) UIImageView *userHeaderImage;
 @property (nonatomic, strong) UILabel *userNameLabel;
+@property (nonatomic, strong) UIButton *drvBtn;
+
 @property (nonatomic, assign) id<YBPassengerTableViewCellDelegate> delegate;
 
 - (void)showDetailsWith:(YBTaxiStrokeModel *)model;

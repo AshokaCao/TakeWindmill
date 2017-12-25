@@ -38,6 +38,7 @@
 - (void)segmentStyle5 {
     YBTaxiMineViewController * mineVC = [[YBTaxiMineViewController alloc] init];
     YBTaxiHomeViewController * homeVC = [[YBTaxiHomeViewController alloc] init];
+    homeVC.currLocation = self.currLocation;
     NSArray *viewVc = @[mineVC,homeVC];
     NSArray *list = @[@"我的", @"首页"];
     _segHead = [[MLMSegmentHead alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 44) titles:list headStyle:SegmentHeadStyleLine layoutStyle:MLMSegmentLayoutCenter];

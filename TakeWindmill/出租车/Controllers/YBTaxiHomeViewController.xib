@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -16,7 +16,6 @@
                 <outlet property="keysTableView" destination="yek-qf-Ilv" id="xbd-sv-Q7q"/>
                 <outlet property="nomoreImageView" destination="u7t-hQ-5Z6" id="2J4-Zm-jEJ"/>
                 <outlet property="nomoreLabel" destination="Rgx-RZ-pgo" id="ehY-dZ-G4D"/>
-                <outlet property="settingBtn" destination="bhe-6I-H2y" id="Jaz-oL-dyX"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -38,10 +37,20 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8yy-oo-dxX">
+                                <rect key="frame" x="298" y="10" width="62" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="附近乘客"/>
+                                <connections>
+                                    <action selector="nearbyAction:" destination="-1" eventType="touchUpInside" id="ae7-uz-Wli"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.2470588235" green="0.6588235294" blue="0.87450980389999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="8yy-oo-dxX" secondAttribute="trailing" constant="15" id="CX3-9H-XVc"/>
                             <constraint firstItem="kAQ-Av-vzB" firstAttribute="leading" secondItem="u4e-XE-odX" secondAttribute="leading" constant="15" id="awD-Wo-MSd"/>
+                            <constraint firstItem="8yy-oo-dxX" firstAttribute="centerY" secondItem="u4e-XE-odX" secondAttribute="centerY" id="eFQ-m8-0FS"/>
                             <constraint firstItem="kAQ-Av-vzB" firstAttribute="centerY" secondItem="u4e-XE-odX" secondAttribute="centerY" id="v3J-Z0-9QU"/>
                         </constraints>
                     </view>
@@ -60,20 +69,9 @@
                                 <constraint firstAttribute="height" constant="1" id="ePS-cV-tRL"/>
                             </constraints>
                         </view>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bhe-6I-H2y">
-                            <rect key="frame" x="15" y="10" width="40" height="40"/>
-                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="40" id="14l-U1-DeM"/>
-                                <constraint firstAttribute="width" constant="40" id="3Cg-1D-4YK"/>
-                            </constraints>
-                            <state key="normal" backgroundImage="设置icon"/>
-                            <connections>
-                                <action selector="settingAction:" destination="-1" eventType="touchUpInside" id="1r8-QR-qJW"/>
-                            </connections>
-                        </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设置听单" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bYw-jC-ICX">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="设置听单" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bYw-jC-ICX">
                             <rect key="frame" x="12.5" y="55" width="45" height="13.5"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
@@ -81,11 +79,7 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstItem="bYw-jC-ICX" firstAttribute="top" secondItem="bhe-6I-H2y" secondAttribute="bottom" constant="5" id="8vx-uw-Ml2"/>
                         <constraint firstAttribute="height" constant="80" id="ASI-qJ-2WL"/>
-                        <constraint firstItem="bYw-jC-ICX" firstAttribute="centerX" secondItem="bhe-6I-H2y" secondAttribute="centerX" id="SYJ-FM-I4v"/>
-                        <constraint firstItem="bhe-6I-H2y" firstAttribute="leading" secondItem="Kza-ti-Ygi" secondAttribute="leading" constant="15" id="fsz-Xy-qXI"/>
-                        <constraint firstItem="bhe-6I-H2y" firstAttribute="top" secondItem="Kza-ti-Ygi" secondAttribute="top" constant="10" id="gff-N2-iBQ"/>
                         <constraint firstAttribute="trailing" secondItem="uYL-a2-mnV" secondAttribute="trailing" id="jCI-u6-sJQ"/>
                         <constraint firstItem="uYL-a2-mnV" firstAttribute="top" secondItem="Kza-ti-Ygi" secondAttribute="top" id="k1f-P9-4D8"/>
                         <constraint firstItem="uYL-a2-mnV" firstAttribute="leading" secondItem="Kza-ti-Ygi" secondAttribute="leading" id="wQW-DD-lJv"/>
@@ -131,11 +125,10 @@
                 <constraint firstItem="yek-qf-Ilv" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="kbP-VA-tew"/>
                 <constraint firstItem="u7t-hQ-5Z6" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="zpk-de-bKW"/>
             </constraints>
-            <point key="canvasLocation" x="-266.5" y="-56.5"/>
+            <point key="canvasLocation" x="-100" y="-53"/>
         </view>
     </objects>
     <resources>
         <image name="goumaikongbai_icon" width="73" height="86"/>
-        <image name="设置icon" width="20" height="20"/>
     </resources>
 </document>

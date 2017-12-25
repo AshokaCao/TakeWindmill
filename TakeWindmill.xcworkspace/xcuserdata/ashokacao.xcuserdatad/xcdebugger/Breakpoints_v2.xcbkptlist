@@ -20,39 +20,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.015386"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "843"
-            endingLineNumber = "843"
-            landmarkName = "-againForMap"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.01546"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "847"
-            endingLineNumber = "847"
-            landmarkName = "-againForMap"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.015515"
+            timestampString = "535615969.206161"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "341"
@@ -84,152 +52,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.015619"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "768"
-            endingLineNumber = "768"
-            landmarkName = "-savingUserTraveList"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.015662"
+            timestampString = "535615969.206263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "197"
             endingLineNumber = "197"
             landmarkName = "-openMapViewStartCityName:startPT:endCityName:endPT:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.015703"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
-            landmarkName = "-onGetDrivingRouteResult:result:errorCode:"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[YBTaxiViewController onGetDrivingRouteResult:result:errorCode:]"
-                  moduleName = "TakeWindmill"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ashokacao/Desktop/%E7%9A%95%E5%A4%B6/TakeWindmill/%E5%87%BA%E7%A7%9F%E8%BD%A6/Controllers/YBTaxiViewController.mm"
-                  timestampString = "535526687.999996"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "1240">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[YBTaxiViewController onGetDrivingRouteResult:result:errorCode:]"
-                  moduleName = "TakeWindmill"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ashokacao/Desktop/%E7%9A%95%E5%A4%B6/TakeWindmill/%E5%87%BA%E7%A7%9F%E8%BD%A6/Controllers/YBTaxiViewController.mm"
-                  timestampString = "535526688.001865"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "1392">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[YBTaxiViewController onGetDrivingRouteResult:result:errorCode:]"
-                  moduleName = "TakeWindmill"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ashokacao/Desktop/%E7%9A%95%E5%A4%B6/TakeWindmill/%E5%87%BA%E7%A7%9F%E8%BD%A6/Controllers/YBTaxiViewController.mm"
-                  timestampString = "535526688.00585"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "4076">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[YBTaxiViewController onGetDrivingRouteResult:result:errorCode:]"
-                  moduleName = "TakeWindmill"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ashokacao/Desktop/%E7%9A%95%E5%A4%B6/TakeWindmill/%E5%87%BA%E7%A7%9F%E8%BD%A6/Controllers/YBTaxiViewController.mm"
-                  timestampString = "535526688.009338"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "4096">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[YBTaxiViewController onGetDrivingRouteResult:result:errorCode:]"
-                  moduleName = "TakeWindmill"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ashokacao/Desktop/%E7%9A%95%E5%A4%B6/TakeWindmill/%E5%87%BA%E7%A7%9F%E8%BD%A6/Controllers/YBTaxiViewController.mm"
-                  timestampString = "535526688.011161"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "4592">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[YBTaxiViewController onGetDrivingRouteResult:result:errorCode:]"
-                  moduleName = "TakeWindmill"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ashokacao/Desktop/%E7%9A%95%E5%A4%B6/TakeWindmill/%E5%87%BA%E7%A7%9F%E8%BD%A6/Controllers/YBTaxiViewController.mm"
-                  timestampString = "535526688.012819"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "5604">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535533136.015745"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
-            landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

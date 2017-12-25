@@ -898,6 +898,7 @@
 
 - (void)driverButtonAction:(UIButton *)sender {
     YBTaxiDriverViewController *driver = [[YBTaxiDriverViewController alloc] init];
+    driver.currLocation = self.currPoin;
     [self.navigationController pushViewController:driver animated:YES];
 }
 
