@@ -32,6 +32,7 @@
 #import "APOrderInfo.h"
 #import "APRSASigner.h"
 #import "HBRSAHandler.h"
+#import "YZLocationManager.h"
 
 
 
@@ -511,8 +512,52 @@
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(msgClick)];
     [self.msgValue addGestureRecognizer:tap];
     
-    
+    NSString *userID = [YBUserDefaults valueForKey:_userId];
+    if (userID) {
+        [self initWithlocService];
+    }
 }
+
+
+- (void)initWithlocService
+{
+    YZLocationManager *manager = [YZLocationManager sharedLocationManager];
+    manager.isBackGroundLocation = YES;
+    manager.locationInterval = 10;
+    [manager setYZBackGroundLocationHander:^(CLLocationCoordinate2D coordinate) {
+//        _plc(coordinate);
+        NSLog(@">>>>>>>>>>>>>%f,,%f",coordinate.latitude,coordinate.longitude);
+        //起点位置信息
+        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];;
+        
+        NSString *userID = [YBUserDefaults valueForKey:_userId];
+        dict[@"userid"] = userID;
+        [dict setObject:[NSString stringWithFormat:@"%f",coordinate.longitude] forKey:@"lng"];
+        [dict setObject:[NSString stringWithFormat:@"%f",coordinate.latitude] forKey:@"lat"];
+        NSLog(@"dict - %@",dict);
+        [self uploadCurrentLocationWith:dict];
+    }];
+    
+    [manager startLocationService];
+}
+
+
+
+- (void)uploadCurrentLocationWith:(NSMutableDictionary *)location
+{
+    [PPNetworkHelper POST:TaxiSaveLocation parameters:location success:^(id responseObject) {
+        NSLog(@"current - %@",responseObject);
+    } failure:^(NSError *error) {
+
+    }];
+//    [YBRequest postWithURL:TaxiSaveLocation MutableDict:location success:^(id dataArray) {
+//        NSLog(@"current - %@",dataArray);
+//    } failure:^(id dataArray) {
+//
+//    }];
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
