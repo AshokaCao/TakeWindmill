@@ -2338,27 +2338,27 @@
 		58F6CF9C1FEA072C007AD443 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				58F6CFAB1FEA072C007AD443 /* YBTakeWindmollView.h */,
 				58F6CF9D1FEA072C007AD443 /* YBTakeWindmollView.m */,
-				58F6CF9E1FEA072C007AD443 /* YBFindTableViewCell.m */,
 				58F6CF9F1FEA072C007AD443 /* YBPassengerTableView.h */,
-				58F6CFA01FEA072C007AD443 /* YBPublishedTripCell.h */,
+				58F6CFA91FEA072C007AD443 /* YBPassengerTableView.m */,
+				58F6CFAC1FEA072C007AD443 /* YBRouteTableViewCell.h */,
 				58F6CFA11FEA072C007AD443 /* YBRouteTableViewCell.m */,
+				58F6CFAE1FEA072C007AD443 /* YBDriver_CommonRouteCell.h */,
 				58F6CFA21FEA072C007AD443 /* YBDriver_CommonRouteCell.m */,
-				58F6CFA31FEA072C007AD443 /* YBFindTableViewCell.xib */,
+				58F6CFB11FEA072C007AD443 /* YBDriverTableView.h */,
 				58F6CFA41FEA072C007AD443 /* YBDriverTableView.m */,
 				58F6CFA51FEA072C007AD443 /* YBRouteTableViewCell.xib */,
 				58F6CFA61FEA072C007AD443 /* YBFindOwnerCell.h */,
 				58F6CFA71FEA072C007AD443 /* YBSlideTabView.h */,
+				58F6CFA01FEA072C007AD443 /* YBPublishedTripCell.h */,
 				58F6CFA81FEA072C007AD443 /* YBPublishedTripCell.m */,
-				58F6CFA91FEA072C007AD443 /* YBPassengerTableView.m */,
 				58F6CFAA1FEA072C007AD443 /* YBFindTableViewCell.h */,
-				58F6CFAB1FEA072C007AD443 /* YBTakeWindmollView.h */,
-				58F6CFAC1FEA072C007AD443 /* YBRouteTableViewCell.h */,
+				58F6CF9E1FEA072C007AD443 /* YBFindTableViewCell.m */,
+				58F6CFA31FEA072C007AD443 /* YBFindTableViewCell.xib */,
 				58F6CFAD1FEA072C007AD443 /* YBPublishedTripCell.xib */,
-				58F6CFAE1FEA072C007AD443 /* YBDriver_CommonRouteCell.h */,
 				58F6CFAF1FEA072C007AD443 /* YBSlideTabView.m */,
 				58F6CFB01FEA072C007AD443 /* YBFindOwnerCell.m */,
-				58F6CFB11FEA072C007AD443 /* YBDriverTableView.h */,
 			);
 			path = View;
 			sourceTree = "<group>";

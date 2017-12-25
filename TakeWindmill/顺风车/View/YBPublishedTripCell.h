@@ -20,4 +20,16 @@
  */
 @property (nonatomic, strong) NSDictionary *driverTripDic;
 
+/**
+ * 司机端_已发布行程
+ @param driverDict 发布行程的信息
+ */
+- (void)driver_PublishedOrders:(NSDictionary *)driverDict;
+
+/**
+ * 司机端_我的订单
+ @param orderDict 以前订单信息
+ */
+- (void)driver_MyOrder:(NSDictionary *)orderDict;
+
 @end

@@ -80,6 +80,9 @@
 #define commonaddressdriversavePath (ServerPath@"travel/commonaddressdriversave?")
 //乘客行程起点附近乘客检索（可拼座）
 #define passengerstartpointnearbypassengerlistPath (ServerPath@"travel/passengerstartpointnearbypassengerlist?")
+//司机_我的订单
+#define passengertravelinfolistbydriverPath (ServerPath@"travel/passengertravelinfolistbydriver?")
+
 
 //路况直播列表
 #define RoadListPath (ServerPath@"roadcondition/roadconditionlist?")

@@ -195,9 +195,14 @@
         //常用路线 travelinfocommonlistPath
         [self driverSide_CommonRoute:semaphore];
     });
+    //请求五
+    dispatch_group_async(group, queue, ^{
+        [self driver_MyOrder:semaphore];
+    });
     //总
     dispatch_group_notify(group, queue, ^{
         // 四个请求对应四次信号等待
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
@@ -241,6 +246,25 @@
 //        YBLog(@"司机未完成行程%@",dataArray);
         self.driverTableView.isDriverNotCompleted = 2;
         self.driverTableView.driverDict = dataArray;
+        dispatch_semaphore_signal(semaphore);
+    } failure:^(id dataArray) {
+        YBLog(@"司机未完成行程%@",dataArray);
+        self.driverTableView.isDriverNotCompleted = 1;
+        dispatch_semaphore_signal(semaphore);
+    }];
+}
+
+#pragma mark -判断车主是否有我的行程
+- (void)driver_MyOrder:(id)semaphore
+{
+    //爱心车主
+    NSString *urlStr1           = passengertravelinfolistbydriverPath;
+    NSMutableDictionary *dict1  = [YBTooler dictinitWithMD5];
+    [dict1 setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+    
+    [YBRequest postWithURL:urlStr1 MutableDict:dict1 success:^(id dataArray) {
+        YBLog(@"司机未完成行程%@",dataArray);
+        self.driverTableView.isDriverNotCompleted = 2;
         dispatch_semaphore_signal(semaphore);
     } failure:^(id dataArray) {
         YBLog(@"司机未完成行程%@",dataArray);

@@ -26,6 +26,12 @@
     self.bgView.layer.cornerRadius  = 5;
 }
 
+#pragma mark - 乘客端_已发布订单
+- (void)passengerTerminal_Published:(NSDictionary *)strokeDict
+{
+    
+}
+
 - (void)setStrokeDict:(NSDictionary *)strokeDict
 {
     NSArray *timeArray           = [strokeDict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
@@ -35,13 +41,24 @@
     self.startingPointLabel.text = strokeDict[@"StartAddress"];
 }
 
-- (void)setDriverTripDic:(NSDictionary *)driverTripDic
+#pragma mark - 司机端_已发布订单
+- (void)driver_PublishedOrders:(NSDictionary *)driverDict
 {
-    NSArray *timeArray           = [driverTripDic[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
+    NSArray *timeArray           = [driverDict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
     self.typeLabel.text          = @"寻找乘客";
     self.timeLabel.text          = [NSString stringWithFormat:@"%@ %@",timeArray[0],timeArray[1]];
-    self.endPointLabel.text      = driverTripDic[@"EndAddress"];
-    self.startingPointLabel.text = driverTripDic[@"StartAddress"];
+    self.endPointLabel.text      = driverDict[@"EndAddress"];
+    self.startingPointLabel.text = driverDict[@"StartAddress"];
+}
+
+#pragma mark - 司机端_我的订单
+- (void)driver_MyOrder:(NSDictionary *)orderDict
+{
+    NSArray *timeArray           = [orderDict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
+    self.typeLabel.text          = @"寻找乘客";
+    self.timeLabel.text          = [NSString stringWithFormat:@"%@ %@",timeArray[0],timeArray[1]];
+    self.endPointLabel.text      = orderDict[@"EndAddress"];
+    self.startingPointLabel.text = orderDict[@"StartAddress"];
 }
 
 @end

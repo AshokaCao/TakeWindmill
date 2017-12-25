@@ -116,7 +116,7 @@
         }
     }
     if (section == 0) return 2;
-    else return self.commonRoute.count;
+    else return self.commonRoute.count > 0 ? self.commonRoute.count : 1 ;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -153,7 +153,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     if (self.isDriverNotCompleted == 2 && indexPath.section == 0) { // 未完成行程
         
         YBPublishedTripCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBPublishedTripCell"];
@@ -162,10 +161,21 @@
         }
         tableView.rowHeight = 70;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.driverTripDic  = self.driverDict;
+        [cell driver_PublishedOrders:self.driverDict];
         return cell;
     }
-    else if (indexPath.section == self.isDriverNotCompleted){ //常用路线
+    if (self.isDriverNotCompleted == 2 && indexPath.section == 1 && self.myOrderArray) { // 我的订单
+        
+        YBPublishedTripCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBPublishedTripCell"];
+        if (!cell) {
+            cell = [[[NSBundle mainBundle] loadNibNamed:@"YBPublishedTripCell" owner:self options:nil] firstObject];
+        }
+        tableView.rowHeight = 70;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [cell driver_MyOrder:self.myOrderArray[indexPath.row]];
+        return cell;
+    }
+    if (indexPath.section == self.isDriverNotCompleted){ // 常用路线
         
         if (self.commonRoute.count > 0) {//
             YBDriver_CommonRouteCell * cell = [tableView dequeueReusableCellWithIdentifier:@"YBDriver_CommonRouteCell"];
