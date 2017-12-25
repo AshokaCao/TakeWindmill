@@ -29,6 +29,7 @@
 #import "HSHString.h"
 #import "HXPhotoViewController.h"
 #import "HXPhotoView.h"
+#import <HXAlbumListViewController.h>
 #import "RCDataManager.h"
 #import "FLPayManager.h"
 

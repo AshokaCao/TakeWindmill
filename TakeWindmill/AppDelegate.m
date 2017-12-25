@@ -12,7 +12,6 @@
 #import "YBPersonViewController.h"
 #import <BaiduMapAPI_Base/BMKMapManager.h>
 
-#define rongAppKey @"82hegw5u8k8ex"
 @interface AppDelegate ()<BMKGeneralDelegate>
 
 @end

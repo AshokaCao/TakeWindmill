@@ -8,6 +8,8 @@
 
 //百度地图apk
 #define BMMapKey @"GRLxwuup0DkvSAeg8Ab3cawpcB5RPNSc"
+//融云 key
+#define rongAppKey @"82hegw5u8k8ex"
 //记录状态
 #define YBUserDefaults [NSUserDefaults standardUserDefaults] 
 //用户账号
