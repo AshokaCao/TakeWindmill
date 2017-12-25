@@ -10,6 +10,7 @@
 #import "YBTaxiStrokeModel.h"
 #import "YBTaxiStrokeTableViewCell.h"
 #import "YBRouteDetailsViewController.h"
+#import "YBNearPassgerViewController.h"
 
 @interface YBTaxiHomeViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UIButton *beginBtn;
@@ -117,6 +118,11 @@
 }
 - (IBAction)settingAction:(UIButton *)sender {
     
+}
+- (IBAction)nearbyAction:(UIButton *)sender {
+    YBNearPassgerViewController *near = [[YBNearPassgerViewController alloc] init];
+    near.currLocation = self.currLocation;
+    [self.navigationController pushViewController:near animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

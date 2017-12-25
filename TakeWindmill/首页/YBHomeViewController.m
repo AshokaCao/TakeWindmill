@@ -51,13 +51,13 @@
 
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    // [self aliPay];
-//    [self wechatPay];
+    // [self aliPay];//支付宝
+//    [self wechatPay];//微信
 }
 - (void)wechatPay{
     WEAK_SELF;
     NSMutableDictionary *parm = [YBTooler dictinitWithMD5];
-    parm[@"orderno"] = @"kjdfljfjf";
+    parm[@"orderno"] = @"kjdfljfjf";//传订单号
     [YBRequest postWithURL:WeixinPay MutableDict:parm success:^(id dataArray) {
         //YBLog(@"dataArray==%@",dataArray);
         YBPayconfigModel *paymodel = [YBPayconfigModel yy_modelWithJSON:dataArray];

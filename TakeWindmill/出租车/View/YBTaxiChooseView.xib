@@ -149,9 +149,10 @@
             <connections>
                 <outlet property="againBtn" destination="4d4-KV-jcv" id="taY-mw-NHh"/>
                 <outlet property="anJointBtn" destination="ERw-Ss-fAA" id="aZD-YC-7nj"/>
+                <outlet property="isCome" destination="ht7-Ej-hiU" id="OfA-jz-0RA"/>
                 <outlet property="jointBtn" destination="TVs-1t-IWt" id="81N-AW-5Gz"/>
             </connections>
-            <point key="canvasLocation" x="-344" y="-351"/>
+            <point key="canvasLocation" x="-523" y="-324"/>
         </view>
     </objects>
 </document>

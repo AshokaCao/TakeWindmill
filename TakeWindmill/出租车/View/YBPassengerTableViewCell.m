@@ -147,6 +147,7 @@
     }];
     
     UIButton *driverBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.drvBtn = driverBtn;
     [driverBtn setBackgroundColor:BtnBlueColor];
     [driverBtn setTitle:@"确认到达乘客上车地点" forState:UIControlStateNormal];
     [driverBtn addTarget:self action:@selector(destinationClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -167,7 +168,33 @@
     self.beginLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.StartAddress];
     self.endLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.EndAddress];
     self.userNameLabel.text = [NSString stringWithFormat:@"%@",self.routeModel.NickName];
+    NSArray *titleArray = @[@"到达上车点",@"乘客已上车",@"到达目的地",@"待支付"];
+    NSString *drivType = [NSString stringWithFormat:@"%@",model.Stat];
+    if ([drivType isEqualToString:@"-1"]) {
+        [self.drvBtn setTitle:@"行程已取消" forState:UIControlStateNormal];
+    } else if ([drivType isEqualToString:@"9"]) {
+        [self.drvBtn setTitle:@"行程已完结" forState:UIControlStateNormal];
+    } else {
+        [self.drvBtn setTitle:titleArray[[drivType intValue]] forState:UIControlStateNormal];
+    }
 }
+
+- (void)sendTaxiMessage:(UIButton *)sender
+{
+    [self.delegate didselectTaxiTralveBtn:1 andYBPassengerTableViewCell:self];
+}
+
+- (void)callTaxi:(UIButton *)sender
+{
+    [self.delegate didselectTaxiTralveBtn:2 andYBPassengerTableViewCell:self];
+}
+
+- (void)destinationClick:(UIButton *)sender
+{
+    [self.delegate didselectTaxiTralveBtn:3 andYBPassengerTableViewCell:self];
+}
+
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     

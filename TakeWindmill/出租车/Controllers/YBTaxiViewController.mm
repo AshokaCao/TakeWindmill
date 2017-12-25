@@ -29,6 +29,7 @@
 
 #import "YBTaxiChooseView.h"
 #import "YBForMessageViewController.h"
+#import "YBCancelTraveView.h"
 
 @interface YBTaxiViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate,UITextFieldDelegate,BMKPoiSearchDelegate,BMKRouteSearchDelegate, YBMapPositionSelectionVCDelegate, YBAddressSearchSelectionVCDelegate, YBTaxiChooseViewDelegate>
 //搜索框
@@ -48,6 +49,15 @@
 @property (nonatomic, strong) RouteAnnotation* straItem;
 @property (nonatomic, strong) RouteAnnotation* endItem;
 @property (nonatomic, strong) UIView *choosebackView;
+@property (nonatomic, strong) NSString *sendMessage;
+@property (nonatomic, strong) NSString *taxiSysNum;
+@property (nonatomic, strong) YBCancelTraveView *cancelView;
+@property (nonatomic, strong) NSString *isCome;
+@property (nonatomic, strong) NSString *isJoin;
+@property (nonatomic, strong) NSDictionary *userTravle;
+@property (nonatomic, strong) NSString *currCityID;
+@property (nonatomic, assign) CLLocationCoordinate2D userStralocation;
+@property (nonatomic, assign) BOOL isSelectEnd;
 
 //用户位置坐标
 @property (nonatomic, strong) BMKUserLocation *positionUserLocation;
@@ -65,20 +75,58 @@
 @property (nonatomic, strong) YBTaxiChooseView *chooseView;
 
 @property (nonatomic, strong) BMKDrivingRouteLine *routeLine;
+/**
+ * 起点所在的位置信息
+ */
+@property (nonatomic, strong) BMKReverseGeoCodeResult *startingPoint;
 //@property (nonatomic, assign) NSInteger lineColor;
 @end
 
 @implementation YBTaxiViewController
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [_mapView viewWillAppear];
     _mapView.delegate = self;
     _locService.delegate = self;
     _geoCodeSearch.delegate = self;
     _routeSearch.delegate = self;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+    dict[@"traveltypefid"] = @"2";
+    
+    [YBRequest postWithURL:TaxiTraveling MutableDict:dict success:^(id dataArray) {
+//        NSLog(@"dataArray - --%@",dataArray);
+        self.taxiSysNum = dataArray[@"SysNo"];
+        
+        self.currCity = dataArray[@"StartCity"];
+        self.currCityID = dataArray[@"StartCityId"];
+        CLLocationCoordinate2D strPt = CLLocationCoordinate2DMake([dataArray[@"StartLat"] doubleValue],[dataArray[@"StartLng"] doubleValue]);
+        CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([dataArray[@"EndLat"] doubleValue],[dataArray[@"EndLng"] doubleValue]);
+        
+        [self openMapViewStartCityName:self.currCity startPT:strPt endCityName:self.currCity endPT:endPt];
+        
+        UIView *taxiList = [[UIView alloc] init];
+        taxiList.backgroundColor = [UIColor orangeColor];
+        self.choosebackView = taxiList;
+        [self.view addSubview:taxiList];
+        
+        [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.view.mas_left).offset(10);
+            make.right.equalTo(self.view.mas_right).offset(-10);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
+            make.height.offset(200);
+        }];
+        self.userTravle = dataArray;
+        [self addCancelTraveView];
+    } failure:^(id dataArray) {
+        
+    }];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [_mapView viewWillDisappear];
     _mapView.delegate = nil;
     _locService.delegate = nil;
@@ -93,7 +141,7 @@
     _locService = [[BMKLocationService alloc]init];
     _geoCodeSearch = [[BMKGeoCodeSearch alloc] init];
     _mapAnnoView = [[BMKAnnotationView alloc] init];
-    _mapView = [[BMKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    _mapView = [[BMKMapView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:_mapView];
     [self selfLoction];
     [self jinXiangBin];
@@ -127,15 +175,15 @@
     BMKPlanNode* start = [[BMKPlanNode alloc]init] ;
     start.cityName = cityName;
     start.pt = startPt;
-
+    
     BMKPlanNode* end = [[BMKPlanNode alloc]init];
     end.cityName = city;
     end.pt = endPt;
-
+    
     BMKDrivingRoutePlanOption *driveRouteSearchOption = [[BMKDrivingRoutePlanOption alloc]init];
     driveRouteSearchOption.from = start;
     driveRouteSearchOption.to = end;
-
+    
     BOOL flag = [_routeSearch drivingSearch:driveRouteSearchOption];
     if (flag) {
         YBLog(@"查询成功");
@@ -145,18 +193,13 @@
     else {
         YBLog(@"查询失败");
     }
+    NSLog(@"self.startingPointDict - %@",self.startingPointDict[@"Name"]);
 }
 
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error
 {
-    //    NSArray* array = [NSArray arrayWithArray:self.mapView.annotations];
-    //    [self.mapView removeAnnotations:array];
-    //
-    //    array = [NSArray arrayWithArray:self.mapView.overlays];
-    //    [self.mapView removeOverlays:array];
-
     if (error == BMK_SEARCH_NO_ERROR) {
-
+        
         BMKDrivingRouteLine* plan = (BMKDrivingRouteLine*)[result.routes objectAtIndex:0];
         self.routeLine = result.routes[0];
         // 计算路线方案中的路段数目
@@ -185,7 +228,7 @@
             item.degree = transitStep.direction * 30;
             item.type = 4;
             [self.mapView addAnnotation:item];
-
+            
             //轨迹点总数累计
             planPointCounts += transitStep.pointsCount;
         }
@@ -211,7 +254,7 @@
                 temppoints[i].y = transitStep.points[k].y;
                 i++;
             }
-
+            
         }
         // 通过points构建BMKPolyline
         if (self.polyLine) {
@@ -222,6 +265,8 @@
         delete []temppoints;
         [self mapViewFitPolyLine:self.polyLine];
     }
+    [self routeOfLine];
+    NSLog(@"self.startingPointDict = %@",self.startingPointDict[@"Name"]);
 }
 
 - (BMKOverlayView*)mapView:(BMKMapView *)map viewForOverlay:(id<BMKOverlay>)overlay
@@ -270,7 +315,7 @@
 
 - (void)valueChange:(UITextField *)textField {
     NSLog(@"123");
-
+    
     _poiSearch = [[BMKPoiSearch alloc] init];
     _poiSearch.delegate = self;
     NSLog(@"搜索：%@",textField.text);
@@ -279,11 +324,11 @@
     nearBySearchOption.pageIndex = 0;
     nearBySearchOption.pageCapacity = 10;
     nearBySearchOption.keyword = textField.text;
-
+    
     //检索的中心点
     nearBySearchOption.location = _locService.userLocation.location.coordinate;
     nearBySearchOption.radius = 100;
-
+    
     BOOL flag = [_poiSearch poiSearchNearBy:nearBySearchOption];
     if (flag) {
         NSLog(@"success");
@@ -302,26 +347,49 @@
 }
 #pragma mark  地点改变
 - (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-
+    
     CLLocationCoordinate2D carLocation = [_mapView convertPoint:self.view.center toCoordinateFromView:self.view];
-    BMKReverseGeoCodeOption *option = [[BMKReverseGeoCodeOption alloc] init];
-    option.reverseGeoPoint = CLLocationCoordinate2DMake(carLocation.latitude, carLocation.longitude);
-    NSLog(@"%f - %f", option.reverseGeoPoint.latitude, option.reverseGeoPoint.longitude);
-    self.currPoin = CLLocationCoordinate2DMake(carLocation.latitude, carLocation.longitude);
-    NSLog(@"currPoin - %f currPoin - %f",self.currPoin.longitude,self.currPoin.latitude);
+    BMKReverseGeoCodeOption *reverseGeocodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];//初始化反编码请求
+    reverseGeocodeSearchOption.reverseGeoPoint = carLocation;//设置反编码的店为pt
+    BOOL flag =   [self.geoCodeSearch reverseGeoCode:reverseGeocodeSearchOption];
+    if (flag) {
+        YBLog(@"定位搜索成功");
+    }
+    else {
+        [MBProgressHUD showError:@"位置搜索失败" toView:self.view];
+    }
+    self.currPoin = carLocation;
+    
     //调用发地址编码方法，让其在代理方法onGetReverseGeoCodeResult中输出
-    [_geoCodeSearch reverseGeoCode:option];
+//    [_geoCodeSearch reverseGeoCode:option];
+    NSLog(@"地点改变");
 }
 
 #pragma mark 返回地理反编码
 - (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error {
     
     if (result) {
-        NSLog(@"%@ - %@ - %@ - %@ - %@", result.addressDetail.province, result.addressDetail.city, result.addressDetail.streetName, result.address, result.businessCircle);
-        self.currCity = result.addressDetail.city;
-//        self.currPoin = CLLocationCoordinate2DMake(result.location.latitude, result.location.longitude);
-        NSLog(@"currPoin - %f currPoin - %f",self.currPoin.longitude,self.currPoin.latitude);
-        //把result.poiList存储到数组中，然后在tableView中显示出来
+        if (self.isSelectEnd) {
+            
+        } else {
+            self.currCity = result.addressDetail.city;
+            self.currCityID = result.cityCode;
+            NSLog(@"地理编码");
+            
+            //起点位置信息
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            [dict setObject:result.cityCode forKey:@"CityId"];//城市id
+            [dict setObject:[NSString stringWithFormat:@"%f",result.location.longitude ] forKey:@"Lng"];//
+            [dict setObject:[NSString stringWithFormat:@"%f",result.location.latitude ] forKey:@"Lat"];//
+            [dict setObject:result.address forKey:@"Address"];//地址名称
+            [dict setObject:result.addressDetail.district forKey:@"District"];//所在区域
+            [dict setObject:result.sematicDescription forKey:@"Name"];
+            [dict setObject:result.addressDetail.city forKey:@"City"];
+            self.startingPointDict = dict;
+            self.startingPoint = result;
+        }
+        
+        NSLog(@"self.startingPointDict - %@",self.startingPointDict[@"Name"]);
         [_searchView.startingPoint setTitle:result.address forState:UIControlStateNormal];
     } else {
         NSLog(@"找不到");
@@ -329,50 +397,15 @@
     
 }
 
-- (void)selfLoction
-{
-    _locService.delegate = self;
-    //启动LocationService
-
-    _mapView.zoomLevel = 14.1;
-    _mapView.showsUserLocation = YES;//是否显示小蓝点，no不显示，我们下面要自定义的
-    _mapView.userTrackingMode = BMKUserTrackingModeNone;
-    //定位
-    [_locService startUserLocationService];
-
-    [_mapView removeAnnotation:_pointAnnotation];
-}
-
-- (void)custome:(UIButton *)btn {
-    [_mapView removeAnnotation:_pointAnnotation];
-    [_locService startUserLocationService];
-    NSLog(@"定位的经度:%f,定位的纬度:%f",_locService.userLocation.location.coordinate.longitude,_locService.userLocation.location.coordinate.latitude);
-    //    FirstAnnotationView *firstView = [[FirstAnnotationView alloc] init];
-    FirstPointAnnotation *pointA = [[FirstPointAnnotation alloc] initWithLatitude:_locService.userLocation.location.coordinate.latitude andLongtude:_locService.userLocation.location.coordinate.longitude];
-    pointA.title = @"123";
-    [_mapView addAnnotation:(BMKPointAnnotation *)pointA];
-    [_mapView selectAnnotation:(BMKPointAnnotation *)pointA animated:YES];
-}
-
-
 //生成对应的气泡时候触发的方法
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id<BMKAnnotation>)annotation {
-    //    if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
-    //      static  NSString *myLocationViewID = @"myID";
-    //        MyAnnotionView *newAnnotationView = (MyAnnotionView *)[mapView dequeueReusableAnnotationViewWithIdentifier:myLocationViewID];
-    //        if (newAnnotationView == nil) {
-    //            newAnnotationView = [[MyAnnotionView alloc] initWithAnnotation:annotation reuseIdentifier:myLocationViewID];
-    //        }
-    //        return newAnnotationView;
-    //    }
-    //    else
     if([annotation isKindOfClass:[FirstPointAnnotation class]]) {
         static NSString *firstID = @"firstID";
         FirstAnnotationView *firstView = (FirstAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:firstID];
         if (firstView == nil) {
             firstView = [[FirstAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:firstID];
         }
-
+        
         return firstView;
     }
     else if ([annotation isKindOfClass:[RouteAnnotation class]]) {
@@ -440,11 +473,11 @@
             } else {
                 [view setNeedsDisplay];
             }
-
+            
             //            UIImage* image = [UIImage imageNamed:@"icon_direction.png"];
             //            view.image = [image imageRotatedByDegrees:routeAnnotation.degree];
             view.annotation = routeAnnotation;
-
+            
         }
             break;
         case 5:
@@ -456,7 +489,7 @@
             } else {
                 [view setNeedsDisplay];
             }
-
+            
             //            UIImage* image = [UIImage imageWithContentsOfFile:[self getMyBundlePath1:@"images/icon_nav_waypoint.png"]];
             //            view.image = [image imageRotatedByDegrees:routeAnnotation.degree];
             view.annotation = routeAnnotation;
@@ -465,7 +498,7 @@
         default:
             break;
     }
-
+    
     return view;
 }
 
@@ -495,6 +528,20 @@
     NSLog(@"location error");
 }
 #pragma mark 定位
+
+- (void)selfLoction
+{
+    [_locService startUserLocationService];
+    _locService.delegate = self;
+    //启动LocationService
+    _mapView.zoomLevel = 14.1;
+    _mapView.showsUserLocation = YES;//是否显示小蓝点，no不显示，我们下面要自定义的
+    _mapView.userTrackingMode = BMKUserTrackingModeNone;
+    //定位
+    
+    [_mapView removeAnnotation:_pointAnnotation];
+}
+
 -(void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation{
     BMKCoordinateRegion region;
     region.center.latitude  = userLocation.location.coordinate.latitude;
@@ -507,7 +554,7 @@
     [self.mapView setZoomEnabled:YES];
     [self.mapView setZoomEnabledWithTap:YES];
     [self.mapView setZoomLevel:16.1];
-
+    
     NSLog(@"定位的经度:%f,定位的纬度:%f",userLocation.location.coordinate.longitude,userLocation.location.coordinate.latitude);
     _mapView.showsUserLocation = YES;//显示用户位置
     [_mapView updateLocationData:userLocation];
@@ -516,12 +563,13 @@
 #pragma mark  添加大头针气泡
     _pointAnnotation = [[BMKPointAnnotation alloc] init];
     _pointAnnotation.coordinate = userLocation.location.coordinate;
-//    _pointAnnotation.title = @"我在这个地方";
-//    _pointAnnotation.subtitle = @"你在哪呢";
-//    [_mapView addAnnotation:_pointAnnotation];
-//    [_mapView selectAnnotation:_pointAnnotation animated:YES];
+    //    _pointAnnotation.title = @"我在这个地方";
+    //    _pointAnnotation.subtitle = @"你在哪呢";
+    //    [_mapView addAnnotation:_pointAnnotation];
+    //    [_mapView selectAnnotation:_pointAnnotation animated:YES];
     self.currPoin = CLLocationCoordinate2DMake(userLocation.location.coordinate.latitude, userLocation.location.coordinate.longitude);
-    NSLog(@"currPoin - %f currPoin - %f",self.currPoin.longitude,self.currPoin.latitude);
+    self.userStralocation = CLLocationCoordinate2DMake(userLocation.location.coordinate.latitude, userLocation.location.coordinate.longitude);
+    NSLog(@"定位");
 }
 
 
@@ -550,13 +598,6 @@
 
 - (void)jinXiangBin
 {
-    
-    //    __weak __typeof(self)wself = self;
-    //    _searchView.selectBlock = ^(UIButton *sender) {
-    ////        YBLocationSearchVC *selec = [[YBLocationSearchVC alloc] initWithNibName:@"YBLocationSearchVC" bundle:nil];
-    ////        [wself presentViewController:selec animated:YES completion:nil];
-    //    };
-    
     //扫一扫
     UIButton *scanButton = [[UIButton alloc] initWithFrame:CGRectMake(YBWidth - 30, 30, 30, 30)];
     [scanButton setBackgroundImage:[UIImage imageNamed:@"扫码图标"] forState:UIControlStateNormal];
@@ -605,7 +646,7 @@
             [weakSelf presentViewController:map animated:YES completion:^{
                 
             }];
-
+            
         } else {
             YBAddressSearchSelectionVC *selec = [[YBAddressSearchSelectionVC alloc] init];
             selec.typesOf = @"终点";
@@ -622,54 +663,42 @@
     self.startingPointDict = value;
     
     [_searchView.endButton setTitle:[NSString stringWithFormat:@"%@·%@",self.startingPointDict[@"City"],self.startingPointDict[@"Name"]] forState:UIControlStateNormal];
-//    if ([self.trainView.endView.label.text isEqualToString:@"你要去哪儿"]) {
-//        [MBProgressHUD showError:@"请输入终点位置" toView:self.view];
-//        return ;
-//    }
-//    else {
-//
-//        [self priceLinePlanning:self.routeLine];
-//
-//        CLLocationCoordinate2D startingPt = CLLocationCoordinate2DMake([value[@"Lat"] doubleValue],[value[@"Lng"] doubleValue]);
-//        CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([self.endPointDict[@"Lat"] doubleValue],[self.endPointDict[@"Lng"] doubleValue]);
-//        [self routePlanningStarting:startingPt end:endPt srartCityStr:value[@"City"] endCity:self.endPointDict[@"City"]];
-//    }
+    NSLog(@"self.startingPointDict - %@",self.startingPointDict[@"Name"]);
 }
-
+#pragma mark  终点
 - (void)popViewControllerPassTheValue:(NSDictionary *)value
 {
     self.endPointDict = value;//终点信息字典复制
-    self.startingPointDict = value;
+//    self.startingPointDict = value;
     //终点位置显示
     NSString *progress = [NSString stringWithFormat:@"%@·%@",self.endPointDict[@"City"],self.endPointDict[@"Name"]];
     [_searchView.endButton setTitle:progress forState:UIControlStateNormal];
     
     //终点位置经纬度
-    CLLocationCoordinate2D startingPt = CLLocationCoordinate2DMake([self.startingPointDict[@"Lat"] doubleValue],[self.startingPointDict[@"Lng"] doubleValue]);
     CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([self.endPointDict[@"Lat"] doubleValue],[self.endPointDict[@"Lng"] doubleValue]);
-    NSLog(@"currPoin - %f currPoin - %f",self.currPoin.longitude,self.currPoin.latitude);
+    self.isSelectEnd = YES;
     [self openMapViewStartCityName:self.currCity startPT:self.currPoin endCityName:self.currCity endPT:endPt];
+    NSLog(@"路线规划");
 }
-
+#pragma mark 出租车要求
 - (void)showTaxiDetails
 {
-    UIView *taxiList = [[UIView alloc] init];
-    taxiList.backgroundColor = [UIColor orangeColor];
-    self.choosebackView = taxiList;
-    [self.view addSubview:taxiList];
-    
-    [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view.mas_left).offset(10);
-        make.right.equalTo(self.view.mas_right).offset(-10);
-        make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-        make.height.offset(200);
-    }];
-    
-    self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, taxiList.width, taxiList.height)];
-    self.chooseView.delegate = self;
-    [taxiList addSubview:self.chooseView];
-    
-    [self routeOfLine];
+        UIView *taxiList = [[UIView alloc] init];
+        taxiList.backgroundColor = [UIColor orangeColor];
+        self.choosebackView = taxiList;
+        [self.view addSubview:taxiList];
+        
+        [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.view.mas_left).offset(10);
+            make.right.equalTo(self.view.mas_right).offset(-10);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
+            make.height.offset(200);
+        }];
+        
+        self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, taxiList.width, taxiList.height)];
+        self.chooseView.delegate = self;
+        [taxiList addSubview:self.chooseView];
+
 }
 #pragma mark 点击事件
 - (void)didselectBtn:(NSInteger)types
@@ -678,39 +707,44 @@
         case 1:
             NSLog(@"重新预约");
             [self againForMap];
-            if (self.polyLine) {
-                self.locnImageView.hidden = NO;
-                [_mapView removeOverlay:self.polyLine];
-            }
-            if (self.straItem) {
-                [_mapView removeAnnotation:self.straItem];
-                [_mapView removeAnnotation:self.endItem];
-            }
-            [self.choosebackView removeFromSuperview];
             break;
         case 2:
             NSLog(@"拼车");
             self.chooseView.jointBtn.selected = self.isSeletJoin = YES;
             self.chooseView.anJointBtn.selected = NO;
-            [self routeOfLine];
+            self.isJoin = @"true";
             break;
         case 3:
             NSLog(@"不拼车");
             self.isSeletJoin = NO;
             self.chooseView.jointBtn.selected = self.isSeletJoin = NO;
             self.chooseView.anJointBtn.selected = YES;
+            self.isJoin = @"false";
             break;
         case 4:
             NSLog(@"呼叫出租车");
+            [self savingUserTraveList];
             break;
         case 5:
         {
             YBForMessageViewController *message = [[YBForMessageViewController alloc] init];
+            __weak __typeof(self)wself = self;
+            message.sendMessage = ^(NSString *message) {
+                wself.sendMessage = message;
+                NSLog(@"%@",message);
+            };
             [self.navigationController pushViewController:message animated:YES];
             NSLog(@"行程备注");
         }
             break;
         case 6:
+            self.chooseView.isCome.selected = !self.chooseView.isCome.selected;
+
+            if (self.chooseView.isCome.selected) {
+                self.isCome = @"true";
+            } else {
+                self.isCome = @"false";
+            }
             NSLog(@"打表来接");
             break;
             
@@ -718,65 +752,91 @@
             break;
     }
 }
-
+#pragma mark 呼叫出租车
 - (void)savingUserTraveList
 {
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+    dict[@"traveltypefid"] = @"2";
     //起点信息
     [dict setObject:self.startingPointDict[@"Lng"] forKey:@"startlng"];
     [dict setObject:self.startingPointDict[@"Lat"] forKey:@"startlat"];
     [dict setObject:self.startingPointDict[@"City"] forKey:@"startcity"];
     [dict setObject:self.startingPointDict[@"Name"] forKey:@"startaddress"];
     [dict setObject:self.startingPointDict[@"CityId"] forKey:@"startcityid"];
+    NSLog(@"self.startingPointDict - %@",self.startingPointDict[@"Name"]);
     //终点信息
     [dict setObject:self.endPointDict[@"Lng"] forKey:@"endlng"];
     [dict setObject:self.endPointDict[@"Lat"] forKey:@"endlat"];
     [dict setObject:self.endPointDict[@"City"] forKey:@"endcity"];
     [dict setObject:self.endPointDict[@"Name"] forKey:@"endaddress"];
     [dict setObject:self.endPointDict[@"District"] forKey:@"endroad"];//街道名称
+    [dict setObject:[NSString stringWithFormat:@"%d",self.routeLine.distance] forKey:@"mileage"];
     [dict setObject:self.endPointDict[@"CityId"] forKey:@"endcityid"];
+    dict[@"note"] = self.sendMessage;
+    dict[@"isbymetercome"] = self.isCome;
+    dict[@"isjoin"] = self.isJoin;
+    
+//    NSLog(@"taxi -  %@",dict);
+    [YBRequest postWithURL:TaxiTravel MutableDict:dict success:^(id dataArray) {
+//        NSLog(@"taxi -  %@",dataArray);
+        self.taxiSysNum = dataArray[@"SysNo"];
+        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+        [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+        dict[@"traveltypefid"] = @"2";
+        
+        [YBRequest postWithURL:TaxiTraveling MutableDict:dict success:^(id dataArray) {
+            NSLog(@"dataArray - --%@",dataArray);
+            self.userTravle = dataArray;
+            [self addCancelTraveView];
+        } failure:^(id dataArray) {
+            
+        }];
+    } failure:^(id dataArray) {
+
+    }];
 }
 
+#pragma mark - 价格计算
 - (void)routeOfLine
 {
-    
     [self priceLinePlanning:self.routeLine];
 }
-#pragma mark - 价格计算 没选人
+
 - (void)priceLinePlanning:(BMKDrivingRouteLine *)text {
+    NSString *URLStr = TaxiMoney;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:[NSString stringWithFormat:@"%d",text.distance] forKey:@"mileage"];
+    [dict setObject:self.currCityID forKey:@"startcityid"];
+    [dict setObject:@"false" forKey:@"isjoin"];
     
-//    [MBProgressHUD showOnlyLoadToView:self.amountMoney];
-    //1.创建队列组
-    dispatch_group_t group = dispatch_group_create();
-    //2.创建队列
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
-    dispatch_group_async(group,queue, ^{
-        //不拼车
-        NSString *URLStr = TaxiMoney;
-        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-        [dict setObject:[NSString stringWithFormat:@"%d",text.distance] forKey:@"mileage"];
-        [dict setObject:self.startingPointDict[@"CityId"] forKey:@"startcityid"];
-        [dict setObject:@"false" forKey:@"isjoin"];
+    [YBRequest postWithURL:URLStr MutableDict:dict success:^(id dataArray) {
+        YBLog(@"TravelCost- %@",dataArray);
+        [self.chooseView.jointBtn setTitle:[NSString stringWithFormat:@"拼车 %@",dataArray[@"TravelCost"]] forState:UIControlStateNormal];
+        //            self.amountMoney.numberStr = dataArray[@"TravelCost"];
+    } failure:^(id dataArray) {
         
-        [YBRequest postWithURL:URLStr MutableDict:dict success:^(id dataArray) {
-            YBLog(@"TravelCost- %@",dataArray);
-            [self.chooseView.jointBtn setTitle:[NSString stringWithFormat:@"拼车 %@",dataArray[@"TravelCost"]] forState:UIControlStateNormal];
-//            self.amountMoney.numberStr = dataArray[@"TravelCost"];
-        } failure:^(id dataArray) {
-        }];
-        
-    });
-    
-    //4.都完成后会自动通知
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-//        [MBProgressHUD hideHUDForView:self.amountMoney];
-    });
+    }];
 }
 
+#pragma mark 重新预约
 - (void)againForMap
 {
+    self.isSelectEnd = NO;
+    if (self.choosebackView) {
+        [self.choosebackView removeFromSuperview];
+    }
+    if (self.chooseView) {
+        [self.chooseView removeFromSuperview];
+    }
+    if (self.polyLine) {
+        self.locnImageView.hidden = NO;
+        [_mapView removeOverlay:self.polyLine];
+    }
+    if (self.straItem) {
+        [_mapView removeAnnotation:self.straItem];
+        [_mapView removeAnnotation:self.endItem];
+    }
     if (self.positionUserLocation.location) {//位置不为空
         //获取用户的坐标
         self.mapView.centerCoordinate = self.positionUserLocation.location.coordinate;
@@ -788,8 +848,57 @@
     }
 }
 
+#pragma mark 取消行程
+- (void)addCancelTraveView
+{
+//    [self.chooseView removeFromSuperview];
+    self.cancelView = [[YBCancelTraveView alloc] initWithFrame:CGRectMake(0, 0, self.choosebackView.width, self.choosebackView.height)];
+//    NSLog(@"self.userTravle - %@",self.userTravle);
+    [self.cancelView showDetailWith:self.userTravle];
+    __weak __typeof(self)wself = self;
+    self.cancelView.cancelBlock = ^(NSString *message) {
+        [wself traveCancel];
+    };
+    [self.choosebackView addSubview:self.cancelView];
+}
+
+- (void)traveCancel
+{
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+    dict[@"travelsysno"] = self.taxiSysNum;
+    [YBRequest postWithURL:travelinfocancelPath MutableDict:dict success:^(id dataArray) {
+        NSLog(@"cencel - %@",dataArray);
+//        [self.choosebackView removeFromSuperview];
+        [self againForMap];
+    } failure:^(id dataArray) {
+
+    }];
+    /*
+        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
+        [PPNetworkHelper POST:travelinfocancelPath parameters:dict success:^(id responseObject) {
+
+            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            NSString *decodedString=(__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL, (__bridge CFStringRef)str,CFSTR(""),CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+            NSLog(@"upload is succse :%@",decodedString);
+
+        } failure:^(NSError *error) {
+            NSLog(@"faile - :%@",error);
+        }];
+     */
+}
+
+
+
+
+
+
+
+
+
 - (void)driverButtonAction:(UIButton *)sender {
     YBTaxiDriverViewController *driver = [[YBTaxiDriverViewController alloc] init];
+    driver.currLocation = self.currPoin;
     [self.navigationController pushViewController:driver animated:YES];
 }
 

@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^UserMessage)(NSString *message);
 @interface YBForMessageViewController : UIViewController
+
+@property (nonatomic, copy) UserMessage sendMessage;
 
 @end

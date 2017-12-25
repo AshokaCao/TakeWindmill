@@ -20,12 +20,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535107109.322749"
+            timestampString = "535615969.206161"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "625"
-            endingLineNumber = "625"
-            landmarkName = "-popVCPassTheValue:"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
+            landmarkName = "-onGetPoiResult:result:errorCode:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x53d1;&#x5e03;&#x884c;&#x7a0b;/YBMapPositionSelectionVC.m"
+            timestampString = "535533136.015573"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
+            landmarkName = "-mapView:regionDidChangeAnimated:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
+            timestampString = "535615969.206263"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
+            landmarkName = "-openMapViewStartCityName:startPT:endCityName:endPT:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

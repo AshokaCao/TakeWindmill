@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface YBTaxiDriverViewController : UIViewController
-
+@property (nonatomic, assign) CLLocationCoordinate2D currLocation;
 @end

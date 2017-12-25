@@ -294,7 +294,7 @@ typedef struct Coordinate2D{
 {
     for (NSMutableDictionary *addDict in self.addressArray) {
         if ([addDict[@"TypeFID"] intValue] == type) {
-            YBLog(@"%@",addDict);
+//            YBLog(@"%@",addDict);
             self.searchArray = addDict;
             [self.searchArray setObject:addDict[@"Address"] forKey:@"Name"];
             [self.searchArray setObject:addDict[@"Address"] forKey:@"District"];
@@ -323,7 +323,7 @@ typedef struct Coordinate2D{
     [mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//关键字
     
     [YBRequest postWithURL:urlStr MutableDict:mutableDict success:^(id dataArray) {
-        YBLog(@"%@",dataArray);
+//        YBLog(@"%@",dataArray);
         if ([dataArray[@"CommonAddressList"] count] != 0) {// 如果没有设置返回为空
             self.addressArray = dataArray[@"CommonAddressList"];
             //填充label
@@ -364,7 +364,7 @@ typedef struct Coordinate2D{
     [mutableDict setObject:str forKey:@"region"];//区域
     
     [YBRequest postWithURL:urlStr MutableDict:mutableDict View:self.addresstableView success:^(id dataArray) {
-        YBLog(@"关键字检索成功返回数据:%@",dataArray);
+//        YBLog(@"关键字检索成功返回数据:%@",dataArray);
         //在此处理正常结果
         if (self.searchDict) {
             [self.searchDict removeAllObjects];
