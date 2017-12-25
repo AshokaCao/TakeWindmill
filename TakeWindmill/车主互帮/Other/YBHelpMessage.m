@@ -74,7 +74,7 @@
     [dataDict setObject:self.message forKey:@"message"];
     [dataDict setObject:self.replyStat forKey:@"replystat"];
     [dataDict setObject:self.send forKey:@"send"];
-    NSLog(@"dataDict==%@",dataDict);
+    //NSLog(@"dataDict==%@",dataDict);
     
     if (self.senderUserInfo) {
         NSMutableDictionary *__dic=[[NSMutableDictionary alloc]init];
@@ -103,7 +103,7 @@
         
         NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         dictionary = [NSDictionary changeType:dictionary];
-         NSLog(@"dictionary==%@",dictionary);
+         //NSLog(@"dictionary==%@",dictionary);
         if (dictionary) {
             self.content = dictionary[@"content"];
             self.extra = dictionary[@"extra"];

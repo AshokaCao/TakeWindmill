@@ -9,7 +9,7 @@
 #import <RongIMLib/RongIMLib.h>
 
 /*!
- 消息的类型名BB:TaxiStep
+ 消息的类型名BB:Taxi
  */
 #define RCDTaxiMessageTypeIdentifier @"BB:Taxi"
 
@@ -19,6 +19,7 @@
 @property(nonatomic, strong) NSString *SetoutTime;
 @property(nonatomic, strong) NSString *StartAddress;
 @property(nonatomic, strong) NSString *TravelSysNo;
+
 @end
 
 //op字段
