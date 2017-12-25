@@ -20,12 +20,6 @@
     return msg;
 }
 
-///消息是否存储，是否计入未读数
-+(RCMessagePersistent)persistentFlag {
-    return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
-}
-
-
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     //告诉系统归档的属性是哪些
@@ -72,14 +66,6 @@
 //        [dataDict setObject:self.extra forKey:@"extra"];
 //    }
     
-//    [dataDict setObject:self.PassengerInvite forKey:@"PassengerInvite"];
-//    [dataDict setObject:self.BindPassenger forKey:@"BindPassenger"];
-//    [dataDict setObject:self.ArriveToStart forKey:@"ArriveToStart"];
-//    [dataDict setObject:self.PassangerGetOn forKey:@"PassangerGetOn"];
-//    [dataDict setObject:self.PassangerArriveToEnd forKey:@"PassangerArriveToEnd"];
-//    [dataDict setObject:self.PassangerPay forKey:@"PassangerPay"];
-//    [dataDict setObject:self.DriverTravelCancel forKey:@"DriverTravelCancel"];
-//    [dataDict setObject:self.PassengerTravelCancel forKey:@"PassengerTravelCancel"];
     [dataDict setObject:self.travelinfo forKey:@"travelinfo"];
     [dataDict setObject:self.op forKey:@"op"];
    
@@ -115,22 +101,16 @@
         if (dictionary) {
             self.content = dictionary[@"content"];
             //self.extra = dictionary[@"extra"];
-            
-//            self.PassengerInvite = dictionary[@"PassengerInvite"];
-//            self.BindPassenger = dictionary[@"BindPassenger"];
-//            self.ArriveToStart = dictionary[@"ArriveToStart"];
-//            self.PassangerGetOn = dictionary[@"PassangerGetOn"];
-//            self.PassangerArriveToEnd = dictionary[@"PassangerArriveToEnd"];
-//            self.DriverTravelCancel = dictionary[@"DriverTravelCancel"];
-//            self.PassangerPay = dictionary[@"PassangerPay"];
-//            self.PassengerTravelCancel = dictionary[@"PassengerTravelCancel"];
+
             self.travelinfo = dictionary[@"travelinfo"];
             self.op = dictionary[@"op"];
-            
-//            NSDictionary *userinfoDic = dictionary[@"user"];
-//            [self decodeUserInfo:userinfoDic];
         }
     }
+}
+
+///消息是否存储，是否计入未读数
++(RCMessagePersistent)persistentFlag {
+    return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
 }
 /// 会话列表中显示的摘要
 - (NSString *)conversationDigest
@@ -139,6 +119,7 @@
 }
 ///消息的类型名
 +(NSString *)getObjectName {
+    
     return RCDTaxiMessageTypeIdentifier;
 }
 #if ! __has_feature(objc_arc)
@@ -187,40 +168,3 @@
 }
 @end
 
-
-@implementation OpInfo
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-    //告诉系统归档的属性是哪些
-    unsigned int count = 0;//表示对象的属性个数
-    Ivar *ivars = class_copyIvarList([OpInfo class], &count);
-    for (int i = 0; i<count; i++) {
-        //拿到Ivar
-        Ivar ivar = ivars[i];
-        const char *name = ivar_getName(ivar);//获取到属性的C字符串名称
-        NSString *key = [NSString stringWithUTF8String:name];//转成对应的OC名称
-        //归档 -- 利用KVC
-        [coder encodeObject:[self valueForKey:key] forKey:key];
-    }
-    free(ivars);
-}
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super init];
-    if (self) {
-        //解档
-        unsigned int count = 0;
-        Ivar *ivars = class_copyIvarList([OpInfo class], &count);
-        for (int i = 0; i<count; i++) {
-            Ivar ivar = ivars[i];
-            const char *name = ivar_getName(ivar);
-            NSString *key = [NSString stringWithUTF8String:name];
-            id value = [coder decodeObjectForKey:key];
-            [self setValue:value forKey:key];
-        }
-        free(ivars);
-    }
-    return self;
-}
-@end
