@@ -18,7 +18,7 @@
 
 - (void)showDetailWith:(YBTaxiStrokeModel *)diction
 {
-    [self.userHeaderImageView sd_setImageWithURL:[NSURL URLWithString:diction.HeadImgUrl] placeholderImage:[UIImage imageNamed:@""]];
+    [self.userHeaderImageView sd_setImageWithURL:[NSURL URLWithString:diction.HeadImgUrl] placeholderImage:[UIImage imageNamed:@"橙色圈32"]];
     self.userNameLabel.text = diction.UserName;
     self.starLabel.text = diction.StartAddress;
     self.endLabel.text = diction.EndAddress;

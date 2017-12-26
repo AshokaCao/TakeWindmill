@@ -31,13 +31,13 @@
 - (void)getNearDatails
 {
     self.strokeArray = [NSMutableArray array];
-    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    NSString *userID = [YBUserDefaults valueForKey:_userId];
-    dict[@"userid"] = userID;
-    dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
-    dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
+    NSMutableDictionary *dict = [YBUserDefaults valueForKey:@"currentLocation"];
+    NSMutableDictionary *currDict = [YBTooler dictinitWithMD5];
+    currDict[@"userid"] = dict[@"userid"];
+    currDict[@"currentlng"] = [NSString stringWithFormat:@"%@",dict[@"lng"]];
+    currDict[@"currentlat"] = [NSString stringWithFormat:@"%@",dict[@"lat"]];
     NSLog(@"current - dict %@",dict);
-    [YBRequest postWithURL:TaxiNear MutableDict:dict success:^(id dataArray) {
+    [YBRequest postWithURL:TaxiNear MutableDict:currDict success:^(id dataArray) {
         NSLog(@"current - details %@",dataArray);
         NSDictionary *diction = dataArray;
         for (NSDictionary *taxiDic in diction[@"TravelInfoList"]) {
