@@ -48,7 +48,7 @@
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     NSString *userID = [YBUserDefaults valueForKey:_userId];
     dict[@"userid"] = userID;
-    NSLog(@"坐标 %@",dict);
+    NSLog(@"坐标 - %@",TaxiStrokeTable);
     self.strokeArray = [NSMutableArray array];
     [YBRequest postWithURL:TaxiStrokeTable MutableDict:dict success:^(id dataArray) {
         NSLog(@"dataArray - %@",dataArray);

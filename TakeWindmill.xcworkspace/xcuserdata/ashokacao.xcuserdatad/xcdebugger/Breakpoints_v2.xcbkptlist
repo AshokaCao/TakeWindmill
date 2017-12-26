@@ -68,11 +68,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535882546.79995"
+            timestampString = "535949175.023135"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563">
+            startingLineNumber = "508"
+            endingLineNumber = "508">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -82,11 +82,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535882546.800012"
+            timestampString = "535949175.0232"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563">
+            startingLineNumber = "508"
+            endingLineNumber = "508">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -96,11 +96,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535882546.800069"
+            timestampString = "535949175.023246"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563">
+            startingLineNumber = "508"
+            endingLineNumber = "508">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -110,11 +110,59 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535882546.800126"
+            timestampString = "535949175.023288"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563">
+            startingLineNumber = "508"
+            endingLineNumber = "508">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x8f66;&#x4e3b;&#x4e92;&#x5e2e;/Other/YBTaxiStepModel.m"
+            timestampString = "535947436.871035"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "-encode"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x5171;&#x7528;/MacroDefinition.h"
+            timestampString = "535947436.871097"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x5171;&#x7528;/MacroDefinition.h"
+            timestampString = "535947436.87161"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

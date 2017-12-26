@@ -464,7 +464,6 @@
     }
 }
 
-
 - (void)initWithlocService
 {
     YZLocationManager *manager = [YZLocationManager sharedLocationManager];
@@ -472,7 +471,7 @@
     manager.locationInterval = 10;
     [manager setYZBackGroundLocationHander:^(CLLocationCoordinate2D coordinate) {
 //        _plc(coordinate);
-        NSLog(@">>>>>>>>>>>>>%f,,%f",coordinate.latitude,coordinate.longitude);
+//        NSLog(@">>>>>>>>>>>>>%f,,%f",coordinate.latitude,coordinate.longitude);
         //起点位置信息
         NSMutableDictionary *dict = [YBTooler dictinitWithMD5];;
         
@@ -480,19 +479,19 @@
         dict[@"userid"] = userID;
         [dict setObject:[NSString stringWithFormat:@"%f",coordinate.longitude] forKey:@"lng"];
         [dict setObject:[NSString stringWithFormat:@"%f",coordinate.latitude] forKey:@"lat"];
-        NSLog(@"dict - %@",dict);
+//        NSLog(@"dict - %@",dict);
+        [YBUserDefaults setObject:dict forKey:@"currentLocation"];
+        [YBUserDefaults synchronize];
         [self uploadCurrentLocationWith:dict];
     }];
     
     [manager startLocationService];
 }
 
-
-
 - (void)uploadCurrentLocationWith:(NSMutableDictionary *)location
 {
     [PPNetworkHelper POST:TaxiSaveLocation parameters:location success:^(id responseObject) {
-        NSLog(@"current - %@",responseObject);
+//        NSLog(@"current - %@",responseObject);
     } failure:^(NSError *error) {
 
     }];

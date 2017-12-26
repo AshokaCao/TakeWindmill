@@ -230,8 +230,6 @@
  */
 -(void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left
 {
-    //YBHelpMessage *helpMessage = (YBHelpMessage *)message.content;
-    NSLog(@"content==%@",message.content);
     YBTaxiStepModel *taxiStep = (YBTaxiStepModel *)message.content;
      NSLog(@"taxiStep==%@",taxiStep);
    

@@ -60,7 +60,7 @@
 -(NSData *)encode {
     NSMutableDictionary *dataDict=[NSMutableDictionary dictionary];
     
-    NSLog(@"dataDict==%@",dataDict);
+    NSLog(@"dataDict == %@",dataDict);
     [dataDict setObject:self.content forKey:@"content"];
 //    if (self.extra) {
 //        [dataDict setObject:self.extra forKey:@"extra"];
