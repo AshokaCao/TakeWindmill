@@ -26,6 +26,8 @@
 @property(nonatomic,strong) NSString * PublicKey;
 //"PrivateKey":"",
 @property(nonatomic,strong) NSString * PrivateKey;
+@property(nonatomic,strong) NSString * PrivateKeyIOS;
+
 //"APPID":"2017103009610990",
 @property(nonatomic,strong) NSString * APPID;
 //"Sign":null,

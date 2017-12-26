@@ -10,6 +10,7 @@
 #import "YBInformationCell.h"
 #import "YBSettingDetailVC.h"
 #import "YBCommonAddressVC.h"
+#import "YBSettingModel.h"
 
 @interface YBSettingVC ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) UITableView *identityTabView;
@@ -135,7 +136,7 @@ static CGFloat headerH = 20;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    WEAK_SELF;
     YBInformationCell * cell = [tableView cellForRowAtIndexPath:indexPath];
     
     
@@ -152,7 +153,25 @@ static CGFloat headerH = 20;
         }
         
     } else if (indexPath.section == 1){
-        if (indexPath.row == 0) {
+        if (indexPath.row == 0) {//版本更新
+        
+            NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
+            //[mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
+            
+            [YBRequest postWithURL:sysinfoGetsysinfo MutableDict:mutableDict success:^(id dataArray) {
+                //YBLog(@"%@",dataArray);
+                YBSettingModel * model = [YBSettingModel yy_modelWithJSON:dataArray];
+                model.version = @"1.2.1";
+                if ([HSHString compareVersion:model.version to:[HSHString getAppCurVersion]]) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/qq/id444934666?mt=8"]];
+                }else{
+                     [MBProgressHUD showError:@"已是最新版本" toView:weakSelf.view];
+                }
+                
+            } failure:^(id dataArray) {
+                [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+            }];
+            
             
         }else{
             vc.isAbout = YES;
@@ -186,6 +205,7 @@ static CGFloat headerH = 20;
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

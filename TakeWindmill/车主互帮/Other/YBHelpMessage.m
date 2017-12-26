@@ -25,19 +25,6 @@
     }
     return msg;
 }
-///消息是否存储，是否计入未读数
-+(RCMessagePersistent)persistentFlag {
-    return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
-}
-
-#pragma mark – NSCoding protocol methods
-#define KEY_TXTMSG_CONTENT @"content"
-#define KEY_TXTMSG_extra @"extra"
-#define KEY_TXTMSG_user @"user"
-#define KEY_TXTMSG_driverInfo @"driverInfo"
-#define KEY_TXTMSG_message @"message"
-#define KEY_TXTMSG_replyStat @"replyStat"
-#define KEY_TXTMSG_send @"send"
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
@@ -72,35 +59,6 @@
     }
     return self;
 }
-/*
-/// NSCoding
-- (instancetype)initWithCoder:(NSCoder *)aDecoder//解码
-{
-    self = [super init];
-    if (self) {
-        self.content = [aDecoder decodeObjectForKey:KEY_TXTMSG_CONTENT];
-        self.extra = [aDecoder decodeObjectForKey:KEY_TXTMSG_extra];
-        self.user = [aDecoder decodeObjectForKey:KEY_TXTMSG_user];
-        self.driverInfo = [aDecoder decodeObjectForKey:KEY_TXTMSG_driverInfo];
-        self.message = [aDecoder decodeObjectForKey:KEY_TXTMSG_message];
-        self.replyStat = [aDecoder decodeObjectForKey:KEY_TXTMSG_replyStat];
-        self.send = [aDecoder decodeObjectForKey:KEY_TXTMSG_send];
-        
-    }
-    return self;
-}
-/// NSCoding
-- (void)encodeWithCoder:(NSCoder *)aCoder//存储
-{
-    [aCoder encodeObject:self.content forKey:KEY_TXTMSG_CONTENT];
-    [aCoder encodeObject:self.extra forKey:KEY_TXTMSG_extra];
-    [aCoder encodeObject:self.user forKey:KEY_TXTMSG_user];
-    [aCoder encodeObject:self.driverInfo forKey:KEY_TXTMSG_driverInfo];
-    [aCoder encodeObject:self.message forKey:KEY_TXTMSG_message];
-    [aCoder encodeObject:self.replyStat forKey:KEY_TXTMSG_replyStat];
-    [aCoder encodeObject:self.send forKey:KEY_TXTMSG_send];
-    
-}*/
 
 #pragma mark – RCMessageCoding delegate methods
 ///将消息内容编码成json
@@ -116,7 +74,7 @@
     [dataDict setObject:self.message forKey:@"message"];
     [dataDict setObject:self.replyStat forKey:@"replystat"];
     [dataDict setObject:self.send forKey:@"send"];
-   // NSLog(@"dataDict==%@",dataDict);
+    //NSLog(@"dataDict==%@",dataDict);
     
     if (self.senderUserInfo) {
         NSMutableDictionary *__dic=[[NSMutableDictionary alloc]init];
@@ -145,7 +103,7 @@
         
         NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         dictionary = [NSDictionary changeType:dictionary];
-        // NSLog(@"dictionary==%@",dictionary);
+         //NSLog(@"dictionary==%@",dictionary);
         if (dictionary) {
             self.content = dictionary[@"content"];
             self.extra = dictionary[@"extra"];
@@ -159,6 +117,10 @@
         }
     }
 }
+///消息是否存储，是否计入未读数
++(RCMessagePersistent)persistentFlag {
+    return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
+}
 /// 会话列表中显示的摘要
 - (NSString *)conversationDigest
 {
@@ -166,7 +128,7 @@
 }
 ///消息的类型名
 +(NSString *)getObjectName {
-    return RCDTestMessageTypeIdentifier;
+    return RCDHelpMessageTypeIdentifier;
 }
 #if ! __has_feature(objc_arc)
 -(void)dealloc

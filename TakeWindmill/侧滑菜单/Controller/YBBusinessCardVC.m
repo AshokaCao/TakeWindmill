@@ -14,6 +14,8 @@
 @property (nonatomic, strong) UIImageView* qrImgView;
 //@property (nonatomic, strong) UIImageView* logoImgView;
 
+@property (nonatomic, strong) UILabel *number;
+
 @end
 
 @implementation YBBusinessCardVC
@@ -42,6 +44,7 @@
     number.frame = CGRectMake(0, CGRectGetMaxY(label.frame)+10, YBWidth, 20);
     number.text = @"9999999";
     [self.view addSubview:number];
+    self.number = number;
     
     
     //二维码
@@ -64,8 +67,29 @@
 
 - (void)createQR_logo
 {
+    WEAK_SELF;
     
-    _qrImgView.image = [ZXingWrapper createCodeWithString:@"https://www.baidu.com" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatQRCode];
+    NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
+    [mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
+    
+    
+    [YBRequest postWithURL:userMycardinfo MutableDict:mutableDict success:^(id dataArray) {
+        //YBLog(@"%@",dataArray);
+        /*
+        DownloadUrl = http://weixin.qq.com/r/dSmEnHPE5S6arTf-93xn;
+        UserId = ;
+        CommendCode = 000088;
+        HasError = 0;
+        ErrorMessage = ;*/
+        
+        weakSelf.number.text = dataArray[@"CommendCode"];
+        
+         weakSelf.qrImgView.image = [ZXingWrapper createCodeWithString:dataArray[@"DownloadUrl"] size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatQRCode];
+    } failure:^(id dataArray) {
+        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
+    
+   
 
     
 //    CGSize logoSize=CGSizeMake(30, 30);

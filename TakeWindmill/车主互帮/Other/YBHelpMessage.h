@@ -11,8 +11,7 @@
 /*!
 消息的类型名
  */
-#define RCDTestMessageTypeIdentifier @"BB:Help"
-#define RCDTaxiMessageTypeIdentifier @"BB:TaxiStep"
+#define RCDHelpMessageTypeIdentifier @"BB:Help"
 
 @interface UserInfo : RCMessageContent
 @property(nonatomic, strong) NSString *icon;
@@ -41,12 +40,7 @@
 @property(nonatomic, strong) NSString *message;
 @property(nonatomic, assign) NSString *replyStat;
 @property(nonatomic, assign) NSString *send;
-/* 推送的单子*/
-@property (nonatomic, strong) NSString *EndAddress;
-@property (nonatomic, strong) NSString *Mileage;
-@property (nonatomic, strong) NSString *SetoutTime;
-@property (nonatomic, strong) NSString *StartAddress;
-@property (nonatomic, strong) NSString *TravelSysNo;
+
 
 +(instancetype)messageWithContent:(NSString *)content;
 @end

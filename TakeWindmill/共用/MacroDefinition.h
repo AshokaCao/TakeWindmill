@@ -8,6 +8,8 @@
 
 //百度地图apk
 #define BMMapKey @"GRLxwuup0DkvSAeg8Ab3cawpcB5RPNSc"
+//融云 key
+#define rongAppKey @"82hegw5u8k8ex"
 //记录状态
 #define YBUserDefaults [NSUserDefaults standardUserDefaults] 
 //用户账号
@@ -21,11 +23,31 @@
 //个人中心
 #define kPersonreloadData @"PersonreloadData"
 
-
-// 测试端口 121.40.76.10:88
+// 测试端口 121.40.76.10:88//接口
 // 正式端口 www.bibizl.com
-//接口地址(临时)
+// 测试端口 121.40.76.10:93//图片
+// 正式端口 img.bibizl.com
+#if 0
+/**
+ *======================正式环境
+ */
+#define ServerPath @"http://www.bibizl.com/Service/"
+//长传图片
+#define UploadPhoto @"http://img.bibizl.com/UploadService.ashx"
+//下载图片
+#define DownloadPhoto(name)      [NSString stringWithFormat:@"http://img.bibizl.com/images/driver/%@.png",name]
+
+#else
+/**
+ *======================测试环境
+ */
 #define ServerPath @"http://121.40.76.10:88/Service/"
+//长传图片
+#define UploadPhoto @"http://121.40.76.10:93/UploadService.ashx"
+//下载图片
+#define DownloadPhoto(name)      [NSString stringWithFormat:@"http://121.40.76.10:93/images/driver/%@.png",name]
+
+#endif
 
 //用户检测验证
 #define CheckuserPath (ServerPath@"user/checkuser?")
@@ -110,14 +132,6 @@
 //司机跨域乘客检索列表
 #define passengeroverareadriverlistPath (ServerPath@"travel/passengeroverareadriverlist?")
 
-
-// 测试端口 121.40.76.10:93
-// 正式端口 img.bibizl.com
-//长传图片
-#define UploadPhoto @"http://121.40.76.10:93/UploadService.ashx"
-
-//下载图片
-#define DownloadPhoto(name)      [NSString stringWithFormat:@"http://img.bibizl.com/images/driver/%@.png",name]
 //上传路况信息
 #define UploadContent (ServerPath@"roadcondition/roadconditionsave")
 
@@ -181,7 +195,7 @@
 //根据UserId获取用户信息
 #define UserUserinfodetailbyuserid (ServerPath@"user/userinfodetailbyuserid")
 
-#define Alipay (ServerPath@"apiconfig")
+#define Apiconfig (ServerPath@"apiconfig")
 
 //融云获取Token
 #define RongcloudGettoken (ServerPath@"rongcloud/gettoken")
@@ -237,6 +251,17 @@
 //
 #define WeixinPay (ServerPath@"pay/travelweixinorderunifyapp")
 
+//支付宝发起支付接口（APP）
+#define AliPay (ServerPath@"pay/travelalipayorderapp")
+
+#define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
+
+//我的名片信息
+#define userMycardinfo (ServerPath@"user/mycardinfo")
+
+//获取系统信息
+#define sysinfoGetsysinfo (ServerPath@"sysinfo/getsysinfo")
+
 //打车费用计算（出租车）
 #define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
 
@@ -256,3 +281,4 @@
 
 //用户位置信息保存（单个，实时）
 #define TaxiSaveLocation (ServerPath@"userruntime/setuserposition")
+

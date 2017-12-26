@@ -57,26 +57,7 @@ static NSArray *imageArray;
     [self setUI];
     
 }
--(void)setData{
-    WEAK_SELF;
-    //获取家和公司位置
-    NSString *urlStr = commonaddresslistPath;
-    NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
-    [mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//关键字
-    
-    [YBRequest postWithURL:urlStr MutableDict:mutableDict success:^(id dataArray) {
-        YBLog(@"%@",dataArray);
-        if ([dataArray[@"CommonAddressList"] count] != 0) {// 如果没有设置返回为空
-            weakSelf.addressArray = dataArray[@"CommonAddressList"];
-            for (int i = 0; i<weakSelf.addressArray.count; i++) {
-                [weakSelf.addressDic setValue:[HSHString IsNotNull:weakSelf.addressArray[i][@"Address"]] forKey:[HSHString toString:i]];
-            }
-            [weakSelf.identityTabView reloadData];
-        }
-       
-    } failure:^(id dataArray) {
-    }];
-}
+
 -(void)setUI{
     [self.view addSubview:self.identityTabView];
     [self.identityTabView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -127,7 +108,11 @@ static NSArray *imageArray;
     cell.imageView.image = [UIImage imageNamed:imageArray[indexPath.row]];
     cell.textLabel.text = textArray[indexPath.row];
     
-    NSString * address = [self.addressDic objectForKey:[HSHString toString:indexPath.row]];
+   
+    NSInteger type = indexPath.row+1;
+    NSString * address = [self.addressDic objectForKey:[HSHString toString:type]];
+    
+    YBLog(@"address==%@,type==%ld,addressDic==%@",address,type,self.addressDic);
     cell.detailTextLabel.text = address.length>0 ? address : [NSString stringWithFormat:@"设置%@的地址",cell.textLabel.text];
     
     //设置 选择 图标
@@ -166,10 +151,11 @@ static NSArray *imageArray;
 //设置具体的编辑操作（新增，删除）
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSLog(@"-----删除------%ld",indexPath.row);
+    //NSLog(@"-----删除------%ld",indexPath.row);
     ////删除对应数据
 //    [_addressArray removeObjectAtIndex:indexPath.row];
-    [self.addressDic setObject:@"" forKey:[HSHString toString:indexPath.row]];
+    [self.addressDic setObject:@"" forKey:[HSHString toString:indexPath.row+1]];
+    [self deleteAddressInformationTypefid:indexPath.row+1];
     
     
     // tableView刷新方式1    重新加载tableView，没有动画效果
@@ -208,7 +194,7 @@ static NSArray *imageArray;
 - (void)popViewControllerPassTheValue:(NSDictionary *)value{
     //YBLog(@"value==%@",value);
     
-    [self.addressDic setObject:value[@"Name"] forKey:[HSHString toString:selectIndexPath.row]];
+    [self.addressDic setObject:value[@"Name"] forKey:[HSHString toString:selectIndexPath.row+1]];
     [self.identityTabView reloadData];
     
     
@@ -229,6 +215,30 @@ static NSArray *imageArray;
     
     self.startingPointDict = dict;
 }
+#pragma mark - 获取家和公司
+-(void)setData{
+    WEAK_SELF;
+    //获取家和公司
+    NSString *urlStr = commonaddresslistPath;
+    NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
+    [mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//关键字
+    
+    [YBRequest postWithURL:urlStr MutableDict:mutableDict success:^(id dataArray) {
+        //YBLog(@"%@",dataArray);
+        if ([dataArray[@"CommonAddressList"] count] != 0) {// 如果没有设置返回为空
+            weakSelf.addressArray = dataArray[@"CommonAddressList"];
+            for (int i = 0; i<weakSelf.addressArray.count; i++) {
+                
+                NSString *typeFID =  weakSelf.addressArray[i][@"TypeFID"];
+                [weakSelf.addressDic setValue:[HSHString IsNotNull:weakSelf.addressArray[i][@"Address"]] forKey:[HSHString toString:typeFID.integerValue]];
+            }
+            [weakSelf.identityTabView reloadData];
+        }
+        
+    } failure:^(id dataArray) {
+        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
+}
 #pragma mark - 上传地址信息
 - (void)uploadAddressInformation:(NSDictionary *)dict
 {
@@ -246,10 +256,35 @@ static NSArray *imageArray;
     
     [YBRequest postWithURL:urlStr MutableDict:mutableDict success:^(id dataArray) {
         //YBLog(@"%@",dataArray);
+        [MBProgressHUD showError:@"编辑地址成功" toView:weakSelf.view];
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
     } failure:^(id dataArray) {
+        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
     }];
 }
+#pragma mark - //删除家和公司
+- (void)deleteAddressInformationTypefid:(NSInteger)typefid
+{
+    NSString *urlStr = commonaddressdeletePath;
+    NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
+    NSString * null = @"";
+    
+    [mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
+    [mutableDict setObject:null forKey:@"lng"];//经度
+    [mutableDict setObject:null  forKey:@"lat"];//纬度
+    [mutableDict setObject:null forKey:@"cityid"];//城市id
+    [mutableDict setObject:null forKey:@"city"];//城市
+    [mutableDict setObject:null forKey:@"address"];//地址
+    [mutableDict setObject:[HSHString toString:typefid] forKey:@"typefid"];//1-家，2-公司，3-常用1，4-常用2
+    WEAK_SELF;
+    [YBRequest postWithURL:urlStr MutableDict:mutableDict success:^(id dataArray) {
+        //YBLog(@"%@",dataArray);
+        [MBProgressHUD showError:@"删除成功" toView:weakSelf.view];
+    } failure:^(id dataArray) {
+        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

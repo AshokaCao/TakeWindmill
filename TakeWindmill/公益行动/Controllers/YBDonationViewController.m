@@ -58,7 +58,7 @@
     
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     dict[@"configtype"] = @"alipay";
-    [YBRequest postWithURL:Alipay MutableDict:dict success:^(id dataArray) {
+    [YBRequest postWithURL:Apiconfig MutableDict:dict success:^(id dataArray) {
         NSDictionary *diction = dataArray;
         NSDictionary *newsDic = [self dictionWithJson:diction[@"ConfigBody"]];
         NSLog(@"---- %@",newsDic);
