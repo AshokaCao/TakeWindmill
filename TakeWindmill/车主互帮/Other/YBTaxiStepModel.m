@@ -110,7 +110,8 @@
 
 ///消息是否存储，是否计入未读数
 +(RCMessagePersistent)persistentFlag {
-    return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
+    //return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
+    return MessagePersistent_NONE;
 }
 /// 会话列表中显示的摘要
 - (NSString *)conversationDigest
