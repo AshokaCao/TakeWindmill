@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535882546.799769"
+            timestampString = "535968131.246278"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "341"
-            endingLineNumber = "341"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
             landmarkName = "-onGetPoiResult:result:errorCode:"
             landmarkType = "7">
          </BreakpointContent>
@@ -35,28 +35,12 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x53d1;&#x5e03;&#x884c;&#x7a0b;/YBMapPositionSelectionVC.m"
-            timestampString = "535533136.015573"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
-            landmarkName = "-mapView:regionDidChangeAnimated:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x51fa;&#x79df;&#x8f66;/Controllers/YBTaxiViewController.mm"
-            timestampString = "535882546.799864"
+            timestampString = "535968131.24644"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "197"
-            endingLineNumber = "197"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "-openMapViewStartCityName:startPT:endCityName:endPT:"
             landmarkType = "7">
          </BreakpointContent>
@@ -68,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535949175.023135"
+            timestampString = "535958486.489315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508">
+            startingLineNumber = "506"
+            endingLineNumber = "506">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -82,11 +66,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535949175.0232"
+            timestampString = "535958486.489584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508">
+            startingLineNumber = "506"
+            endingLineNumber = "506">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -96,11 +80,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535949175.023246"
+            timestampString = "535958486.489765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508">
+            startingLineNumber = "506"
+            endingLineNumber = "506">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -110,27 +94,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x9996;&#x9875;/YBHomeViewController.m"
-            timestampString = "535949175.023288"
+            timestampString = "535958486.489945"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x8f66;&#x4e3b;&#x4e92;&#x5e2e;/Other/YBTaxiStepModel.m"
-            timestampString = "535947436.871035"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "-encode"
-            landmarkType = "7">
+            startingLineNumber = "506"
+            endingLineNumber = "506">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

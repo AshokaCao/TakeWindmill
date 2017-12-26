@@ -42,7 +42,7 @@
     __block UIBackgroundTaskIdentifier bgTaskId = UIBackgroundTaskInvalid;
     if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]){
         bgTaskId = [application beginBackgroundTaskWithExpirationHandler:^{
-            NSLog(@"后台任务 %lu 过期", (unsigned long)bgTaskId);
+//            NSLog(@"后台任务 %lu 过期", (unsigned long)bgTaskId);
             
             [self.bgTaskIdList removeObject:@(bgTaskId)];
             [application endBackgroundTask:bgTaskId];
@@ -52,12 +52,12 @@
         if ( self.masterTaskId == UIBackgroundTaskInvalid )
         {
             self.masterTaskId = bgTaskId;
-            NSLog(@"开始主任务 %lu", (unsigned long)self.masterTaskId);
+//            NSLog(@"开始主任务 %lu", (unsigned long)self.masterTaskId);
         }
         else
         {
             //add this id to our list
-            NSLog(@"启动后台任务 %lu", (unsigned long)bgTaskId);
+//            NSLog(@"启动后台任务 %lu", (unsigned long)bgTaskId);
             [self.bgTaskIdList addObject:@(bgTaskId)];
             [self endBackgroundTasks];
         }
@@ -85,23 +85,23 @@
         for ( NSUInteger i=(all?0:1); i<count; i++ )
         {
             UIBackgroundTaskIdentifier bgTaskId = [[self.bgTaskIdList objectAtIndex:0] integerValue];
-            NSLog(@"正在结束后台任务 id -%lu", (unsigned long)bgTaskId);
+//            NSLog(@"正在结束后台任务 id -%lu", (unsigned long)bgTaskId);
             [application endBackgroundTask:bgTaskId];
             [self.bgTaskIdList removeObjectAtIndex:0];
         }
         if ( self.bgTaskIdList.count > 0 )
         {
-            NSLog(@"持续后台任务 id %@", [self.bgTaskIdList objectAtIndex:0]);
+//            NSLog(@"持续后台任务 id %@", [self.bgTaskIdList objectAtIndex:0]);
         }
         if ( all )
         {
-            NSLog(@"没有更多的后台任务");
+//            NSLog(@"没有更多的后台任务");
             [application endBackgroundTask:self.masterTaskId];
             self.masterTaskId = UIBackgroundTaskInvalid;
         }
         else
         {
-            NSLog(@"保持主后台任务 id %lu", (unsigned long)self.masterTaskId);
+//            NSLog(@"保持主后台任务 id %lu", (unsigned long)self.masterTaskId);
         }
     }
 }

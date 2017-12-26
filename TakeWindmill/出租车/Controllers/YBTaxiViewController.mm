@@ -31,6 +31,8 @@
 #import "YBForMessageViewController.h"
 #import "YBCancelTraveView.h"
 
+#import "YBTaxiStepModel.h"
+
 @interface YBTaxiViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate,UITextFieldDelegate,BMKPoiSearchDelegate,BMKRouteSearchDelegate, YBMapPositionSelectionVCDelegate, YBAddressSearchSelectionVCDelegate, YBTaxiChooseViewDelegate>
 //搜索框
 @property (nonatomic, strong) YBSearchView *searchView;
@@ -86,6 +88,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     [_mapView viewWillAppear];
     _mapView.delegate = self;
     _locService.delegate = self;
@@ -147,6 +150,7 @@
     [self jinXiangBin];
     
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taxiNotification:)name:@"TaxiNotigication" object:nil];
     
     _routeSearch = [[BMKRouteSearch alloc] init];
     _routeSearch.delegate = self;
@@ -890,10 +894,54 @@
 
 
 
+- (void)taxiNotification:(NSNotification *)notification{
+    
+    YBTaxiStepModel *model = notification.userInfo[@"TaxiNotigication"];
+    
+    NSLog(@"－－－－－接收到通知------%@",model.travelinfo);
+    NSString *taxiType = [NSString stringWithFormat:@"%@",model.content];
+//    NSString *taxiState = [NSString stringWithFormat:@"%@",model.op];
+    if ([taxiType isEqualToString:@"操作信息"]) {
+        NSString *taxiState = [NSString stringWithFormat:@"%@",model.op];
+        if ([taxiState isEqualToString:@"PassengerInvite"]) {
+            
+        } else if ([taxiState isEqualToString:@"PassengerInvite"]) {
+            
+        } else if ([taxiState isEqualToString:@"BindPassenger"]) {
+            [self actionSheetWith:@"司机已接单" andMessage:@"司机已经接单,请准备好与之同行."];
+        } else if ([taxiState isEqualToString:@"ArriveToStart"]) {
+            [self actionSheetWith:@"司机到达乘客上车点" andMessage:@"司机到达乘客上车点,请准备好与之同行."];
+        } else if ([taxiState isEqualToString:@"PassangerGetOn"]) {
+            [self actionSheetWith:@"司机已确认乘客上车" andMessage:@"司机已确认乘客上车,请准备好与之同行."];
+        } else if ([taxiState isEqualToString:@"PassangerArriveToEnd"]) {
+            [self actionSheetWith:@"司机已确认到达目的地" andMessage:@"司机已确认到达目的地,请带好行李物品."];
+        } else if ([taxiState isEqualToString:@"PassangerPay"]) {
+            [self actionSheetWith:@"乘客付款" andMessage:@"乘客已确认付款"];
+        } else if ([taxiState isEqualToString:@"DriverTravelCancel"]) {
+            [self actionSheetWith:@"司机取消行程" andMessage:@"司机取消行程,请注意查看."];
+        } else if ([taxiState isEqualToString:@"PassengerTravelCancel"]) {
+            [self actionSheetWith:@"乘客取消行程" andMessage:@"乘客取消行程,请注意查看."];
+        }
+    } else {
+        
+    }
+}
 
-
-
-
+- (void)actionSheetWith:(NSString *)title andMessage:(NSString *)message
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+#pragma mark 付款----
+- (void)choosePayType
+{
+    
+}
 
 
 - (void)driverButtonAction:(UIButton *)sender {

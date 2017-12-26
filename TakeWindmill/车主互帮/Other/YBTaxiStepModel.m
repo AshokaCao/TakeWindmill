@@ -97,7 +97,7 @@
         
         NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         dictionary = [NSDictionary changeType:dictionary];
-         NSLog(@"dictionary==%@",dictionary);
+        // NSLog(@"dictionary==%@",dictionary);
         if (dictionary) {
             self.content = dictionary[@"content"];
             self.extra = dictionary[@"extra"];
