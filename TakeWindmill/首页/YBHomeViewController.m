@@ -550,11 +550,6 @@
     } failure:^(NSError *error) {
 
     }];
-//    [YBRequest postWithURL:TaxiSaveLocation MutableDict:location success:^(id dataArray) {
-//        NSLog(@"current - %@",dataArray);
-//    } failure:^(id dataArray) {
-//
-//    }];
 }
 
 

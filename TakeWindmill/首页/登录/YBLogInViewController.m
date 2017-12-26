@@ -10,6 +10,7 @@
 #import "YBRegisteredVC.h"
 
 #import "FXAnimationField.h"
+#import "YZLocationManager.h"
 
 @interface YBLogInViewController ()<UITextFieldDelegate>
 
@@ -132,7 +133,7 @@
         [YBUserDefaults setBool:YES forKey:isLogin];
         [YBUserDefaults setObject:dataArray[@"UserId"] forKey:_userId];
         [YBUserDefaults synchronize];
-        
+        [self initWithlocService];
         //
         [[RCDataManager shareManager] loginRongCloudWithUserInfo:nil withToken:nil];
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -163,7 +164,40 @@
 
 
 
-- (void)didReceiveMemoryWarning {
+
+#pragma mark 后台持续定位
+- (void)initWithlocService
+{
+    YZLocationManager *manager = [YZLocationManager sharedLocationManager];
+    manager.isBackGroundLocation = YES;
+    manager.locationInterval = 10;
+    [manager setYZBackGroundLocationHander:^(CLLocationCoordinate2D coordinate) {
+        //        _plc(coordinate);
+        NSLog(@">>>>>>>>>>>>>%f,,%f",coordinate.latitude,coordinate.longitude);
+        //起点位置信息
+        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];;
+        
+        NSString *userID = [YBUserDefaults valueForKey:_userId];
+        dict[@"userid"] = userID;
+        [dict setObject:[NSString stringWithFormat:@"%f",coordinate.longitude] forKey:@"lng"];
+        [dict setObject:[NSString stringWithFormat:@"%f",coordinate.latitude] forKey:@"lat"];
+        NSLog(@"dict - %@",dict);
+        [self uploadCurrentLocationWith:dict];
+    }];
+    
+    [manager startLocationService];
+}
+
+
+- (void)uploadCurrentLocationWith:(NSMutableDictionary *)location
+{
+    [PPNetworkHelper POST:TaxiSaveLocation parameters:location success:^(id responseObject) {
+        NSLog(@"current - %@",responseObject);
+    } failure:^(NSError *error) {
+        
+    }];
+}
+- (void)didReceiveMemoryWarning1 {
     [super didReceiveMemoryWarning];
 
 }
