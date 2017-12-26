@@ -231,10 +231,14 @@
  */
 -(void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left
 {
-    //YBHelpMessage *helpMessage = (YBHelpMessage *)message.content;
     NSLog(@"content==%@",message.content);
     //YBTaxiStepModel *taxiStep = (YBTaxiStepModel *)message.content;
-   
+    NSMutableDictionary *diction = [NSMutableDictionary dictionary];
+    [diction setValue:message.content forKey:@"TaxiNotigication"];
+    
+    NSNotification *notification =[NSNotification notificationWithName:@"TaxiNotigication" object:nil userInfo:diction];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
     if ([self.delegate respondsToSelector:@selector(receiveMessage:MsgValue:)]) {
          NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
         [self.delegate receiveMessage:message MsgValue:unreadMsgCount];

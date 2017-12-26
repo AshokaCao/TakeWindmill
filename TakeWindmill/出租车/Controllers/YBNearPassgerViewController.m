@@ -65,6 +65,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
+
 #pragma mark 抢单按钮
 - (void)didselectYBPassengerTableViewCell:(YBNearPassTableViewCell *)cell
 {
@@ -77,11 +78,14 @@
     dict[@"travelsysno"] = model.SysNo;
     [YBRequest postWithURL:TaxiRob MutableDict:dict success:^(id dataArray) {
         NSLog(@"rod- %@",dataArray);
+        NSString *message = [NSString stringWithFormat:@"%@",dataArray[@"HasError"]];
+        if ([message isEqualToString:@"0"]) {
+            
+        }
     } failure:^(id dataArray) {
         
     }];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -60,7 +60,7 @@
 -(NSData *)encode {
     NSMutableDictionary *dataDict=[NSMutableDictionary dictionary];
     
-    //NSLog(@"dataDict==%@",dataDict);
+    NSLog(@"dataDict==%@",dataDict);
     [dataDict setObject:self.content forKey:@"content"];
     if (self.extra) {
         [dataDict setObject:self.extra forKey:@"extra"];
@@ -97,7 +97,8 @@
         
         NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         dictionary = [NSDictionary changeType:dictionary];
-         //NSLog(@"dictionary==%@",dictionary);
+         NSLog(@"dictionary==%@",dictionary);
+        
         if (dictionary) {
             self.content = dictionary[@"content"];
             self.extra = dictionary[@"extra"];
