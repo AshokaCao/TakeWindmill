@@ -27,9 +27,12 @@
 #import "PPNetworkHelper.h"
 
 #import "HSHString.h"
-#import "HXPhotoViewController.h"
+//#import "HXPhotoViewController.h"
 #import "HXPhotoView.h"
 #import <HXAlbumListViewController.h>
+#import <HXPhotoPicker.h>
+
+
 #import "RCDataManager.h"
 #import "FLPayManager.h"
 

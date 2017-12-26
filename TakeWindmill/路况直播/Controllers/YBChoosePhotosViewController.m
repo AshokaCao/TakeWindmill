@@ -7,13 +7,13 @@
 //
 
 #import "YBChoosePhotosViewController.h"
-#import "HXPhotoViewController.h"
+//#import "HXPhotoViewController.h"
 #import "HXPhotoView.h"
 #import "AFNetworking.h"
 
 static const CGFloat kPhotoViewMargin = 12.0;
 
-@interface YBChoosePhotosViewController () <HXPhotoViewDelegate, BMKGeoCodeSearchDelegate, BMKLocationServiceDelegate>
+@interface YBChoosePhotosViewController () <HXAlbumListViewControllerDelegate, BMKGeoCodeSearchDelegate, BMKLocationServiceDelegate>
 @property (weak, nonatomic) IBOutlet UIView *topView;
 @property (weak, nonatomic) IBOutlet UITextView *contentTextView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topViewHeight;
@@ -49,25 +49,25 @@ static const CGFloat kPhotoViewMargin = 12.0;
 - (HXPhotoManager *)manager {
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhotoAndVideo];
-        _manager.openCamera = YES;
-        _manager.cacheAlbum = YES;
-        _manager.lookLivePhoto = YES;
-        _manager.outerCamera = YES;
-        _manager.cameraType = HXPhotoManagerCameraTypeFullScreen;
-        _manager.photoMaxNum = 9;
-        _manager.videoMaxNum = 1;
-        _manager.maxNum = 9;
-        _manager.videoMaxDuration = 500.f;
-        _manager.saveSystemAblum = NO;
-        _manager.style = HXPhotoAlbumStylesSystem;
-        _manager.reverseDate = YES;
-        _manager.showDateHeaderSection = NO;
+        _manager.configuration.openCamera = YES;
+        //_manager.configuration.cacheAlbum = YES;
+        _manager.configuration.lookLivePhoto = YES;
+        //_manager.configuration.outerCamera = YES;
+        //_manager.configuration.cameraType = HXPhotoManagerCameraTypeFullScreen;
+        _manager.configuration.photoMaxNum = 9;
+        _manager.configuration.videoMaxNum = 1;
+        _manager.configuration.maxNum = 9;
+        _manager.configuration.videoMaxDuration = 500.f;
+        _manager.configuration.saveSystemAblum = NO;
+       // _manager.configuration.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.reverseDate = YES;
+       // _manager.configuration.showDateHeaderSection = NO;
         //        _manager.selectTogether = NO;
         //        _manager.rowCount = 3;
         
-        _manager.UIManager.navBar = ^(UINavigationBar *navBar) {
+       // _manager.configuration.UIManager.navBar = ^(UINavigationBar *navBar) {
             //            [navBar setBackgroundImage:[UIImage imageNamed:@"APPCityPlayer_bannerGame"] forBarMetrics:UIBarMetricsDefault];
-        };
+//        };
     }
     return _manager;
 }
@@ -117,6 +117,7 @@ static const CGFloat kPhotoViewMargin = 12.0;
 //    [self.photoView goPhotoViewController];
 }
 
+
 - (void)photoView:(HXPhotoView *)photoView changeComplete:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photos videos:(NSArray<HXPhotoModel *> *)videos original:(BOOL)isOriginal {
     NSSLog(@"所有:%ld - 照片:%ld - 视频:%ld",allList.count,photos.count,videos.count);
     NSSLog(@"所有:%@  - 照片:%@  - 视频:%@" ,allList,photos,videos);
@@ -124,28 +125,28 @@ static const CGFloat kPhotoViewMargin = 12.0;
     if (allList.count >= 3) {
         self.topViewHeight.constant = 100 + 300;
     }
-        
-    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-        NSSLog(@"%@",images);
-        NSMutableArray *imStrArray = [NSMutableArray array];
-        
-        self.testStr = @"";
-        for (UIImage *image in images) {
-            NSString *base64 = [self imageChangeBase64:image];
-            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
-            [imStrArray addObject:typeStr];
-        }
-        
-        NSMutableDictionary *dict = [self dictionaryWithArray:imStrArray];
-        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
-        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
-            //                NSLog(@"upload is succse :%@",responseObject);
-            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            NSLog(@"upload is succse :%@",str);
-        } failure:^(NSError *error) {
-            NSLog(@"faile - :%@",error);
-        }];
-    }];
+    
+//    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
+//        NSSLog(@"%@",images);
+//        NSMutableArray *imStrArray = [NSMutableArray array];
+//
+//        self.testStr = @"";
+//        for (UIImage *image in images) {
+//            NSString *base64 = [self imageChangeBase64:image];
+//            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
+//            [imStrArray addObject:typeStr];
+//        }
+//
+//        NSMutableDictionary *dict = [self dictionaryWithArray:imStrArray];
+//        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
+//        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
+//            //                NSLog(@"upload is succse :%@",responseObject);
+//            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//            NSLog(@"upload is succse :%@",str);
+//        } failure:^(NSError *error) {
+//            NSLog(@"faile - :%@",error);
+//        }];
+//    }];
 }
 
 - (void)photoView:(HXPhotoView *)photoView deleteNetworkPhoto:(NSString *)networkPhotoUrl {

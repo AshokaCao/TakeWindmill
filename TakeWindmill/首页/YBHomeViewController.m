@@ -179,11 +179,11 @@
     [super viewDidAppear:animated];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kPersonreloadData object:nil userInfo:nil];
+    
+    [self updateMsgValue];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    [self updateMsgValue];
     
     //        "rc" : {
     //            "oName" : "RC:TxtMsg",
@@ -213,31 +213,6 @@
     [YBUserDefaults removeObjectForKey:kPushRC];
 
 }
--(void)updateMsgValue{
-    NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
-    
-    //YBLog(@"unreadMsgCount==%ld",unreadMsgCount);
-    WEAK_SELF;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (unreadMsgCount == 0) {
-            weakSelf.msgValue.text = nil;
-            weakSelf.msgValue.hidden = YES;
-        }else{
-            weakSelf.msgValue.text = [NSString stringWithFormat:@"%ld",unreadMsgCount];
-            weakSelf.msgValue.hidden = NO;
-        }
-    });
-    
-}
-
-#pragma mark YBReceiveMsgValue
--(void)receiveMessage:(RCMessage *)message MsgValue:(NSInteger)MsgValue{
-    
-//    YBTaxiHelpMessage *helpMessage = (YBTaxiHelpMessage *)message.content;
-//    NSLog(@"message - - %@",helpMessage.StartAddress);
-    [self updateMsgValue];
-}
-
 -(UILabel *)msgValue{
     if (_msgValue == nil) {
         UILabel * label = [[UILabel alloc]init];
@@ -495,6 +470,29 @@
     } failure:^(NSError *error) {
 
     }];
+}
+#pragma mark YBReceiveMsgValue
+-(void)receiveMessage:(RCMessage *)message MsgValue:(NSInteger)MsgValue{
+    
+    //    YBTaxiHelpMessage *helpMessage = (YBTaxiHelpMessage *)message.content;
+    //    NSLog(@"message - - %@",helpMessage.StartAddress);
+    [self updateMsgValue];
+}
+-(void)updateMsgValue{
+    NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
+    
+    //YBLog(@"unreadMsgCount==%ld",unreadMsgCount);
+    WEAK_SELF;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (unreadMsgCount == 0) {
+            weakSelf.msgValue.text = nil;
+            weakSelf.msgValue.hidden = YES;
+        }else{
+            weakSelf.msgValue.text = [NSString stringWithFormat:@"%ld",unreadMsgCount];
+            weakSelf.msgValue.hidden = NO;
+        }
+    });
+    
 }
 
 

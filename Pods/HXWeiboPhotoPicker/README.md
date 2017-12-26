@@ -6,7 +6,7 @@
 [![Language](http://img.shields.io/badge/language-ObjC-brightgreen.svg?style=flat)](https://developer.apple.com/Objective-C)
 [![License](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](http://mit-license.org)
 
-<img src="http://wx1.sinaimg.cn/mw690/ade10dedgy1fdgf4qs610j20ku112n31.jpg" width="270" height="480"> <img src="https://user-images.githubusercontent.com/18083149/32322874-fe149aa8-c000-11e7-8172-629de70f7089.PNG" width="270" height="480"> <img src="https://user-images.githubusercontent.com/18083149/32438543-db479232-c325-11e7-87d9-48282914e752.gif" width="270" height="480">
+<img src="https://user-images.githubusercontent.com/18083149/33309568-764a198c-d459-11e7-958f-8602445d740a.gif" width="270" height="480"> <img src="https://user-images.githubusercontent.com/18083149/32322874-fe149aa8-c000-11e7-8172-629de70f7089.PNG" width="270" height="480"> <img src="https://user-images.githubusercontent.com/18083149/32438543-db479232-c325-11e7-87d9-48282914e752.gif" width="270" height="480">
 <img src="https://user-images.githubusercontent.com/18083149/32778022-585f3628-c973-11e7-8139-9d19c26f1515.gif" width="270" height="480"> <img src="https://user-images.githubusercontent.com/18083149/32778166-d2397300-c973-11e7-9135-8ba11b24636e.gif" width="270" height="480"> <img src="https://user-images.githubusercontent.com/18083149/33060991-55f9abf4-ced5-11e7-8b97-609813c0e937.gif" width="270" height="480">
 
 ## 目录
@@ -41,11 +41,10 @@
 
 ## <a id="安装"></a> 二.  安装 - Installation
 
-- Cocoapods：```pod 'HXWeiboPhotoPicker' '~> 2.1.2'```搜索不到库或最新版请执行```pod repo update```
+- Cocoapods：```pod 'HXWeiboPhotoPicker' '~> 2.1.4'```搜索不到库或最新版请执行```pod repo update```
 - 手动导入：将项目中的“HXWeiboPhotoPicker”文件夹拖入项目中
 - 网络图片加载使用的是```SDWebImage v4.0.0```
-- 只使用照片选择功能 导入头文件 "HXPhotoViewController.h"
-- 选完照片/视频后自动布局功能 导入头文件 "HXPhotoView.h"
+- 使用前导入头文件 "HXPhotoPicker.h"
 
 ## <a id="要求"></a> 三.  要求 - Requirements
 
@@ -77,6 +76,7 @@
 - 2017-11-14　　添加自定义裁剪功能
 - v2.1.2　-　添加显示照片地理位置信息、优化细节
 - 2017-11-21　　支持在线下载iCloud上的照片和视频
+- v2.1.4　-　支持更换相机界面、添加属性控制裁剪
 
 ## <a id="例子"></a> 五.  应用示例 - Examples
 ### <a id="Demo1"></a> Demo1
@@ -90,16 +90,16 @@
 }
 
 // 照片选择控制器
-HXPhotoViewController *vc = [[HXPhotoViewController alloc] init];
+HXAlbumListViewController *vc = [[HXAlbumListViewController alloc] init];
 vc.delegate = self;
 vc.manager = self.manager; 
-[self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
+[self presentViewController:[[HXCustomNavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
 
 // 通过 HXPhotoViewControllerDelegate 代理返回选择的图片以及视频
-- (void)photoViewControllerDidNext:(NSArray *)allList Photos:(NSArray *)photos Videos:(NSArray *)videos Original:(BOOL)original
+- (void)albumListViewController:(HXAlbumListViewController *)albumListViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original
 
 // 点击取消
-- (void)photoViewControllerDidCancel
+- (void)albumListViewControllerDidCancel:(HXAlbumListViewController *)albumListViewController
 
 ```
 ### <a id="Demo2"></a> Demo2
@@ -299,12 +299,10 @@ self.photoView = photoView;
 
 ## <a id="更多"></a> 六.  更多 - More
 
-- 后期计划（剔除微博样式、框架大改造、优化关于网络图片的部分、单选模式支持HXPhotoView）
-
 - 如果您发现了bug请尽可能详细地描述系统版本、手机型号和复现步骤等信息 提一个issue.
 
 - 如果您有什么好的建议也可以提issue,大家一起讨论一起学习进步...
 
 - 具体代码请下载项目  如果觉得喜欢的能给一颗小星星么!  ✨✨✨
 
-- [有兴趣可以加下创建的QQ群:531895229](//shang.qq.com/wpa/qunwpa?idkey=ebd8d6809c83b4d6b4a18b688621cb73ded0cce092b4d1f734e071a58dd37c26) <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=294005139&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:294005139:52" alt="点击这里给我发消息" title="点击这里给我发消息"/></a>
+- [有兴趣可以加下创建的QQ群:531895229(因为工作很忙所以可能问问题没人回答!!)](//shang.qq.com/wpa/qunwpa?idkey=ebd8d6809c83b4d6b4a18b688621cb73ded0cce092b4d1f734e071a58dd37c26) <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=294005139&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:294005139:52" alt="点击这里给我发消息" title="点击这里给我发消息"/></a>

@@ -60,11 +60,11 @@
 -(NSData *)encode {
     NSMutableDictionary *dataDict=[NSMutableDictionary dictionary];
     
-    NSLog(@"dataDict == %@",dataDict);
+    //NSLog(@"dataDict==%@",dataDict);
     [dataDict setObject:self.content forKey:@"content"];
-//    if (self.extra) {
-//        [dataDict setObject:self.extra forKey:@"extra"];
-//    }
+    if (self.extra) {
+        [dataDict setObject:self.extra forKey:@"extra"];
+    }
     
     [dataDict setObject:self.travelinfo forKey:@"travelinfo"];
     [dataDict setObject:self.op forKey:@"op"];
@@ -97,10 +97,10 @@
         
         NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         dictionary = [NSDictionary changeType:dictionary];
-         NSLog(@"dictionary==%@",dictionary);
+         //NSLog(@"dictionary==%@",dictionary);
         if (dictionary) {
             self.content = dictionary[@"content"];
-            //self.extra = dictionary[@"extra"];
+            self.extra = dictionary[@"extra"];
 
             self.travelinfo = dictionary[@"travelinfo"];
             self.op = dictionary[@"op"];
@@ -113,14 +113,14 @@
     return (MessagePersistent_ISPERSISTED | MessagePersistent_ISCOUNTED);
 }
 /// 会话列表中显示的摘要
-- (NSString *)conversationDigest
-{
-    return @"行程";
-}
+//- (NSString *)conversationDigest
+//{
+//    return @"行程";
+//}
 ///消息的类型名
 +(NSString *)getObjectName {
     
-    return RCDTaxiMessageTypeIdentifier;
+    return RCDTaxiStepMessageTypeIdentifier;
 }
 #if ! __has_feature(objc_arc)
 -(void)dealloc

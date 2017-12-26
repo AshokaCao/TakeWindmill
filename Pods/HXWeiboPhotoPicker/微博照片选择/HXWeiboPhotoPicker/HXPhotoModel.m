@@ -53,15 +53,31 @@
     return [[self alloc] initWithImage:image];
 }
 
++ (instancetype)photoModelWithImageURL:(NSURL *)imageURL {
+    return [[self alloc] initWithImageURL:imageURL];
+}
+
 + (instancetype)photoModelWithVideoURL:(NSURL *)videoURL videoTime:(NSTimeInterval)videoTime {
     return [[self alloc] initWithVideoURL:videoURL videoTime:videoTime];
+}
+
+- (instancetype)initWithImageURL:(NSURL *)imageURL {
+    if (self = [super init]) {
+        self.type = HXPhotoModelMediaTypeCameraPhoto;
+        self.subType = HXPhotoModelMediaSubTypePhoto;
+        self.thumbPhoto = [HXPhotoTools hx_imageNamed:@"qz_photolist_picture_fail@2x.png"];
+        self.previewPhoto = self.thumbPhoto;
+        self.imageSize = self.thumbPhoto.size;
+        self.networkPhotoUrl = imageURL;
+    }
+    return self;
 }
 
 - (instancetype)initWithPHAsset:(PHAsset *)asset{
     if (self = [super init]) {
         self.asset = asset;
         self.type = HXPhotoModelMediaTypePhoto;
-        self.type = HXPhotoModelMediaSubTypePhoto;
+        self.subType = HXPhotoModelMediaSubTypePhoto;
     }
     return self;
 }
@@ -71,13 +87,19 @@
         self.type = HXPhotoModelMediaTypeCameraVideo;
         self.subType = HXPhotoModelMediaSubTypeVideo;
         self.videoURL = videoURL;
+        if (videoTime <= 0) {
+            videoTime = 1;
+        }
         MPMoviePlayerController *player = [[MPMoviePlayerController alloc]initWithContentURL:videoURL] ;
         player.shouldAutoplay = NO;
         UIImage  *image = [player thumbnailImageAtTime:0.1 timeOption:MPMovieTimeOptionNearestKeyFrame];
         NSString *time = [HXPhotoTools getNewTimeFromDurationSecond:videoTime];
+        self.videoDuration = videoTime;
         self.videoURL = videoURL;
         self.videoTime = time;
         self.thumbPhoto = image;
+        self.previewPhoto = image;
+        self.imageSize = self.thumbPhoto.size;
     }
     return self;
 }
@@ -114,12 +136,6 @@
         _videoTime = [HXPhotoTools getNewTimeFromDurationSecond:timeLength.integerValue];
     }
     return _videoTime;
-}
-- (NSString *)localIdentifier {
-    if (!_localIdentifier) {
-        _localIdentifier = self.asset.localIdentifier;
-    }
-    return _localIdentifier;
 }
 - (CGSize)endImageSize
 {
@@ -159,7 +175,7 @@
             h = width / imgWidth * imgHeight;
         }
         if (h > height + 20) {
-            h = w;
+            h = height;
         }
         _previewViewSize = CGSizeMake(w, h);
     }
