@@ -9,9 +9,9 @@
 #import <RongIMLib/RongIMLib.h>
 
 /*!
- 消息的类型名BB:Taxi
+ 消息的类型名BB:TaxiStep
  */
-#define RCDTaxiMessageTypeIdentifier @"BB:Taxi"
+#define RCDTaxiStepMessageTypeIdentifier @"BB:TaxiStep"
 
 @interface Travelinfo : RCMessageContent<NSCoding>
 @property(nonatomic, strong) NSString *EndAddress;
@@ -33,6 +33,7 @@
 //PassengerTravelCancel //乘客取消行程
 @interface YBTaxiStepModel : RCMessageContent<NSCoding,RCMessageContentView>
 @property(nonatomic, strong) NSString *content;
+@property(nonatomic, strong) NSString *extra;
 @property(nonatomic, strong) Travelinfo *travelinfo;
 @property(nonatomic, strong) NSString *op;
 
