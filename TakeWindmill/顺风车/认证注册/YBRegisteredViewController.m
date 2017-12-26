@@ -53,11 +53,11 @@ static const CGFloat kPhotoScrollView = 150;
 - (HXPhotoManager *)manager {
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhotoAndVideo];
-        _manager.openCamera = YES;
-        _manager.style = HXPhotoAlbumStylesSystem;
-        _manager.photoMaxNum = 1;
+        _manager.configuration.openCamera = YES;
+        //_manager.configuration.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.photoMaxNum = 1;
         // _manager.videoMaxNum = 9;
-        _manager.maxNum = 1;
+        _manager.configuration.maxNum = 1;
     }
     return _manager;
 }
@@ -483,46 +483,51 @@ static const CGFloat kPhotoScrollView = 150;
     }
 }
 #pragma mark =HXPhotoViewDelegate
-// 代理返回 选择、移动顺序、删除之后的图片以及视频
-- (void)photoView:(HXPhotoView *)photoView changeComplete:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photos videos:(NSArray<HXPhotoModel *> *)videos original:(BOOL)isOriginal{
-    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-        //NSSLog(@"images==%@",images);
-        
-        NSMutableArray *imStrArray = [NSMutableArray array];
-        for (UIImage *image in images) {
-            NSString *base64 = [self imageChangeBase64:image];
-            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
-            [imStrArray addObject:typeStr];
-        }
-        
-        NSMutableDictionary *dict = [self dictionaryWithArray:imStrArray];
-        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
-        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
-            //                NSLog(@"upload is succse :%@",responseObject);
-            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            NSLog(@"upload is succse :%@",str);
-            
-            NSArray *array = [str componentsSeparatedByString:@";"];
-            if (self.imagesArrUrl.count>0) {
-                for (NSString *string in array) {
-                    NSArray *array = [string componentsSeparatedByString:@","];
-                    [self.imagesArrUrl1 addObject:array.firstObject];
-                }
-            }else{
-                for (NSString *string in array) {
-                    NSArray *array = [string componentsSeparatedByString:@","];
-                    [self.imagesArrUrl addObject:array.firstObject];
-                }
-            }
-            
-            //YBLog(@" self.imagesArrUrl%@", self.imagesArrUrl);
-            //YBLog(@" self.imagesArrUrl1%@", self.imagesArrUrl1);
-        } failure:^(NSError *error) {
-            NSLog(@"faile - :%@",error);
-        }];
-    }];
-    
+- (void)albumListViewController:(HXAlbumListViewController *)albumListViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original {
+    YBLog(@"allList==%@,photos==%@,videos==%@",allList,photoList,videoList);
 }
+
+
+// 代理返回 选择、移动顺序、删除之后的图片以及视频
+//- (void)photoView:(HXPhotoView *)photoView changeComplete:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photos videos:(NSArray<HXPhotoModel *> *)videos original:(BOOL)isOriginal{
+//    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
+//        //NSSLog(@"images==%@",images);
+//
+//        NSMutableArray *imStrArray = [NSMutableArray array];
+//        for (UIImage *image in images) {
+//            NSString *base64 = [self imageChangeBase64:image];
+//            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
+//            [imStrArray addObject:typeStr];
+//        }
+//
+//        NSMutableDictionary *dict = [self dictionaryWithArray:imStrArray];
+//        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
+//        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
+//            //                NSLog(@"upload is succse :%@",responseObject);
+//            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//            NSLog(@"upload is succse :%@",str);
+//
+//            NSArray *array = [str componentsSeparatedByString:@";"];
+//            if (self.imagesArrUrl.count>0) {
+//                for (NSString *string in array) {
+//                    NSArray *array = [string componentsSeparatedByString:@","];
+//                    [self.imagesArrUrl1 addObject:array.firstObject];
+//                }
+//            }else{
+//                for (NSString *string in array) {
+//                    NSArray *array = [string componentsSeparatedByString:@","];
+//                    [self.imagesArrUrl addObject:array.firstObject];
+//                }
+//            }
+//
+//            //YBLog(@" self.imagesArrUrl%@", self.imagesArrUrl);
+//            //YBLog(@" self.imagesArrUrl1%@", self.imagesArrUrl1);
+//        } failure:^(NSError *error) {
+//            NSLog(@"faile - :%@",error);
+//        }];
+//    }];
+//
+//}
 // 当view更新高度时调用
 - (void)photoView:(HXPhotoView *)photoView updateFrame:(CGRect)frame{
     //NSLog(@"===%f",frame.origin.y);
@@ -575,37 +580,15 @@ static const CGFloat kPhotoScrollView = 150;
 - (NSMutableDictionary *)dictionaryWithArray:(NSMutableArray *)imStrArray
 {
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    switch (imStrArray.count) {
-        case 1:
-            dict[@"files"] = [NSString stringWithFormat:@"%@",imStrArray[0]];
-            break;
-        case 2:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@",imStrArray[0],imStrArray[1]];
-            break;
-        case 3:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2]];
-            break;
-        case 4:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3]];
-            break;
-        case 5:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4]];
-            break;
-        case 6:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5]];
-            break;
-        case 7:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6]];
-            break;
-        case 8:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6],imStrArray[7]];
-            break;
-        case 9:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6],imStrArray[7],imStrArray[8]];
-            break;
-        default:
-            break;
+    NSString * files = @"";
+    for (int i = 0; i<imStrArray.count; i++) {
+        if (i == 0) {
+            files = [NSString stringWithFormat:@"%@",imStrArray[i]];
+        }else{
+            files = [NSString stringWithFormat:@"%@;%@",files,imStrArray[i]];
+        }
     }
+    dict[@"files"] = files;
     return dict;
 }
 - (void)didReceiveMemoryWarning {

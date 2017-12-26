@@ -38,7 +38,13 @@
     self.imageHeight = self.model.imageSize.height;
     [self setupUI];
     [self setupModel];
-    self.bottomView.enabled = NO;
+    if (!self.manager.configuration.movableCropBox) {
+        self.bottomView.enabled = NO;
+    }else {
+        if (CGPointEqualToPoint(self.manager.configuration.movableCropBoxCustomRatio, CGPointZero)) {
+            self.bottomView.enabled = NO;
+        }
+    }
     [self changeSubviewFrame:NO];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
@@ -128,6 +134,7 @@
     [self clippingRatioDidChange:animated];
 }
 - (void)setupUI {
+    self.view.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.imageView];
     [self.view addSubview:self.bottomView];
     [self.view addSubview:self.leftTopView];
@@ -156,13 +163,7 @@
                 weakSelf.originalImage = image;
                 weakSelf.imageView.image = image;
                 [weakSelf.view handleLoading];
-                [UIView animateWithDuration:0.25 animations:^{
-                    weakSelf.imageView.alpha = 1;
-                    weakSelf.leftTopView.alpha = 1;
-                    weakSelf.leftBottomView.alpha = 1;
-                    weakSelf.rightTopView.alpha = 1;
-                    weakSelf.rightBottomView.alpha = 1;
-                }];
+                [weakSelf fixationEdit];
             });
         } failed:^(NSDictionary *info) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -173,6 +174,32 @@
     }else {
         self.imageView.image = self.model.thumbPhoto;
         self.originalImage = self.model.thumbPhoto;
+        [self fixationEdit];
+    }
+}
+- (void)fixationEdit {
+    if (self.manager.configuration.movableCropBox) {
+        if (!self.manager.configuration.movableCropBoxEditSize) {
+            self.leftTopView.hidden = YES;
+            self.leftBottomView.hidden = YES;
+            self.rightTopView.hidden = YES;
+            self.rightBottomView.hidden = YES;
+        }
+        HXEditRatio *ratio = [[HXEditRatio alloc] initWithValue1:self.manager.configuration.movableCropBoxCustomRatio.x value2:self.manager.configuration.movableCropBoxCustomRatio.y];
+        if (self.manager.configuration.movableCropBoxCustomRatio.x > self.manager.configuration.movableCropBoxCustomRatio.y) {
+            ratio.isLandscape = YES;
+        }
+        [self bottomViewDidSelectRatioClick:ratio];
+        [UIView animateWithDuration:0.25 animations:^{
+            self.imageView.alpha = 1;
+            if (self.manager.configuration.movableCropBoxEditSize) {
+                self.leftTopView.alpha = 1;
+                self.leftBottomView.alpha = 1;
+                self.rightTopView.alpha = 1;
+                self.rightBottomView.alpha = 1;
+            }
+        }];
+    }else {
         [UIView animateWithDuration:0.25 animations:^{
             self.imageView.alpha = 1;
             self.leftTopView.alpha = 1;
@@ -183,8 +210,12 @@
     }
 }
 - (void)startTimer {
-    if (!self.timer) {
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(changeClipImageView) userInfo:nil repeats:NO];
+    if (!self.manager.configuration.movableCropBox) {
+        if (!self.timer) {
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(changeClipImageView) userInfo:nil repeats:NO];
+        }
+    }else {
+        self.bottomView.enabled = YES;
     }
 }
 - (void)stopTimer {
@@ -298,7 +329,9 @@
             self.rightBottomView.center = [self.view convertPoint:CGPointMake(clippingRect.origin.x+clippingRect.size.width, clippingRect.origin.y+clippingRect.size.height) fromView:self.imageView];
         } completion:^(BOOL finished) {
             if (self.isSelectRatio) {
-                [self changeClipImageView];
+                if (!self.manager.configuration.movableCropBox) {
+                    [self changeClipImageView];
+                }
                 self.isSelectRatio = NO;
             }
         }];
@@ -450,17 +483,27 @@
 }
 #pragma mark - < HXDatePhotoEditBottomViewDelegate >
 - (void)bottomViewDidCancelClick {
-    [self stopTimer];
+    [self stopTimer]; 
+    if (self.outside) {
+        [self dismissViewControllerAnimated:NO completion:nil];
+        return;
+    }
     [self.navigationController popViewControllerAnimated:NO];
 }
 - (void)bottomViewDidRestoreClick {
-    if (CGSizeEqualToSize(self.clippingRect.size, self.originalImage.size)) {
-        [self stopTimer];
-        return;
-    }
-    if (!self.originalImage || self.imageView.image == self.originalImage) {
-        [self stopTimer];
-        return;
+    if (self.manager.configuration.movableCropBox) {
+        if (CGPointEqualToPoint(self.manager.configuration.movableCropBoxCustomRatio, CGPointZero)) {
+            self.clippingRatio = [[HXEditRatio alloc] initWithValue1:0 value2:0];
+        }
+    }else {
+        if (CGSizeEqualToSize(self.clippingRect.size, self.originalImage.size)) {
+            [self stopTimer];
+            return;
+        }
+        if (!self.originalImage || self.imageView.image == self.originalImage) {
+            [self stopTimer];
+            return;
+        }
     }
     [self stopTimer];
     self.clippingRatio = nil;
@@ -472,7 +515,9 @@
 }
 - (void)bottomViewDidRotateClick {
     [self stopTimer];
-    self.clippingRatio = nil;
+    if (!self.manager.configuration.movableCropBox) {
+        self.clippingRatio = nil;
+    }
     self.bottomView.enabled = YES;
     self.imageView.image = [self.imageView.image rotationImage:UIImageOrientationLeft];
     self.imageWidth = self.imageView.image.size.width;
@@ -481,7 +526,18 @@
 }
 - (void)bottomViewDidClipClick {
     [self stopTimer];
+    if (self.manager.configuration.movableCropBox) {
+        [self changeClipImageView];
+    }
     HXPhotoModel *model = [HXPhotoModel photoModelWithImage:self.imageView.image];
+    if (self.outside) {
+        [self dismissViewControllerAnimated:NO completion:^{
+            if ([self.delegate respondsToSelector:@selector(datePhotoEditViewControllerDidClipClick:beforeModel:afterModel:)]) {
+                [self.delegate datePhotoEditViewControllerDidClipClick:self beforeModel:self.model afterModel:model];
+            }
+        }];
+        return;
+    }
     if ([self.delegate respondsToSelector:@selector(datePhotoEditViewControllerDidClipClick:beforeModel:afterModel:)]) {
         [self.delegate datePhotoEditViewControllerDidClipClick:self beforeModel:self.model afterModel:model];
     }
@@ -494,6 +550,11 @@
         [self bottomViewDidRestoreClick];
     } else {
         self.clippingRatio = ratio;
+        if (self.manager.configuration.movableCropBox) {
+            if (CGPointEqualToPoint(self.manager.configuration.movableCropBoxCustomRatio, CGPointZero)) {
+                self.bottomView.enabled = YES;
+            }
+        }
     }
 }
 #pragma mark - < 懒加载 >
@@ -584,13 +645,19 @@
     return self;
 }
 - (void)setupUI {
-    [self addSubview:self.topView];
+    if (!self.manager.configuration.movableCropBox) {
+        [self addSubview:self.topView];
+    }else {
+        if (CGPointEqualToPoint(self.manager.configuration.movableCropBoxCustomRatio, CGPointZero)) {
+            [self addSubview:self.topView];
+        }
+    }
     [self addSubview:self.bottomView];
 }
 - (void)setEnabled:(BOOL)enabled {
     _enabled = enabled;
     self.restoreBtn.enabled = enabled;
-    if (!self.manager.singleSelected) {
+    if (!self.manager.configuration.singleSelected) {
         self.clipBtn.enabled = enabled;
     }
 }
@@ -629,8 +696,8 @@
     [alertController addAction:[UIAlertAction actionWithTitle:@"3:4" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self setupRatioWithValue1:3 value2:4];
     }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"16:9" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self setupRatioWithValue1:16 value2:9];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"9:16" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self setupRatioWithValue1:9 value2:16];
     }]];
     
     [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
@@ -674,7 +741,13 @@
         _bottomView = [[UIView alloc] init];
         [_bottomView addSubview:self.cancelBtn];
         [_bottomView addSubview:self.clipBtn];
-        [_bottomView addSubview:self.selectRatioBtn];
+        if (!self.manager.configuration.movableCropBox) {
+            [_bottomView addSubview:self.selectRatioBtn];
+        }else {
+            if (CGPointEqualToPoint(self.manager.configuration.movableCropBoxCustomRatio, CGPointZero)) {
+                [_bottomView addSubview:self.selectRatioBtn];
+            }
+        }
     }
     return _bottomView;
 }
@@ -730,14 +803,24 @@
 - (UIButton *)clipBtn {
     if (!_clipBtn) {
         _clipBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        if (self.manager.singleSelected) {
+        if (self.manager.configuration.singleSelected) {
             [_clipBtn setTitle:@"选择" forState:UIControlStateNormal];
         }else {
             [_clipBtn setTitle:@"裁剪" forState:UIControlStateNormal];
-            _clipBtn.enabled = NO;
+            if (!self.manager.configuration.movableCropBox) {
+                _clipBtn.enabled = NO;
+            }else {
+                if (CGPointEqualToPoint(self.manager.configuration.movableCropBoxCustomRatio, CGPointZero)) {
+                    _clipBtn.enabled = NO;
+                }
+            }
         }
-        [_clipBtn setTitleColor:self.tintColor forState:UIControlStateNormal];
-        [_clipBtn setTitleColor:[self.tintColor colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
+        UIColor *color = self.manager.configuration.themeColor;
+        if ([color isEqual:[UIColor blackColor]]) {
+            color = [UIColor whiteColor];
+        }
+        [_clipBtn setTitleColor:color forState:UIControlStateNormal];
+        [_clipBtn setTitleColor:[color colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
         _clipBtn.titleLabel.font = [UIFont systemFontOfSize:15];
         _clipBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
         [_clipBtn addTarget:self action:@selector(didClipBtnClick) forControlEvents:UIControlEventTouchUpInside];
