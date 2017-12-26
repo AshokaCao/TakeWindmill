@@ -233,7 +233,6 @@
 {
     //YBHelpMessage *helpMessage = (YBHelpMessage *)message.content;
     NSLog(@"content==%@",message.content);
-    //YBTaxiStepModel *taxiStep = (YBTaxiStepModel *)message.content;
    
     if ([self.delegate respondsToSelector:@selector(receiveMessage:MsgValue:)]) {
          NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
