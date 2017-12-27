@@ -49,11 +49,11 @@
 }
 #pragma mark - 数据源方法
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return 4;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section != 2) {
+    if (section == 2) {
         return 2;
     }
     
@@ -68,10 +68,10 @@
     }
     //去掉底部多余的表格线
     [tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
-    NSArray * dataArr = [NSArray arrayWithObjects:@"账号与安全",@"常用地址", nil];
+    NSArray * dataArr = [NSArray arrayWithObjects:@"常用地址", nil];//@"账号与安全",
     if (indexPath.section == 1) {
         //dataArr = [NSArray arrayWithObjects:@"法律条款与隐私政策",@"用户指南", nil];
-        dataArr = [NSArray arrayWithObjects:@"版本更新",@"关于皕夶", nil];
+        dataArr = [NSArray arrayWithObjects:@"版本更新", nil];
         if (indexPath.row == 0) {
             
             cell.textField.text = [NSString stringWithFormat:@"%@",[HSHString getAppCurVersion]];
@@ -81,6 +81,9 @@
             
         }
     } else if (indexPath.section == 2){
+         dataArr = [NSArray arrayWithObjects:@"关于皕夶",@"联系我们", nil];
+      
+    }else if (indexPath.section == 3){
         UILabel * label = [[UILabel alloc]init];
         label.text = @"退出登录";
         label.textColor = BtnOrangeColor;
@@ -140,20 +143,20 @@ static CGFloat headerH = 20;
     YBInformationCell * cell = [tableView cellForRowAtIndexPath:indexPath];
     
     
-    YBSettingDetailVC * vc = [[YBSettingDetailVC alloc]init];
-    vc.title = cell.text.text;
+//    YBSettingDetailVC * vc = [[YBSettingDetailVC alloc]init];
+//    vc.title = cell.text.text;
     
     if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            vc.isAccount = YES;
-            [self.navigationController pushViewController:vc animated:NO];
-        }else{
+//        if (indexPath.row == 0) {
+//            vc.isAccount = YES;
+//            [self.navigationController pushViewController:vc animated:NO];
+//        }else{
             YBCommonAddressVC * vc = [[YBCommonAddressVC alloc]init];
             [self.navigationController pushViewController:vc animated:NO];
-        }
+//        }
         
     } else if (indexPath.section == 1){
-        if (indexPath.row == 0) {//版本更新
+//        if (indexPath.row == 0) {//版本更新
         
             NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
             //[mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
@@ -165,19 +168,25 @@ static CGFloat headerH = 20;
                 if ([HSHString compareVersion:model.version to:[HSHString getAppCurVersion]]) {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/qq/id444934666?mt=8"]];
                 }else{
-                     [MBProgressHUD showError:@"已是最新版本" toView:weakSelf.view];
+                     [MBProgressHUD showError:@"已经是最新版本" toView:weakSelf.view];
                 }
                 
             } failure:^(id dataArray) {
                 [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
             }];
             
-            
-        }else{
-            vc.isAbout = YES;
-            [self.navigationController pushViewController:vc animated:NO];
-        }
+//        }else{
+//            vc.isAbout = YES;
+//            [self.navigationController pushViewController:vc animated:NO];
+//        }
     }else if (indexPath.section == 2){
+        if (indexPath.row == 0) {
+            YBLog(@"关于");
+        } else {
+            YBLog(@"我们");
+        }
+        
+    }else if (indexPath.section == 3){
         UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认退出登录？" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *alertOK = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [YBUserDefaults setBool:NO forKey:isLogin];
