@@ -14,7 +14,6 @@
 
 @interface YBInformationVC ()<UITableViewDelegate,UITableViewDataSource,HXAlbumListViewControllerDelegate>
 {
-    //    NSInteger index ;
     NSInteger tabIndex ;
     YBInformationCell *infoCell;
     YBInformationModel *modelSever;
@@ -31,6 +30,7 @@
 @property (nonatomic,strong) UITableView *workTabView;
 
 @property (nonatomic,strong) HXPhotoManager *manager;
+@property (strong, nonatomic) HXDatePhotoToolManager *toolManager;
 @property (nonatomic,strong) NSMutableArray * imagesArrUrl;
 
 @end
@@ -40,13 +40,19 @@
 - (HXPhotoManager *)manager {
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhoto];
-//        _manager.openCamera = YES;
-//        _manager.style = HXPhotoAlbumStylesSystem;
-//        _manager.photoMaxNum = 1;
-//        // _manager.videoMaxNum = 1;
-//        _manager.maxNum = 1;
+        _manager.configuration.openCamera = YES;
+        //_manager.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.photoMaxNum = 1;
+        //_manager.configuration.videoMaxNum = 1;
+        _manager.configuration.maxNum = 1;
     }
     return _manager;
+}
+- (HXDatePhotoToolManager *)toolManager {
+    if (!_toolManager) {
+        _toolManager = [[HXDatePhotoToolManager alloc] init];
+    }
+    return _toolManager;
 }
 -(UITableView *)identityTabView
 {
@@ -376,7 +382,6 @@
         
         [weakSelf addCompanyTabView];//公司
         
-        
     }else if (tabIndex == 1){//车辆
         NSMutableArray * mArr = [NSMutableArray array];
         int nn = 0;
@@ -466,8 +471,8 @@
         tabIndex = 4;
     }
     
-    NSLog(@"url =%@",UserTaxidriverinfosave);
-    NSLog(@"parm =%@",parm);
+    //NSLog(@"url =%@",UserTaxidriverinfosave);
+    //NSLog(@"parm =%@",parm);
     
     [YBRequest postWithURL:UserTaxidriverinfosave MutableDict:parm success:^(id dataArray) {
         //YBLog(@"dataArray==%@",dataArray);
@@ -799,19 +804,6 @@ static CGFloat headerH = 60;
     infoCell = [tableView cellForRowAtIndexPath:indexPath];
     if (tableView == weakSelf.identityTabView) {
         if (indexPath.section == 0) {//重新上传照片
-            //index = 1;
-            // 照片选择控制器
-//            HXPhotoViewController *vc = [[HXPhotoViewController alloc] init];
-//            vc.delegate = self;
-//            vc.manager = self.manager;
-//            [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
-            
-//            // 照片选择控制器
-//            HXAlbumListViewController *vc = [[HXAlbumListViewController alloc] init];
-//            vc.delegate = self;
-//            vc.manager = self.manager;
-//             [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
-            
              [self hx_presentAlbumListViewControllerWithManager:self.manager delegate:self];
         }else{
             if (indexPath.row == 2) {
@@ -857,64 +849,83 @@ static CGFloat headerH = 60;
     
 }
 
-// 通过 HXPhotoViewControllerDelegate 代理返回选择的图片以及视频
+#pragma  mark HXAlbumListViewControllerDelegate
 - (void)albumListViewController:(HXAlbumListViewController *)albumListViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original{
-    YBLog(@"allList==%@,photos==%@,videos==%@",allList,photoList,videoList);
-}
-
-// 点击取消
-- (void)albumListViewControllerDidCancel:(HXAlbumListViewController *)albumListViewController{
+    //YBLog(@"allList==%@,photos==%@,videos==%@",allList,photoList,videoList);
+    WEAK_SELF;
+    [self.manager clearSelectedList];
+    
+    if (photoList.count > 0) {
+      //HXPhotoModel *model = photoList.firstObject;
+      //infoCell.imageView.image = model.previewPhoto;
+      //NSSLog(@"count==%ld张图片",photoList.count);
+        
+        [self.toolManager getSelectedImageList:photoList success:^(NSArray<UIImage *> *imageList) {
+            infoCell.imageView.image = imageList.firstObject;
+            
+            NSMutableArray *imStrArray = [NSMutableArray array];
+            for (UIImage *image in imageList) {
+                NSString *base64 = [self imageChangeBase64:image];
+                NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
+                [imStrArray addObject:typeStr];
+            }
+            NSMutableDictionary *dict = [weakSelf dictionaryWithArray:imStrArray];
+            [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
+            [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
+                
+                NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                NSLog(@"upload is succse :%@",str);
+                
+                NSArray *array = [str componentsSeparatedByString:@";"];
+                for (NSString *string in array) {
+                    NSArray *array = [string componentsSeparatedByString:@","];
+                    if ([array.firstObject length] >0) {
+                        
+                        if (carSection == 1) {
+                            [weakSelf.imagesArrUrl addObject:array.firstObject];
+                        }else if (carSection == 2){
+                            vehiclemanpicpath = array.firstObject;
+                        }else{
+                            [weakSelf.imagesArrUrl addObject:array.firstObject];
+                        }
+                    }
+                    
+                }
+                //YBLog(@" self.imagesArrUrl%@vehiclemanpicpath==%@", weakSelf.imagesArrUrl,vehiclemanpicpath);
+            } failure:^(NSError *error) {
+                NSLog(@"faile - :%@",error);
+            }];
+            
+        } failed:^{
+            
+        }];
+        
+    }else if (videoList.count > 0) {
+        /*
+        [self.toolManager getSelectedImageList:allList success:^(NSArray<UIImage *> *imageList) {
+           // weakSelf.imageView.image = imageList.firstObject;
+        } failed:^{
+            
+        }];
+        
+        // 通个这个方法将视频压缩写入临时目录获取视频URL  或者 通过这个获取视频在手机里的原路径 model.fileURL  可自己压缩
+        [self.view showLoadingHUDText:@"视频写入中"];
+        [self.toolManager writeSelectModelListToTempPathWithList:videoList success:^(NSArray<NSURL *> *allURL, NSArray<NSURL *> *photoURL, NSArray<NSURL *> *videoURL) {
+            NSSLog(@"%@",videoURL);
+            [weakSelf.view handleLoading];
+        } failed:^{
+            [weakSelf.view handleLoading];
+            [weakSelf.view showImageHUDText:@"写入失败"];
+            NSSLog(@"写入失败");
+        }];
+        NSSLog(@"%ld个视频",videoList.count);*/
+    }
     
 }
-#pragma  mark HXPhotoViewControllerDelegate
-// 通过 HXPhotoViewControllerDelegate 代理返回选择的图片以及视频
-//- (void)photoViewControllerDidNext:(NSArray *)allList Photos:(NSArray *)photos Videos:(NSArray *)videos Original:(BOOL)original{
-//    //YBLog(@"allList==%@,photos==%@,videos==%@",allList,photos,videos);
-//    WEAK_SELF;
-//    self.manager = nil;
-//
-//    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-//        //NSSLog(@"images==%@",images);
-//        infoCell.imageView.image = images[0];
-//        NSMutableArray *imStrArray = [NSMutableArray array];
-//        for (UIImage *image in images) {
-//            NSString *base64 = [self imageChangeBase64:image];
-//            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
-//            [imStrArray addObject:typeStr];
-//        }
-//        NSMutableDictionary *dict = [weakSelf dictionaryWithArray:imStrArray];
-//        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
-//        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
-//
-//            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//            NSLog(@"upload is succse :%@",str);
-//
-//            NSArray *array = [str componentsSeparatedByString:@";"];
-//            for (NSString *string in array) {
-//                NSArray *array = [string componentsSeparatedByString:@","];
-//                if ([array.firstObject length] >0) {
-//
-//                    if (carSection == 1) {
-//                        [weakSelf.imagesArrUrl addObject:array.firstObject];
-//                    }else if (carSection == 2){
-//                        vehiclemanpicpath = array.firstObject;
-//                    }else{
-//                        [weakSelf.imagesArrUrl addObject:array.firstObject];
-//                    }
-//                }
-//
-//            }
-//            //YBLog(@" self.imagesArrUrl%@vehiclemanpicpath==%@", weakSelf.imagesArrUrl,vehiclemanpicpath);
-//        } failure:^(NSError *error) {
-//            NSLog(@"faile - :%@",error);
-//        }];
-//    }];
-//
-//}
-//// 点击取消
-//- (void)photoViewControllerDidCancel{
-//
-//}
+// 点击取消
+- (void)albumListViewControllerDidCancel:(HXAlbumListViewController *)albumListViewController{
+    //YBLog(@"albumListViewController==%@",albumListViewController);
+}
 #pragma mark -- image转化成Base64位
 -(NSString *)imageChangeBase64: (UIImage *)image{
     

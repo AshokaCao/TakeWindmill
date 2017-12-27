@@ -27,12 +27,6 @@
 #import "PPNetworkHelper.h"
 
 #import "HSHString.h"
-//#import "HXPhotoViewController.h"
-#import "HXPhotoView.h"
-#import <HXAlbumListViewController.h>
-#import <HXPhotoPicker.h>
-
-
 #import "RCDataManager.h"
 #import "FLPayManager.h"
 
@@ -48,6 +42,7 @@
 #import <YQSlideMenuController.h>
 #import <UIViewController+YQSlideMenu.h>
 #import <ZXingWrapper.h>
+#import <HXPhotoPicker.h>
 
 
 //百度

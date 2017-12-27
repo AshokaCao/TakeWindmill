@@ -15,9 +15,11 @@
     
 }
 @property (nonatomic,strong) HXPhotoManager *manager;
+@property (nonatomic,strong) HXDatePhotoToolManager *toolManager;
+@property (nonatomic,strong) YBUserListModel *userModel;
 @property (nonatomic,strong) NSMutableArray * imagesArrUrl;
 @property (nonatomic,strong) YBInformationCell *infoCell;
-@property (nonatomic,strong) YBUserListModel *userModel;
+
 
 @end
 
@@ -28,13 +30,19 @@ static NSArray *textArray;
 - (HXPhotoManager *)manager {
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhoto];
-//        _manager.openCamera = YES;
-//        _manager.style = HXPhotoAlbumStylesSystem;
-//        _manager.photoMaxNum = 1;
-//        // _manager.videoMaxNum = 1;
-//        _manager.maxNum = 1;
+        _manager.configuration.openCamera = YES;
+        //_manager.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.photoMaxNum = 1;
+        // _manager.videoMaxNum = 1;
+        _manager.configuration.maxNum = 1;
     }
     return _manager;
+}
+- (HXDatePhotoToolManager *)toolManager {
+    if (!_toolManager) {
+        _toolManager = [[HXDatePhotoToolManager alloc] init];
+    }
+    return _toolManager;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -221,55 +229,46 @@ static NSArray *textArray;
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 75;
 }
-
+#pragma  mark HXAlbumListViewControllerDelegate
 - (void)albumListViewController:(HXAlbumListViewController *)albumListViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original {
-   YBLog(@"allList==%@,photos==%@,videos==%@",allList,photoList,videoList);
+    WEAK_SELF;
+   //YBLog(@"allList==%@,photos==%@,videos==%@",allList,photoList,videoList);
+    [self.manager clearSelectedList];
+    
+    [self.toolManager getSelectedImageList:photoList success:^(NSArray<UIImage *> *imageList) {
+        weakSelf.infoCell.imageV.image = imageList[0];
+        NSMutableArray *imStrArray = [NSMutableArray array];
+        for (UIImage *image in imageList) {
+            NSString *base64 = [self imageChangeBase64:image];
+            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
+            [imStrArray addObject:typeStr];
+        }
+        NSMutableDictionary *dict = [weakSelf dictionaryWithArray:imStrArray];
+        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
+        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
+            
+            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            NSLog(@"upload is succse :%@",str);
+            
+            NSArray *array = [str componentsSeparatedByString:@";"];
+            for (NSString *string in array) {
+                NSArray *array = [string componentsSeparatedByString:@","];
+                if ([array.firstObject length] >0) {
+                    
+                    [weakSelf.imagesArrUrl addObject:array.firstObject];
+                    
+                }
+                
+            }
+            //YBLog(@" self.imagesArrUrl%@vehiclemanpicpath==%@", weakSelf.imagesArrUrl,vehiclemanpicpath);
+        } failure:^(NSError *error) {
+            NSLog(@"faile - :%@",error);
+        }];
+    } failed:^{
+        
+    }];
 }
 
-#pragma  mark HXPhotoViewControllerDelegate
-// 通过 HXPhotoViewControllerDelegate 代理返回选择的图片以及视频
-//- (void)photoViewControllerDidNext:(NSArray *)allList Photos:(NSArray *)photos Videos:(NSArray *)videos Original:(BOOL)original{
-//    //YBLog(@"allList==%@,photos==%@,videos==%@",allList,photos,videos);
-//    WEAK_SELF;
-//    self.manager = nil;
-//
-//    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-//        //NSSLog(@"images==%@",images);
-//        weakSelf.infoCell.imageV.image = images[0];
-//        NSMutableArray *imStrArray = [NSMutableArray array];
-//        for (UIImage *image in images) {
-//            NSString *base64 = [self imageChangeBase64:image];
-//            NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
-//            [imStrArray addObject:typeStr];
-//        }
-//        NSMutableDictionary *dict = [weakSelf dictionaryWithArray:imStrArray];
-//        [PPNetworkHelper setResponseSerializer:PPResponseSerializerHTTP];
-//        [PPNetworkHelper POST:UploadPhoto parameters:dict success:^(id responseObject) {
-//
-//            NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//            NSLog(@"upload is succse :%@",str);
-//
-//            NSArray *array = [str componentsSeparatedByString:@";"];
-//            for (NSString *string in array) {
-//                NSArray *array = [string componentsSeparatedByString:@","];
-//                if ([array.firstObject length] >0) {
-//
-//                    [weakSelf.imagesArrUrl addObject:array.firstObject];
-//
-//                }
-//
-//            }
-//            //YBLog(@" self.imagesArrUrl%@vehiclemanpicpath==%@", weakSelf.imagesArrUrl,vehiclemanpicpath);
-//        } failure:^(NSError *error) {
-//            NSLog(@"faile - :%@",error);
-//        }];
-//    }];
-//
-//}
-//// 点击取消
-//- (void)photoViewControllerDidCancel{
-//
-//}
 #pragma mark -- image转化成Base64位
 -(NSString *)imageChangeBase64: (UIImage *)image{
     
