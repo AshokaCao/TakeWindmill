@@ -235,11 +235,14 @@
     //YBHelpMessage *helpMessage = (YBHelpMessage *)message.content;
     NSLog(@"content==%@",message.content);
    
-    NSMutableDictionary *diction = [NSMutableDictionary dictionary];
-    [diction setValue:message.content forKey:@"TaxiNotigication"];
-    
-    NSNotification *notification =[NSNotification notificationWithName:@"TaxiNotigication" object:nil userInfo:diction];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if([message.content isMemberOfClass:YBTaxiModel.class] || [message.content isMemberOfClass:YBTaxiStepModel.class]){
+        
+        NSMutableDictionary *diction = [NSMutableDictionary dictionary];
+        [diction setValue:message.content forKey:@"TaxiNotigication"];
+        
+        NSNotification *notification =[NSNotification notificationWithName:@"TaxiNotigication" object:nil userInfo:diction];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
     
 
     if ([self.delegate respondsToSelector:@selector(receiveMessage:MsgValue:)]) {
