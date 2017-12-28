@@ -24,6 +24,7 @@ static BOOL isWebView = YES;
 -(IMYWebView *)webView{
     if (!_webView) {
         _webView = [[IMYWebView alloc] initWithFrame:self.view.bounds];
+        //_webView.scrollView.scrollEnabled = NO;
         _webView.delegate = self;
     }
     return _webView;
@@ -61,7 +62,6 @@ static BOOL isWebView = YES;
 -(void)setUI{
     [self.view addSubview:self.backScroll];
     
-    
     [self.backScroll addSubview:isWebView ? self.htmlView : self.webView];
 }
 -(void)requestData{
@@ -81,12 +81,14 @@ static BOOL isWebView = YES;
 #pragma mark - UIWebViewDelegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    NSInteger height = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.scrollHeight"] integerValue];
-    self.htmlView.frame=CGRectMake(0, 0, kScreenWidth,height);
-    //CGFloat contentHeight = self.backScroll.contentSize.height;
-    //YBLog(@"contentHeight==%f",kScreenHeight);
-    self.backScroll.contentSize = CGSizeMake(kScreenWidth, height+kNaviHeight);
-
+    if (isWebView) {
+        NSInteger height = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.scrollHeight"] integerValue];
+        self.htmlView.frame=CGRectMake(0, 0, kScreenWidth,height);
+        //CGFloat contentHeight = self.backScroll.contentSize.height;
+        //YBLog(@"contentHeight==%f",kScreenHeight);
+        self.backScroll.contentSize = CGSizeMake(kScreenWidth, height+kNaviHeight);
+    }
+   
 }
 //#pragma mark - IMYWebViewDelegate
 //- (void)webViewDidFinishLoad:(IMYWebView*)webView{

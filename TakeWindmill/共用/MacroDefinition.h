@@ -289,3 +289,7 @@
 //分销
 #define DistributionHtml (ServerPath@"WebPage/Distribution.html")
 
+//广告列表
+#define Adinfolist (ServerPath@"ad/adinfolist")
+
+

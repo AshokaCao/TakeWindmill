@@ -26,6 +26,8 @@
 #import "YBConversationListVC.h"
 #import "YBChatVC.h"
 #import "YZLocationManager.h"
+#import "YBAdInfoListModel.h"
+#import "YBWebViewVC.h"
 
 
 
@@ -38,12 +40,16 @@
 @property (nonatomic, strong) UIView *itemView;
 
 //无限轮播视图
+@property (nonatomic, strong)SDCycleScrollView *cycleScrollView;
 //定时器
 @property (nonatomic, strong) NSTimer *rotateTimer;
 //点
 @property (nonatomic, strong) UIPageControl *myPageControl;
 
 @property (nonatomic, strong) UILabel *msgValue;
+
+@property (nonatomic, strong) NSArray *adInfoArray;
+
 
 @end
 
@@ -237,6 +243,7 @@
     // 这个方法是为了，不让隐藏状态栏的时候出现view上移
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.view.backgroundColor = [UIColor whiteColor];
+    self.adInfoArray = [NSArray array];
     [self setupNav];
     
     RCDataManager * mg =[RCDataManager shareManager];
@@ -288,24 +295,85 @@
 
 #pragma mark - 用户校验
 
-
+-(SDCycleScrollView *)cycleScrollView{
+    if (_cycleScrollView == nil) {
+        SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, CGRectGetMaxY(self.itemView.frame), YBWidth, YBHeight - _itemView.bounds.size.height) delegate:self placeholderImage:[UIImage imageNamed:@"首页4_01"]];
+        //cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;
+        cycleScrollView.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        cycleScrollView.currentPageDotColor = [UIColor whiteColor];
+        //         --- 轮播时间间隔，默认1.0秒，可自定义
+        cycleScrollView.autoScrollTimeInterval = 3.0;
+        _cycleScrollView = cycleScrollView;
+    }
+    return _cycleScrollView;
+}
 - (void)scrollViewInit {
-    
+    WEAK_SELF;
     //滚动图片
-    NSArray *imageArray = @[@"首页4_01",@"首页4_02"];
-    
+    //NSArray *imageArray = @[@"首页4_01",@"首页4_02"];
     // >>>>>>>>>>>>>>>>>>>>>>>>> demo轮播图1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // 本地加载 --- 创建不带标题的图片轮播器
-    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, CGRectGetMaxY(self.itemView.frame), YBWidth, YBHeight - _itemView.bounds.size.height ) shouldInfiniteLoop:YES imageNamesGroup:imageArray];
-    cycleScrollView.delegate = self;
-    cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;
-    [self.view addSubview:cycleScrollView];
-    cycleScrollView.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    //         --- 轮播时间间隔，默认1.0秒，可自定义
-    cycleScrollView.autoScrollTimeInterval = 3.0;
+    //SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, CGRectGetMaxY(self.itemView.frame), YBWidth, YBHeight - _itemView.bounds.size.height ) shouldInfiniteLoop:YES imageNamesGroup:imageArray];
+
+    [self.view addSubview:self.cycleScrollView];
+    
+//   NSArray *imagesURLStrings = @[
+//                         @"http://121.40.76.10:93/UploadFiles/ad/index_slide/路况首页图.jpg",
+//                         @"http://121.40.76.10:93/UploadFiles/ad/index_slide/配单首页图.jpg?v=1.1",
+//                         @"http://121.40.76.10:93/UploadFiles/ad/index_slide/分润首页图.jpg?v=1.1",
+//                         @"http://121.40.76.10:93/images/driver/drivecard.png"
+//                         ];
+    //weakSelf.cycleScrollView.imageURLStringsGroup = imagesURLStrings;
+    
+    
+ 
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    //NSString *userID = [YBUserDefaults valueForKey:_userId];
+    //dict[@"userid"] = userID;
+    dict[@"classsysno"] = @"1";
+    
+    [YBRequest postWithURL:Adinfolist MutableDict:dict success:^(id dataArray) {
+        YBLog(@"dataArray - %@",dataArray);
+        //NSArray * adInfoList = dataArray[@"AdInfoList"];
+        
+        YBAdInfoListModel * adInfoListModel = [YBAdInfoListModel yy_modelWithJSON:dataArray];
+        weakSelf.adInfoArray = adInfoListModel.AdInfoList;
+        
+        NSMutableArray *imageArray = [NSMutableArray array];
+        for (AdInfoModel * adInfo in adInfoListModel.AdInfoList) {
+             [imageArray addObject:adInfo.PicUrl];
+        }
+        YBLog(@"imageArray - %@",imageArray);
+        weakSelf.cycleScrollView.imageURLStringsGroup = imageArray;
+    
+    } failure:^(id dataArray) {
+        //YBLog(@"failureDataArray - %@",dataArray);
+         [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
     
     
 }
+#pragma mark - SDCycleScrollViewDelegate
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index
+{
+    YBLog(@"---点击了第%ld张图片", (long)index);
+    if (index<self.adInfoArray.count) {
+        YBWebViewVC * vc = [[YBWebViewVC alloc]init];
+        AdInfoModel * model =self.adInfoArray[index];
+        vc.urlString = model.LinkUrl;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    
+}
+
+/*
+ // 滚动到第几张图回调
+ - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index
+ {
+ NSLog(@">>>>>> 滚动到第%ld张图", (long)index);
+ }
+ 
+ */
 
 - (void)buttonsAction {
     
