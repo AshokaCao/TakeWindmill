@@ -93,7 +93,7 @@
 - (UITableView *)passengerTableView
 {
     if (!_passengerTableView) {
-        UITableView *tableView    = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.heardLabel.frame), YBWidth, YBHeight - CGRectGetMaxY(self.heardLabel.frame)) style:UITableViewStyleGrouped];
+        UITableView *tableView    = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.heardLabel.frame), YBWidth, YBHeight - CGRectGetMaxY(self.heardLabel.frame))];
         tableView.delegate        = self;
         tableView.dataSource      = self;
         tableView.rowHeight       = 200;
@@ -144,7 +144,7 @@
 
 #pragma mark - 界面搭建
 - (void)interfaceToBuild {
-    self.title                             = @"可拼乘客乘客";
+    self.title                             = @"可拼乘客";
     self.view.backgroundColor              = LineLightColor;
     
     UIButton *cancelButton       = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 20, 20)];
@@ -177,6 +177,8 @@
 {
     _routeSearch = [[BMKRouteSearch alloc]init];
     _routeSearch.delegate = self;
+    
+    [MBProgressHUD showOnlyLoadToView:self.passengerTableView];
     
     NSString *urlStr = passengerstartpointnearbypassengerlistPath;
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
@@ -312,6 +314,7 @@
 
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error
 {
+    WEAK_SELF;
     if (error == BMK_SEARCH_NO_ERROR) {
         BMKDrivingRouteLine* plan = (BMKDrivingRouteLine*)[result.routes objectAtIndex:0];
         
@@ -338,11 +341,13 @@
                 [dict setObject:[YBRequest convertToJsonData:route] forKey:@"routeplanresult"];
                 [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
                     YBLog(@"规划后的匹配度%@",dataArray);
-                    self.travelArray = dataArray[@"TravelInfoList"];
-                    [self.passengerTableView reloadData];
+                    weakSelf.travelArray = dataArray[@"TravelInfoList"];
+                    [MBProgressHUD hideHUDForView:weakSelf.passengerTableView animated:YES];
+                    [weakSelf.passengerTableView reloadData];
                     //结束刷新
-                    [self.passengerTableView.mj_header endRefreshing];
+                    [weakSelf.passengerTableView.mj_header endRefreshing];
                 } failure:^(id dataArray) {
+                    [MBProgressHUD hideHUDForView:weakSelf.passengerTableView animated:YES];
                 }];
             }else {
                 [self DriversTripDcit:self.orderInformation PassengerDict:self.passengerTravel[self.strokeRow]];

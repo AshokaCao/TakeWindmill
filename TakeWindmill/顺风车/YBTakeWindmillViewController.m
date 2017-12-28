@@ -17,6 +17,8 @@
 #import "YBCertifiedViewController.h"
 #import "YBRegisteredViewController.h"
 
+#import "YBUserListModel.h"
+
 #import "YBAboutButton.h"
 #import "YBTakeWindmollView.h"
 #import "YBDriverTableView.h"
@@ -69,8 +71,8 @@
 #pragma mark - lzay
 - (YBDriverTableView *)driverTableView
 {
-    if (!_driverTableView) {
-        YBDriverTableView *tableView   = [[YBDriverTableView alloc] initWithFrame:CGRectMake(YBWidth, 1, YBWidth, YBHeight - 24) style:UITableViewStyleGrouped];
+    if (!_driverTableView) {//司机
+        YBDriverTableView *tableView   = [[YBDriverTableView alloc] initWithFrame:CGRectMake(YBWidth, 1, YBWidth, self.scrollView.frame.size.height) style:UITableViewStyleGrouped];
         tableView.isDriverNotCompleted = 1;
         [self.scrollView addSubview:tableView];
         
@@ -81,8 +83,8 @@
 
 - (YBPassengerTableView *)takeTableView
 {
-    if (!_takeTableView) {
-        YBPassengerTableView *tableView = [[YBPassengerTableView alloc] initWithFrame:CGRectMake(0, 1, YBWidth, YBHeight - 24) style:UITableViewStyleGrouped];
+    if (!_takeTableView) {//乘客
+        YBPassengerTableView *tableView = [[YBPassengerTableView alloc] initWithFrame:CGRectMake(0, 1, YBWidth, self.scrollView.frame.size.height) style:UITableViewStyleGrouped];
         tableView.isPassengerNotCompleted = 1;
         [self.scrollView addSubview:tableView];
 
@@ -127,6 +129,8 @@
     
     //初始化
     [self initControllerView];
+    
+    [self getUserListAction];
 
 }
 
@@ -155,8 +159,7 @@
     [self initWithlocService];
     //乘客端行程信息
     [self passengerDidNotCompleteTheTrip];
-    
-    [self driverTableView];
+
 }
 
 - (void)initWithlocService
@@ -166,6 +169,27 @@
     _locService.delegate = self;
     //启动LocationService
     [_locService startUserLocationService];
+}
+
+- (void)getUserListAction
+{
+    WEAK_SELF;
+    
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    NSString *userID = [YBUserDefaults valueForKey:_userId];
+    dict[@"userid"] = userID;
+    
+    [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
+//        NSLog(@"dataArray - %@",dataArray);
+        NSDictionary *dic = dataArray;
+        NSDictionary *newDic = [NSDictionary changeType:dic];
+        YBUserListModel *userModel = [YBUserListModel modelWithDic:newDic];
+        
+        weakSelf.driverTableView.nameStr = userModel.NickName;
+        weakSelf.takeTableView.nameStr = userModel.NickName;
+    } failure:^(id dataArray) {
+        YBLog(@"请求个人信息失败%@",dataArray);
+    }];
 }
 
 - (void)parallelDataRequest
@@ -243,7 +267,7 @@
     NSMutableDictionary *dict1  = [YBTooler dictinitWithMD5];
     [dict1 setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
     [YBRequest postWithURL:urlStr1 MutableDict:dict1 success:^(id dataArray) {
-//        YBLog(@"司机未完成行程%@",dataArray);
+        YBLog(@"司机未完成行程%@",dataArray);
         self.driverTableView.isDriverNotCompleted = 2;
         self.driverTableView.driverDict = dataArray;
         dispatch_semaphore_signal(semaphore);
@@ -257,18 +281,18 @@
 #pragma mark -判断车主是否有我的行程
 - (void)driver_MyOrder:(id)semaphore
 {
+    WEAK_SELF;
     //爱心车主
     NSString *urlStr1           = passengertravelinfolistbydriverPath;
     NSMutableDictionary *dict1  = [YBTooler dictinitWithMD5];
     [dict1 setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
     
     [YBRequest postWithURL:urlStr1 MutableDict:dict1 success:^(id dataArray) {
-        YBLog(@"司机未完成行程%@",dataArray);
-        self.driverTableView.isDriverNotCompleted = 2;
+        YBLog(@"司机我的行程%@",dataArray);
+        weakSelf.driverTableView.myOrderArray = dataArray[@"TravelInfoList"];
         dispatch_semaphore_signal(semaphore);
     } failure:^(id dataArray) {
-        YBLog(@"司机未完成行程%@",dataArray);
-        self.driverTableView.isDriverNotCompleted = 1;
+        YBLog(@"司机我的行程%@",dataArray);
         dispatch_semaphore_signal(semaphore);
     }];
 }
@@ -407,6 +431,8 @@
 {
     if (error == BMK_SEARCH_NO_ERROR) {
         self.cityId = result.cityCode;
+        //请求司机端界面所有数据
+        [self parallelDataRequest];
     }
 }
 

@@ -192,6 +192,7 @@
 		5836CF6F1F3967D400D8F2F9 /* YBMessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5836CF6D1F3967D400D8F2F9 /* YBMessageTableViewCell.xib */; };
 		5836CF731F39834B00D8F2F9 /* YBMessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5836CF721F39834B00D8F2F9 /* YBMessageModel.m */; };
 		583CC7811F57ACA500600C0F /* TQMultistageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 583CC7801F57ACA500600C0F /* TQMultistageTableView.m */; };
+		583E63A11FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 583E63A01FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.mm */; };
 		584068A91FDE268400DF2ABE /* YBStrokeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 584068A81FDE268400DF2ABE /* YBStrokeVC.m */; };
 		584068AC1FDE270400DF2ABE /* YBBusinessCardVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 584068AB1FDE270400DF2ABE /* YBBusinessCardVC.m */; };
 		584068AF1FDE274500DF2ABE /* YBSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 584068AE1FDE274500DF2ABE /* YBSettingVC.m */; };
@@ -672,6 +673,8 @@
 		5836CF741F399E1200D8F2F9 /* MacroDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroDefinition.h; sourceTree = "<group>"; };
 		583CC77F1F57ACA500600C0F /* TQMultistageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TQMultistageTableView.h; sourceTree = "<group>"; };
 		583CC7801F57ACA500600C0F /* TQMultistageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TQMultistageTableView.m; sourceTree = "<group>"; };
+		583E639F1FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBDriverPassengerTravelVCViewController.h; sourceTree = "<group>"; };
+		583E63A01FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = YBDriverPassengerTravelVCViewController.mm; sourceTree = "<group>"; };
 		584068A71FDE268400DF2ABE /* YBStrokeVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBStrokeVC.h; sourceTree = "<group>"; };
 		584068A81FDE268400DF2ABE /* YBStrokeVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBStrokeVC.m; sourceTree = "<group>"; };
 		584068AA1FDE270400DF2ABE /* YBBusinessCardVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBBusinessCardVC.h; sourceTree = "<group>"; };
@@ -2272,26 +2275,26 @@
 		58F6CF731FEA072C007AD443 /* 发布行程 */ = {
 			isa = PBXGroup;
 			children = (
-				58F6CF741FEA072C007AD443 /* YBAskForPeersVC.h */,
-				58F6CF751FEA072C007AD443 /* YBAskForPeersVC.mm */,
-				58F6CF761FEA072C007AD443 /* YBMapPositionSelectionVC.m */,
-				58F6CF771FEA072C007AD443 /* YBWaitingOrdersVC.h */,
-				58F6CF781FEA072C007AD443 /* YBEvaluationDriverVC.h */,
-				58F6CF791FEA072C007AD443 /* YBAddressSearchVC.m */,
-				58F6CF7A1FEA072C007AD443 /* YBComplaintDriverVC.m */,
-				58F6CF7B1FEA072C007AD443 /* YBOnTheTrainVC.m */,
-				58F6CF7C1FEA072C007AD443 /* YBCitySelectionVC.h */,
-				58F6CF7D1FEA072C007AD443 /* YBAddressSearchSelectionVC.h */,
-				58F6CF7E1FEA072C007AD443 /* YBMapPositionSelectionVC.h */,
 				58F6CF7F1FEA072C007AD443 /* Model */,
 				58F6CF841FEA072C007AD443 /* View */,
-				58F6CF911FEA072C007AD443 /* YBAddressSearchVC.h */,
-				58F6CF921FEA072C007AD443 /* YBEvaluationDriverVC.m */,
-				58F6CF931FEA072C007AD443 /* YBComplaintDriverVC.h */,
+				58F6CF741FEA072C007AD443 /* YBAskForPeersVC.h */,
+				58F6CF751FEA072C007AD443 /* YBAskForPeersVC.mm */,
+				58F6CF771FEA072C007AD443 /* YBWaitingOrdersVC.h */,
 				58F6CF941FEA072C007AD443 /* YBWaitingOrdersVC.mm */,
-				58F6CF951FEA072C007AD443 /* YBCitySelectionVC.m */,
-				58F6CF961FEA072C007AD443 /* YBAddressSearchSelectionVC.m */,
+				58F6CF911FEA072C007AD443 /* YBAddressSearchVC.h */,
+				58F6CF791FEA072C007AD443 /* YBAddressSearchVC.m */,
+				58F6CF931FEA072C007AD443 /* YBComplaintDriverVC.h */,
+				58F6CF7A1FEA072C007AD443 /* YBComplaintDriverVC.m */,
 				58F6CF971FEA072C007AD443 /* YBOnTheTrainVC.h */,
+				58F6CF7B1FEA072C007AD443 /* YBOnTheTrainVC.m */,
+				58F6CF961FEA072C007AD443 /* YBAddressSearchSelectionVC.m */,
+				58F6CF7D1FEA072C007AD443 /* YBAddressSearchSelectionVC.h */,
+				58F6CF7E1FEA072C007AD443 /* YBMapPositionSelectionVC.h */,
+				58F6CF761FEA072C007AD443 /* YBMapPositionSelectionVC.m */,
+				58F6CF781FEA072C007AD443 /* YBEvaluationDriverVC.h */,
+				58F6CF921FEA072C007AD443 /* YBEvaluationDriverVC.m */,
+				58F6CF7C1FEA072C007AD443 /* YBCitySelectionVC.h */,
+				58F6CF951FEA072C007AD443 /* YBCitySelectionVC.m */,
 			);
 			path = "发布行程";
 			sourceTree = "<group>";
@@ -2383,6 +2386,8 @@
 				58F6CFB61FEA072C007AD443 /* YBPassengerTravelVC.mm */,
 				58F6D01D1FEA57E4007AD443 /* YBPassengerCanBeBuiltVC.h */,
 				58F6D01E1FEA57E4007AD443 /* YBPassengerCanBeBuiltVC.m */,
+				583E639F1FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.h */,
+				583E63A01FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.mm */,
 			);
 			path = "爱心车主";
 			sourceTree = "<group>";
@@ -2940,6 +2945,7 @@
 				582777461F4AAE360053C8B9 /* YBRegisteredVC.m in Sources */,
 				5810BBAD1FDB7877009521D7 /* APRSASigner.m in Sources */,
 				58F6CFF71FEA072D007AD443 /* YBDriver_CommonRouteCell.m in Sources */,
+				583E63A11FF4E17D006ACA80 /* YBDriverPassengerTravelVCViewController.mm in Sources */,
 				58F6CFF21FEA072D007AD443 /* YBAddressSearchSelectionVC.m in Sources */,
 				58F6CFEB1FEA072D007AD443 /* YBWaitingOrdersCell.m in Sources */,
 				58F6D01F1FEA57E4007AD443 /* YBPassengerCanBeBuiltVC.m in Sources */,

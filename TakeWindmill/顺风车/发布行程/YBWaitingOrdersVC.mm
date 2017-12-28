@@ -189,7 +189,6 @@
         if (_planningArray.count == 0) {
             _dataArray = nil;
             [MBProgressHUD showError:@"附近暂无司机" toView:self.view];
-//            self.numberdriversLabel.text = [NSString stringWithFormat:@"当前有%lu位司机",_planningArray.count];
         }
         else {
             [MBProgressHUD showHUDAddedTo:self.waitingTableView animated:YES];

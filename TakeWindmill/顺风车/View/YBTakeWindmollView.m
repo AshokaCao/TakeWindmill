@@ -117,8 +117,8 @@
     self.passengerButton.frame =CGRectMake(10, 10, 60, 20);
     self.ownerButton.frame =CGRectMake(CGRectGetMaxX(self.passengerButton.frame) + 10, 10, 60, 20);
     self.lineView.frame = CGRectMake(10, CGRectGetMaxY(self.passengerButton.frame), 60, 2);
-    self.customerButton.frame =CGRectMake(YBWidth - 65, 10, 20, 20);
-    self.mailListButton.frame =CGRectMake(YBWidth - 30, 10, 20, 20);
+//    self.customerButton.frame =CGRectMake(YBWidth - 65, 10, 20, 20);
+//    self.mailListButton.frame =CGRectMake(YBWidth - 30, 10, 20, 20);
     
     _topViews = [NSMutableArray array];
     [self.topViews addObject:self.passengerButton];
@@ -189,24 +189,34 @@
 
 @implementation YBTakeHeadView
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (UILabel *)nameLabel
 {
-    if (self = [super initWithFrame:frame]) {
-        
-        UILabel *nameLabel = [[UILabel alloc] init];
-        [self addSubview:nameLabel];
-        self.nameLabel = nameLabel;
-        
-        UIImageView *iconImageView = [[UIImageView alloc] init];
-        [self addSubview:iconImageView];
-        self.iconImageView = iconImageView;
-
-        UIButton *itineraryButton = [[UIButton alloc] init];
-        [self addSubview:itineraryButton];
-        self.itineraryButton = itineraryButton;
-
+    if (!_nameLabel) {
+        UILabel *label = [[UILabel alloc] init];
+        [self addSubview:label];
+        _nameLabel = label;
     }
-    return self;
+    return _nameLabel;
+}
+
+- (UIImageView *)iconImageView
+{
+    if (!_iconImageView) {
+        UIImageView *imageView = [[UIImageView alloc] init];
+        [self addSubview:imageView];
+        _iconImageView = imageView;
+    }
+    return _iconImageView;
+}
+
+- (UIButton *)itineraryButton
+{
+    if (!_itineraryButton) {
+        UIButton *button = [[UIButton alloc] init];
+        [self addSubview:button];
+        _itineraryButton = button;
+    }
+    return _itineraryButton;
 }
 
 - (void)layoutSubviews
@@ -218,10 +228,10 @@
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self).with.offset(20);
         make.top.equalTo(self).with.offset(20);
-        make.bottom.equalTo(self.iconImageView.mas_bottom).with.offset(0);
+        make.bottom.equalTo(self.iconImageView.mas_bottom);
         make.right.equalTo(self.iconImageView.mas_left).with.offset(-10);
     }];
-    self.nameLabel.text = [NSString stringWithFormat:@"%@,你好",self.nameStr];
+//    self.nameLabel.text = [NSString stringWithFormat:@"%@,你好",self.nameStr];
     
     self.iconImageView.frame = CGRectMake(YBWidth - 90,  40, 80, 30);
     self.iconImageView.image = [UIImage imageNamed:@"小汽车"];
@@ -235,12 +245,15 @@
     }];
 
     self.itineraryButton.layer.cornerRadius = 5;
-    self.itineraryButton.layer.borderWidth = 1;
-    self.itineraryButton.layer.borderColor = BtnBlueColor.CGColor;
+    [self.itineraryButton setBackgroundColor:BtnBlueColor];
     [self.itineraryButton setTitle:@"发布行程" forState:UIControlStateNormal];
-    [self.itineraryButton setTitleColor:BtnBlueColor forState:UIControlStateNormal];
+    [self.itineraryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.itineraryButton addTarget:self action:@selector(itineraryButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+}
 
+- (void)setNameStr:(NSString *)nameStr
+{
+    self.nameLabel.text = [NSString stringWithFormat:@"%@,你好",nameStr];
 }
 
 - (void)itineraryButtonAction:(UIButton *)sender

@@ -18,8 +18,11 @@
 #import "YBManagementRouteVC.h"
 #import "YBNearbyPassengersVC.h"
 #import "YBLookingPassengersrVC.h"
+#import "YBDriverPassengerTravelVCViewController.h"
 
-@interface YBDriverTableView ()<UITableViewDelegate,UITableViewDataSource>
+@interface YBDriverTableView ()<UITableViewDelegate,UITableViewDataSource>{
+    NSInteger sect;
+}
 
 @property (nonatomic, strong) YBTakeHeadView *driverHeadView;
 
@@ -30,7 +33,7 @@
 {
     if (!_driverHeadView) {
         YBTakeHeadView *driverHeadView = [[YBTakeHeadView alloc] initWithFrame:CGRectMake(0, 0, YBWidth , 140)];
-        driverHeadView.nameStr         = @"木星";
+        driverHeadView.nameStr         = @"****";
         _driverHeadView = driverHeadView;
         
         
@@ -60,6 +63,10 @@
     return self;
 }
 
+- (void)setNameStr:(NSString *)nameStr
+{
+    self.driverHeadView.nameStr = nameStr;
+}
 
 - (void)managementBtnAction:(UIButton *)sender
 {
@@ -94,7 +101,7 @@
 #pragma mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSInteger sect = 2;//发现和常用路线
+    sect = 2;//发现和常用路线
     if (self.driverDict) sect ++;//有未完成行程
     if (self.myOrderArray.count != 0) sect ++;//我的行程
     return sect;
@@ -107,12 +114,12 @@
             if (section == 0) return 1;
             if (section == 1) return self.myOrderArray.count;
             if (section == 2) return 2;
-            if (section == 3) return self.commonRoute.count;
+            if (section == 3) return  self.commonRoute.count > 0 ? self.commonRoute.count : 1;
         }
         else {
             if (section == 0) return 1;
             if (section == 1) return 2;
-            if (section == 2) return self.commonRoute.count;
+            if (section == 2) return  self.commonRoute.count > 0 ? self.commonRoute.count : 1;
         }
     }
     if (section == 0) return 2;
@@ -138,6 +145,7 @@
         if (section == 0) return [self addTitleViewStr:@"发现"];
         else              return [self addTitleViewStr:@"常用路线"];
     }
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -164,7 +172,7 @@
         [cell driver_PublishedOrders:self.driverDict];
         return cell;
     }
-    if (self.isDriverNotCompleted == 2 && indexPath.section == 1 && self.myOrderArray) { // 我的订单
+    if (self.isDriverNotCompleted == 2 && indexPath.section == 1 && self.myOrderArray.count != 0) { // 我的订单
         
         YBPublishedTripCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBPublishedTripCell"];
         if (!cell) {
@@ -175,7 +183,24 @@
         [cell driver_MyOrder:self.myOrderArray[indexPath.row]];
         return cell;
     }
-    if (indexPath.section == self.isDriverNotCompleted){ // 常用路线
+    if (indexPath.section == sect - 2) { //发现
+        YBFindOwnerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBFindOwnerCell"];
+        if (!cell) {
+            cell = [[YBFindOwnerCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"YBFindOwnerCell"];
+        }
+        tableView.rowHeight = 120;
+        if (indexPath.row == 0) {
+            cell.typeStr = @"附近乘客";
+            cell.passengerArray = self.passengersNearby;
+        }
+        else{
+            cell.typeStr = @"跨城乘客";
+            cell.passengerArray = self.passengersCity;
+        }
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
+    }
+    if (indexPath.section == sect - 1){ // 常用路线
         
         if (self.commonRoute.count > 0) {//
             YBDriver_CommonRouteCell * cell = [tableView dequeueReusableCellWithIdentifier:@"YBDriver_CommonRouteCell"];
@@ -195,35 +220,25 @@
             return cell;
         }
     }
-    else { //发现
-        YBFindOwnerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBFindOwnerCell"];
-        if (!cell) {
-            cell = [[YBFindOwnerCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"YBFindOwnerCell"];
-        }
-        tableView.rowHeight = 120;
-        if (indexPath.row == 0) {
-            cell.typeStr = @"附近乘客";
-            cell.passengerArray = self.passengersNearby;
-        }
-        else{
-            cell.typeStr = @"跨城乘客";
-            cell.passengerArray = self.passengersCity;
-        }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        return cell;
-    }
+    
     return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (self.isDriverNotCompleted == 2 && indexPath.section == 0) {
+    if (self.isDriverNotCompleted == 2 && indexPath.section == 0) { // 未完成行程
         YBLookingPassengersrVC *passeng = [[YBLookingPassengersrVC alloc] init];
         passeng.strokeSysNo = self.driverDict[@"SysNo"];
         [[self viewController].navigationController pushViewController:passeng animated:YES];
     }
-    else if (indexPath.section == self.isDriverNotCompleted){ //常用路线
+    if (self.isDriverNotCompleted == 2 && indexPath.section == 1 && self.myOrderArray.count != 0) { // 我的订单
+        YBDriverPassengerTravelVCViewController *drver = [[YBDriverPassengerTravelVCViewController alloc] init];
+        drver.SysNo = self.driverDict[@"SysNo"];
+        drver.TravelSysNo = self.myOrderArray[indexPath.row][@"SysNo"];
+        [[self viewController].navigationController pushViewController:drver animated:YES];
+    }
+    if (indexPath.section == sect - 1){ // 常用路线
         if (self.commonRoute.count == 0) {
             YBCommonRouteVC *common = [[YBCommonRouteVC alloc] init];
             [[self viewController].navigationController pushViewController:common animated:YES];
@@ -236,7 +251,7 @@
             [[self viewController].navigationController pushViewController:nearby animated:YES];
         }
     }
-    else {
+    if (indexPath.section == sect - 2) { //发现
         YBNearbyPassengersVC *nearby = [[YBNearbyPassengersVC alloc] init];
         nearby.isTypes               = indexPath.row;
         nearby.cityId                = self.cityId;

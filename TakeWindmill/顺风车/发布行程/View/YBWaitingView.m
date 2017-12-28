@@ -1060,30 +1060,49 @@
     self.detailsView.frame   = CGRectMake(0, CGRectGetMaxY(self.formationView.frame) + 1, self.frame.size.width, 90);
     [self.detailsView basseView];
     [self.detailsView InvitePeersWithDict:driverDict];
-    //底部
-    self.bottomView.frame    = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 60);
-    self.callButton.frame   = CGRectMake(10, 10 ,self.frame.size.width - 20, 40);
-    [self.callButton setTitle:@"确认同行" forState:UIControlStateNormal];
-    [self.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+
 }
 
-- (void)passengerTravel_ConfirmPeer
+- (void)passengerTravel_ConfirmPeer:(NSInteger)page
 {
-    self.moreBottomView.frame   = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 40);
-    [self.moreBottomView PassengerTravelButtonsArray:@[@"导航",@"取消行程",@"更多"]];
-    
-    self.bottomView.frame       = CGRectMake(0, CGRectGetMaxY(self.moreBottomView.frame) + 1, self.frame.size.width, 60);
-    self.contentLabel.frame     = CGRectMake(10, 10, self.frame.size.width / 2 - 20, 40);
-    self.contentLabel.text      = @"请在到达乘客起点后，点击【到达乘客起点】";
-    self.callButton.frame       = CGRectMake(CGRectGetMaxX(self.contentLabel.frame) + 10, 10,self.frame.size.width / 2 - 20, 40);
-    self.callButton.tag         = 1;
-    self.callButton.titleLabel.font = YBFont(15);
-    [self.callButton setTitle:@"到达乘客起点" forState:UIControlStateNormal];
-
-    CGRect viewFrame = self.frame;
-    viewFrame.origin.y = viewFrame.origin.y - 40;
-    viewFrame.size.height = viewFrame.size.height + 40;
-    self.frame = viewFrame;
+    self.callButton.tag         = page ;
+    if (page == 0) {
+        //底部
+        self.bottomView.frame    = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 60);
+        self.callButton.frame   = CGRectMake(10, 10 ,self.frame.size.width - 20, 40);
+        [self.callButton setTitle:@"确认同行" forState:UIControlStateNormal];
+        [self.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if (page == -1) {
+        
+    }
+    else {
+        self.moreBottomView.frame   = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 40);
+        [self.moreBottomView PassengerTravelButtonsArray:@[@"导航",@"取消行程",@"更多"]];
+        
+        self.bottomView.frame       = CGRectMake(0, CGRectGetMaxY(self.moreBottomView.frame) + 1, self.frame.size.width, 60);
+        self.contentLabel.frame     = CGRectMake(10, 10, self.frame.size.width / 2 - 20, 40);
+        self.contentLabel.text      = @"请在到达乘客起点后，点击【到达乘客起点】";
+        self.callButton.frame       = CGRectMake(CGRectGetMaxX(self.contentLabel.frame) + 10, 10,self.frame.size.width / 2 - 20, 40);
+        self.callButton.titleLabel.font = YBFont(15);
+        switch (page) {
+            case 1:
+                [self.callButton setTitle:@"到达乘客起点" forState:UIControlStateNormal];
+                break;
+            case 2:
+                [self.callButton setTitle:@"接到乘客" forState:UIControlStateNormal];
+                break;
+            case 3:
+                [self.callButton setTitle:@"到达目的地" forState:UIControlStateNormal];
+                break;
+            default:
+                break;
+        }
+        CGRect viewFrame = self.frame;
+        viewFrame.origin.y = viewFrame.origin.y - 40;
+        viewFrame.size.height = viewFrame.size.height + 40;
+        self.frame = viewFrame;
+    }
 }
 
 @end
@@ -1118,8 +1137,10 @@
         moreBtn.tag                         = 1;
         moreBtn.titleLabel.font             = YBFont(14);
         moreBtn.layer.borderWidth           = 0.5;
+        moreBtn.adjustsImageWhenDisabled    = NO;
         moreBtn.layer.borderColor           = LineLightColor.CGColor;
         moreBtn.titleLabel.textAlignment    = NSTextAlignmentCenter;
+        [moreBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         [moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [moreBtn addTarget:self action:@selector(moreBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:moreBtn];
@@ -1167,6 +1188,7 @@
 
 - (void)PassengerTravelButtonsArray:(NSArray *)array
 {
+    [self.button1 setTitle:array[0] forState:UIControlStateDisabled];
     [self.button1 setTitle:array[0] forState:UIControlStateNormal];
     [self.button2 setTitle:array[1] forState:UIControlStateNormal];
     [self.button3 setTitle:array[2] forState:UIControlStateNormal];

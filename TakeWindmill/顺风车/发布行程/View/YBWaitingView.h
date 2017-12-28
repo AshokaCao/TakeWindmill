@@ -199,7 +199,8 @@ typedef void(^clickTheButtonBlock)(UIButton *sender);
  @param driverDict 乘客dict
  */
 - (void)driverPassengerTravel:(NSDictionary *)driverDict;
-- (void)passengerTravel_ConfirmPeer;
+//是否是确认同行
+- (void)passengerTravel_ConfirmPeer:(NSInteger)page;
 
 @end
 

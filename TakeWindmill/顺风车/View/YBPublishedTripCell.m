@@ -55,7 +55,7 @@
 - (void)driver_MyOrder:(NSDictionary *)orderDict
 {
     NSArray *timeArray           = [orderDict[@"SetoutTimeStr"] componentsSeparatedByString:@"+"];
-    self.typeLabel.text          = @"寻找乘客";
+    self.typeLabel.text          = orderDict[@"StatName"];
     self.timeLabel.text          = [NSString stringWithFormat:@"%@ %@",timeArray[0],timeArray[1]];
     self.endPointLabel.text      = orderDict[@"EndAddress"];
     self.startingPointLabel.text = orderDict[@"StartAddress"];

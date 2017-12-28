@@ -84,8 +84,9 @@
 - (UIView *)heardView
 {
     if (!_heardView) {
-        _heardView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
+        _heardView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.strokeView.frame), YBWidth, 40)];
         _heardView.backgroundColor  = LineLightColor;
+        [self.view addSubview:_heardView];
         
         _countLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, YBWidth / 2, 30)];
         _countLabel.text     = @"当前有0位乘客";
@@ -96,19 +97,10 @@
     return _heardView;
 }
 
-//- (YBNearbyTitleView *)heardView
-//{
-//    if (!_heardView) {
-//        _heardView                  = [[YBNearbyTitleView alloc] initWithFrame:CGRectMake(0, 0, YBWidth, 40)];
-//        _heardView.backgroundColor  = LineLightColor;
-//    }
-//    return _heardView;
-//}
-
 - (UITableView *)lookingTableVIew
 {
     if (!_lookingTableVIew) {
-        UITableView *tableView    = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.strokeView.frame), YBWidth, YBHeight - CGRectGetMaxY(self.strokeView.frame)) style:UITableViewStyleGrouped];
+        UITableView *tableView    = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.heardView.frame), YBWidth, YBHeight - CGRectGetMaxY(self.heardView.frame))];
         tableView.delegate        = self;
         tableView.dataSource      = self;
         tableView.rowHeight       = 200;
@@ -202,8 +194,11 @@
 #pragma mark - 检索附近乘客
 - (void)nearbyPassengers
 {
+    WEAK_SELF;
     _routeSearch = [[BMKRouteSearch alloc]init];
     _routeSearch.delegate = self;
+    
+    [MBProgressHUD showOnlyLoadToView:self.lookingTableVIew];
     
     NSString *urlStr = driverstartpointnearbypassengerlistPath;
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
@@ -211,18 +206,19 @@
     
     [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
 //        YBLog(@"%@",dataArray);
-        self.passengerTravel = dataArray[@"TravelInfoList"];
-        if (self.passengerTravel.count != 0) {
-            self.strokeRow = 0;
-            self.suitabilityArray = [NSMutableArray array];
-            self.isDriver = YES;
-            [self DriversTripDcit:self.orderInformation PassengerDict:self.passengerTravel[self.strokeRow]];
+        weakSelf.passengerTravel = dataArray[@"TravelInfoList"];
+        if (weakSelf.passengerTravel.count != 0) {
+            weakSelf.strokeRow = 0;
+            weakSelf.suitabilityArray = [NSMutableArray array];
+            weakSelf.isDriver = YES;
+            [weakSelf DriversTripDcit:weakSelf.orderInformation PassengerDict:weakSelf.passengerTravel[weakSelf.strokeRow]];
         }else{
-            [MBProgressHUD showError:@"附近暂无乘客" toView:self.lookingTableVIew];
+            [MBProgressHUD showError:@"附近暂无乘客" toView:weakSelf.lookingTableVIew];
         }
     } failure:^(id dataArray) {
         YBLog(@"%@",dataArray);
-        [self.lookingTableVIew reloadData];
+        [MBProgressHUD hideHUDForView:weakSelf.lookingTableVIew animated:YES];
+        [weakSelf.lookingTableVIew reloadData];
     }];
 
 }
@@ -379,6 +375,8 @@
 
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error
 {
+    WEAK_SELF;
+    
     if (error == BMK_SEARCH_NO_ERROR) {
         BMKDrivingRouteLine* plan = (BMKDrivingRouteLine*)[result.routes objectAtIndex:0];
         
@@ -405,11 +403,15 @@
                 [dict setObject:[YBRequest convertToJsonData:route] forKey:@"routeplanresult"];
                 [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
                     YBLog(@"规划后的匹配度%@",dataArray);
-                    self.travelArray = dataArray[@"TravelInfoList"];
-                    [self.lookingTableVIew reloadData];
+                    [MBProgressHUD hideHUDForView:weakSelf.lookingTableVIew animated:YES];
+                    weakSelf.travelArray = dataArray[@"TravelInfoList"];
+                    [weakSelf.lookingTableVIew reloadData];
+                    weakSelf.countLabel.text = [NSString stringWithFormat:@"当前有%lu位乘客",weakSelf.travelArray.count];
                     //结束刷新
-                    [self.lookingTableVIew.mj_header endRefreshing];
+                    [weakSelf.lookingTableVIew.mj_header endRefreshing];
+                
                 } failure:^(id dataArray) {
+                    [MBProgressHUD hideHUDForView:weakSelf.lookingTableVIew animated:YES];
                 }];
             }else {
                 [self DriversTripDcit:self.orderInformation PassengerDict:self.passengerTravel[self.strokeRow]];
@@ -449,17 +451,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.travelArray.count;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 40;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    self.countLabel.text = [NSString stringWithFormat:@"当前有%lu位乘客",self.travelArray.count];
-    return self.heardView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

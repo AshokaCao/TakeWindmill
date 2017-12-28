@@ -1,23 +1,24 @@
 //
-//  YBPassengerTravelVC.h
+//  YBDriverPassengerTravelVCViewController.h
 //  TakeWindmill
 //
-//  Created by 靳亚彬 on 2017/9/5.
+//  Created by 靳亚彬 on 2017/12/28.
 //  Copyright © 2017年 浙江承御天泽公司. All rights reserved.
 //
 
 #import "YBMapViewController.h"
 
-@interface YBPassengerTravelVC : YBMapViewController
+@interface YBDriverPassengerTravelVCViewController : YBMapViewController
 
 /**
-* 司机的行程id
-*/
+ * 司机的行程id
+ */
 @property (nonatomic, strong) NSString *SysNo;
 
 /**
  * 乘客行程的id
  */
 @property (nonatomic, strong) NSString *TravelSysNo;
+
 
 @end

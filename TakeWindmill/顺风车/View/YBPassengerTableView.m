@@ -28,12 +28,11 @@
     if (!_takeHeadView) {
         YBTakeHeadView *takeHeadView = [[YBTakeHeadView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width , 140)];
         
-        takeHeadView.nameStr         = @"木星";
-        _takeHeadView = takeHeadView;
+        takeHeadView.nameStr         = @"***";
+        _takeHeadView                = takeHeadView;
 //        环保乘客
         self.dictArray = @[@{@"icon":@"成为车主",@"name":@"成为车主",@"subtitle":@"顺路接人平摊油费"}];
         __weak __typeof__(self) weakSelf = self;
-        self.takeHeadView.nameStr = @"木星";
         self.takeHeadView.selectButtonBlock = ^(id sender) {
             if (weakSelf.isPassengerNotCompleted == 2) {
                 [MBProgressHUD showError:@"尚有未完成的行程" toView:weakSelf];
@@ -59,6 +58,11 @@
         self.tableHeaderView    = self.takeHeadView;
     }
     return self;
+}
+
+- (void)setNameStr:(NSString *)nameStr
+{
+    self.takeHeadView.nameStr = nameStr;
 }
 
 #pragma mark - tableViewDelegate

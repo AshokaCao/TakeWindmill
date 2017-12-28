@@ -24,7 +24,9 @@
 
 
 //接口地址(临时)
-#define ServerPath @"http://www.bibizl.com/Service/"
+#define ServerPath @"http://121.40.76.10:88/Service/"
+//接口地址(正式)
+//#define ServerPath @"http://www.bibizl.com/Service/"
 
 //用户检测验证
 #define CheckuserPath (ServerPath@"user/checkuser?")
@@ -82,6 +84,9 @@
 #define passengerstartpointnearbypassengerlistPath (ServerPath@"travel/passengerstartpointnearbypassengerlist?")
 //司机_我的订单
 #define passengertravelinfolistbydriverPath (ServerPath@"travel/passengertravelinfolistbydriver?")
+
+//司机_确认同行
+#define drivertravelbindpassengerPath (ServerPath@"travel/drivertravelbindpassenger?")
 
 
 //路况直播列表

@@ -426,11 +426,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x7231;&#x5fc3;&#x8f66;&#x4e3b;/YBLookingPassengersrVC.m"
-            timestampString = "535538730.617918"
+            timestampString = "536143820.285988"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
@@ -668,12 +668,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/YBTakeWindmillViewController.m"
-            timestampString = "535877653.066696"
+            timestampString = "536143820.286363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
-            landmarkName = "-driver_MyOrder:"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
+            landmarkName = "-getUserListAction"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/View/YBDriverTableView.m"
+            timestampString = "536143820.286459"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "-setNameStr:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/View/YBPassengerTableView.m"
+            timestampString = "536143820.286538"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "-setNameStr:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -683,13 +715,77 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/YBTakeWindmillViewController.m"
-            timestampString = "535877653.067243"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x7231;&#x5fc3;&#x8f66;&#x4e3b;/YBPassengerTravelVC.mm"
+            timestampString = "536143820.286591"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
-            landmarkName = "-driver_MyOrder:"
+            startingLineNumber = "216"
+            endingLineNumber = "216"
+            landmarkName = "-confirmCounterpartsPost"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x7231;&#x5fc3;&#x8f66;&#x4e3b;/YBPassengerTravelVC.mm"
+            timestampString = "536143820.286661"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "-confirmCounterpartsPost"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x7231;&#x5fc3;&#x8f66;&#x4e3b;/YBPassengerTravelVC.mm"
+            timestampString = "536143820.286726"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
+            landmarkName = "-networkRequestPassengerTravel"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/&#x7231;&#x5fc3;&#x8f66;&#x4e3b;/YBPassengerTravelVC.mm"
+            timestampString = "536143820.286775"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "-waitingView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TakeWindmill/&#x987a;&#x98ce;&#x8f66;/View/YBDriverTableView.m"
+            timestampString = "536143820.286823"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

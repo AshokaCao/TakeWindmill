@@ -1,21 +1,22 @@
 //
-//  YBPassengerTravelVC.m
+//  YBDriverPassengerTravelVCViewController.m
 //  TakeWindmill
 //
-//  Created by 靳亚彬 on 2017/9/5.
+//  Created by 靳亚彬 on 2017/12/28.
 //  Copyright © 2017年 浙江承御天泽公司. All rights reserved.
 //
 
-#import "YBPassengerTravelVC.h"
+#import "YBDriverPassengerTravelVCViewController.h"
 #import "YBPassengerCanBeBuiltVC.h"
 #import "YBEvaluationPassengersVC.h"
+#import "YBTakeWindmillViewController.h"
 
 #import "YBWaitingView.h"
 #import "YBThanksFee.h"
 #import "YBThanksTheFee.h"
 #import "RouteAnnotation.h"
 
-@interface YBPassengerTravelVC ()<BMKRouteSearchDelegate> {
+@interface YBDriverPassengerTravelVCViewController ()<BMKRouteSearchDelegate> {
     UIButton *passengerButton;
 }
 
@@ -43,11 +44,6 @@
 @property (nonatomic, copy) NSString *lineColor;
 
 /**
- * 乘客帮司机接单
- */
-@property (nonatomic, weak) UIButton *helpOrdersButton;
-
-/**
  * 导航栏按钮
  */
 @property (nonatomic, strong) UIView *navigationView;
@@ -56,29 +52,17 @@
 
 @end
 
-@implementation YBPassengerTravelVC
-
-- (UIButton *)helpOrdersButton
-{
-    if (!_helpOrdersButton) {
-        UIButton *order = [[UIButton alloc] init];
-        [order setBackgroundColor:BtnBlueColor];
-        [order setTitle:@"乘客帮司机接单" forState:UIControlStateNormal];
-    }
-    return _helpOrdersButton;
-}
+@implementation YBDriverPassengerTravelVCViewController
 
 - (UIView *)navigationView
 {
     if (!_navigationView) {
         _navigationView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBWidth / 2, 44)];
-
+        
         passengerButton  = [UIButton new];
         passengerButton.layer.cornerRadius = 15;
-//        passengerButton.imageView.layer.borderColor  = BtnBlueColor.CGColor;
-//        passengerButton.imageView.layer.borderWidth  = 1;
         passengerButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;//使图片和文字水平居中显示
-        [passengerButton setImage:[UIImage imageNamed:@"headimg.gif"] forState:UIControlStateNormal];
+        [passengerButton setImage:[UIImage imageNamed:@"小草"] forState:UIControlStateNormal];
         [_navigationView addSubview:passengerButton];
         
         [passengerButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -100,32 +84,6 @@
             make.width.equalTo(passengerButton);
         }];
         
-
-        UIButton *add = [UIButton new];
-        add.layer.borderColor  = LineLightColor.CGColor;
-        add.layer.cornerRadius = 17;
-        add.layer.borderWidth  = 1;
-        [add setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
-        [add addTarget:self action:@selector(addButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [_navigationView addSubview:add];
-        [add mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(passengerButton.mas_right).with.offset(20);
-            make.top.equalTo(passengerButton.mas_top);
-            make.size.equalTo(passengerButton);
-        }];
-        
-        UILabel *addLabel = [UILabel new];
-        addLabel.text     = @"可拼乘客";
-        addLabel.font     = YBFont(10);
-        addLabel.textColor = [UIColor lightGrayColor];
-        [_navigationView addSubview:addLabel];
-        
-        [addLabel  mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(add.mas_bottom);
-            make.bottom.equalTo(_navigationView.mas_bottom);
-            make.left.equalTo(passengerButton.mas_right).with.offset(17);
-//            make.width.mas_equalTo(50);
-        }];
     }
     return _navigationView;
 }
@@ -180,6 +138,12 @@
     [super viewDidLoad];
     
     self.navigationItem.titleView = self.navigationView;
+    UIButton *leftButton         = [[UIButton alloc] initWithFrame:CGRectMake(-10, 0, 10, 20)];
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"箭头2"] forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(returnToTheWindmill:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.leftBarButtonItem  = nil;
+    self.navigationItem.leftBarButtonItem  = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    
     //请求乘客行程信息
     [self networkRequestPassengerTravel];
     //请求司机信息
@@ -192,12 +156,27 @@
     _routeSearch.delegate = nil;
 }
 
-#pragma mark - 可拼乘客
-- (void)addButtonAction:(UIButton *)sender {
-    YBPassengerCanBeBuiltVC *passenger = [[YBPassengerCanBeBuiltVC alloc] init];
-    passenger.strokeSysNo              = self.driverDict[@"SysNo"];
-    passenger.travelSysNo              = self.passengerDict[@"SysNo"];
-    [self.navigationController pushViewController:passenger animated:YES];
+#pragma mark - 返回
+- (void)returnToTheWindmill:(UIButton *)sender
+{
+    [LEEAlert alert].config
+    .LeeTitle(@"提示")
+    .LeeContent(@"订单未完成是否要退出?")
+    .LeeCancelAction(@"取消", ^{
+        // 取消点击事件Block
+    })
+    .LeeAction(@"确认退出", ^{
+        // 确认点击事件Block
+        NSArray *temArray = self.navigationController.viewControllers;
+        for(UIViewController *temVC in temArray)
+        {
+            if ([temVC isKindOfClass:[YBTakeWindmillViewController class]])
+            {
+                [self.navigationController popToViewController:temVC animated:YES];
+            }
+        }
+    })
+    .LeeShow();
 }
 
 #pragma mark - 给乘客打电话
@@ -233,11 +212,11 @@
     [YBRequest postWithURL:urlStr MutableDict:dict View:self.waitingView success:^(id dataArray) {
         YBLog(@"乘客行程信息%@",dataArray);
         _passengerDict = dataArray;
-        [passengerButton.imageView sd_setImageWithURL:[NSURL URLWithString:_passengerDict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
+        [passengerButton.imageView sd_setImageWithURL:[NSURL URLWithString:_passengerDict[@"HeadImgUrl"]] placeholderImage:[UIImage imageNamed:@"小草"]];
         //显示乘客信息
         [weakSelf.waitingView driverPassengerTravel:_passengerDict];
         if ([_passengerDict[@"StatName"] isEqualToString:@"行程已发"]) {
-            [weakSelf.waitingView passengerTravel_ConfirmPeer:0];
+            [weakSelf.waitingView passengerTravel_ConfirmPeer:1];
         }
         if ([_passengerDict[@"StatName"] isEqualToString:@"司机已到达乘客上车点"]) {
             [weakSelf.waitingView passengerTravel_ConfirmPeer:1];
@@ -259,7 +238,6 @@
         YBLog(@"%@",dataArray);
     }];
     
-    
 }
 
 #pragma mark - 司机行程
@@ -276,7 +254,7 @@
         YBLog(@"司机行程信息%@",dataArray);
         self.driverDict = dataArray;
         //订单详情
-//        [self.waitingView inviteColleagues:dataArray];
+        //        [self.waitingView inviteColleagues:dataArray];
         [self DriversTripDcit:dataArray PassengerDict:self.passengerDict];
     } failure:^(id dataArray) {
         YBLog(@"%@",dataArray);
@@ -471,4 +449,5 @@
 
 
 @end
+
 

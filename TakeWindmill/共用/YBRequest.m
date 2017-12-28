@@ -61,6 +61,7 @@
             }
         }
     } failure:^(NSError *error) {
+        [MBProgressHUD hideHUDForView:view];
         [MBProgressHUD showError:[error localizedDescription] toView:view];
     }];
 }

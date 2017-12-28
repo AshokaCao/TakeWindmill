@@ -25,4 +25,9 @@
  */
 @property (nonatomic, strong) NSDictionary *passengerDict;
 
+/**
+ * 姓名
+ */
+@property (nonatomic, strong) NSString *nameStr;
+
 @end

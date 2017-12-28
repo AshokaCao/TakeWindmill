@@ -45,5 +45,9 @@
  */
 @property (nonatomic, assign) NSInteger isDriverNotCompleted;
 
+/**
+ * 姓名
+ */
+@property (nonatomic, strong) NSString *nameStr;
 
 @end
