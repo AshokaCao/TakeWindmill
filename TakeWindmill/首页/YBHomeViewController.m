@@ -261,7 +261,7 @@
         
         [YBRequest postWithURL:URLStr MutableDict:dict View:self.view success:^(id dataArray) {
             
-            YBLog(@"%@",dataArray);
+            YBLog(@"dataArray==%@",dataArray);
             [YBUserDefaults setBool:YES forKey:isLogin];
             [YBUserDefaults synchronize];
             

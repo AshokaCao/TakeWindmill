@@ -287,6 +287,7 @@
 		58FE7E301FC7CA770000D7DB /* YBSystemHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E261FC7CA770000D7DB /* YBSystemHelpViewController.m */; };
 		58FE7E311FC7CA770000D7DB /* YBOwnerInView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E2A1FC7CA770000D7DB /* YBOwnerInView.m */; };
 		58FE7E341FC7E2240000D7DB /* YBHelpInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */; };
+		596327211FF3387100821292 /* YBWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 596327201FF3387100821292 /* YBWebViewVC.m */; };
 		599663AC1FF1F474008A9EE4 /* YBTaxiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */; };
 		59DF021D1FECF59400392472 /* YBSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DF021C1FECF59400392472 /* YBSettingModel.m */; };
 		7703235E1FD909D200CB03BC /* FirstAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 770323581FD909D000CB03BC /* FirstAnnotationView.m */; };
@@ -941,6 +942,8 @@
 		58FE7E2A1FC7CA770000D7DB /* YBOwnerInView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBOwnerInView.m; sourceTree = "<group>"; };
 		58FE7E321FC7E2240000D7DB /* YBHelpInfoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBHelpInfoVC.h; sourceTree = "<group>"; };
 		58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBHelpInfoVC.m; sourceTree = "<group>"; };
+		5963271F1FF3387100821292 /* YBWebViewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBWebViewVC.h; sourceTree = "<group>"; };
+		596327201FF3387100821292 /* YBWebViewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBWebViewVC.m; sourceTree = "<group>"; };
 		599663AA1FF1F474008A9EE4 /* YBTaxiModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBTaxiModel.h; sourceTree = "<group>"; };
 		599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBTaxiModel.m; sourceTree = "<group>"; };
 		59DF021B1FECF59400392472 /* YBSettingModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBSettingModel.h; sourceTree = "<group>"; };
@@ -2089,6 +2092,8 @@
 				584D7F0C1FDFC9FD0066D277 /* YBCommonAddressVC.m */,
 				5863FDEC1FE3646500B73049 /* YBUserInfoVC.h */,
 				5863FDED1FE3646500B73049 /* YBUserInfoVC.m */,
+				5963271F1FF3387100821292 /* YBWebViewVC.h */,
+				596327201FF3387100821292 /* YBWebViewVC.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -3089,6 +3094,7 @@
 				5817FE321FD7CE9100B66EB0 /* YBLoverCommentViewController.m in Sources */,
 				5817FDF81FD7CB2400B66EB0 /* UIView+ViewController.m in Sources */,
 				5817FE361FD7CE9100B66EB0 /* YBMyPublicWelfareVC.m in Sources */,
+				596327211FF3387100821292 /* YBWebViewVC.m in Sources */,
 				5809133F1F3EA88A0087C1D4 /* YBCommonRouteVC.m in Sources */,
 				5817FAF41F4D4B480075DB7A /* YBThanksFee.m in Sources */,
 				58111D091F417635008DFB94 /* SelectedListModel.m in Sources */,

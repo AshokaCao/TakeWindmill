@@ -43,6 +43,7 @@
 #import <UIViewController+YQSlideMenu.h>
 #import <ZXingWrapper.h>
 #import <HXPhotoPicker.h>
+#import <IMYWebView.h>
 
 
 //百度

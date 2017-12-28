@@ -20,6 +20,7 @@ PODS:
   - DSAlert-OC (1.0.8)
   - HXWeiboPhotoPicker (2.1.4):
     - SDWebImage (~> 4.0)
+  - IMYWebView (0.8.1)
   - JSONModel (1.7.0)
   - LBXScan/LBXZXing (2.2):
     - LBXScan/Types (~> 2.2)
@@ -57,6 +58,7 @@ DEPENDENCIES:
   - BRPickerView (= 1.1.0)
   - DSAlert-OC (= 1.0.8)
   - HXWeiboPhotoPicker (~> 2.1.4)
+  - IMYWebView
   - JSONModel
   - LBXScan/LBXZXing (~> 2.2)
   - Masonry
@@ -90,6 +92,7 @@ SPEC CHECKSUMS:
   BRPickerView: 9c93d5d9390eaed650c55b44e3eea7b0d619218c
   DSAlert-OC: 01b1490b7112f697f42086b2f4674777ca62a559
   HXWeiboPhotoPicker: 9ca45976c87df32d76ad8fc5119f3dc48e62b0ec
+  IMYWebView: a6a9a52718ba6a44fb927d65f6d60930a8218cea
   JSONModel: 840bc0fcffb24b8454d2c026bf26fea454b8e98d
   LBXScan: 31b69c9657404133324e6b68ef814802ef9cacc0
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
@@ -110,6 +113,6 @@ SPEC CHECKSUMS:
   YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
   ZFPlayer: 8a80bf8eb4638b97fbceaefcd3ca9978e9f17c9d
 
-PODFILE CHECKSUM: 7ee1cb0888dfd29edd49706730dd029f82fb5e84
+PODFILE CHECKSUM: 70b5bde35e9a5a37ffa292ec352e56d338e7d672
 
 COCOAPODS: 1.4.0.beta.2

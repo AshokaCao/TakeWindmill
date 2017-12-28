@@ -11,6 +11,7 @@
 #import "YBSettingDetailVC.h"
 #import "YBCommonAddressVC.h"
 #import "YBSettingModel.h"
+#import "YBWebViewVC.h"
 
 @interface YBSettingVC ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) UITableView *identityTabView;
@@ -141,8 +142,6 @@ static CGFloat headerH = 20;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     WEAK_SELF;
     YBInformationCell * cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    
 //    YBSettingDetailVC * vc = [[YBSettingDetailVC alloc]init];
 //    vc.title = cell.text.text;
     
@@ -180,11 +179,14 @@ static CGFloat headerH = 20;
 //            [self.navigationController pushViewController:vc animated:NO];
 //        }
     }else if (indexPath.section == 2){
+        YBWebViewVC * vc = [[YBWebViewVC alloc]init];
+        vc.title = cell.text.text;
         if (indexPath.row == 0) {
-            YBLog(@"关于");
+            vc.urlString = AboutHtml;
         } else {
-            YBLog(@"我们");
+             vc.urlString = ContactHtml;
         }
+         [self.navigationController pushViewController:vc animated:NO];
         
     }else if (indexPath.section == 3){
         UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认退出登录？" preferredStyle:UIAlertControllerStyleAlert];

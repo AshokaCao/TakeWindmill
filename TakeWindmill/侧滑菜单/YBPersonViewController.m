@@ -16,6 +16,7 @@
 #import "YBRedEnvelopesViewController.h"
 #import "YBUserListModel.h"
 #import "YBUserInfoVC.h"
+#import "YBWebViewVC.h"
 
 @interface YBPersonViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -191,8 +192,25 @@
         label.centerX = imageV.centerX;
         label.text = btnNameArray[i];
         [footerView addSubview:label];
+        
+        if (i != 1) {
+            imageV.hidden = YES;
+            label.hidden = YES;
+        }else{
+             imageV.image = [UIImage imageNamed:btnNameArray[2]];
+            imageV.userInteractionEnabled = YES;
+            
+            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(imageVTap)];
+            [imageV addGestureRecognizer:tap];
+        }
     }
     
+}
+-(void)imageVTap{
+    YBWebViewVC * vc = [[YBWebViewVC alloc]init];
+    vc.urlString = DistributionHtml;
+    vc.title = @"分销提成";
+    [self.slideMenuController showViewController:vc];
 }
 
 -(void)userInfoTap{

@@ -282,3 +282,10 @@
 //用户位置信息保存（单个，实时）
 #define TaxiSaveLocation (ServerPath@"userruntime/setuserposition")
 
+//关于
+#define AboutHtml (ServerPath@"WebPage/About.html")
+//联系
+#define ContactHtml (ServerPath@"WebPage/Contact.html")
+//分销
+#define DistributionHtml (ServerPath@"WebPage/Distribution.html")
+

@@ -23,6 +23,6 @@ target :'TakeWindmill' do
     pod 'PGDatePicker',	 '>= 1.5.7'
     pod 'YQSlideMenController',	'0.0.5' 
     pod 'LBXScan/LBXZXing','~> 2.2'
-
+    pod 'IMYWebView'
 
 end 
