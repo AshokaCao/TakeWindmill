@@ -19,11 +19,12 @@
 @end
 
 @implementation YBWebViewVC
+static BOOL isWebView = YES;
 
 -(IMYWebView *)webView{
     if (!_webView) {
         _webView = [[IMYWebView alloc] initWithFrame:self.view.bounds];
-        //_webView.delegate = self;
+        _webView.delegate = self;
     }
     return _webView;
 }
@@ -60,8 +61,8 @@
 -(void)setUI{
     [self.view addSubview:self.backScroll];
     
-    [self.backScroll addSubview:self.htmlView];
-    //[self.backScroll addSubview:self.webView];
+    
+    [self.backScroll addSubview:isWebView ? self.htmlView : self.webView];
 }
 -(void)requestData{
     NSString * urlStr = self.urlString;
@@ -72,9 +73,8 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    // 发送请求给服务器
-    [self.htmlView loadRequest:request];
-    //[self.webView loadRequest:request];
+    
+    isWebView ?  [self.htmlView loadRequest:request] : [self.webView loadRequest:request];
 }
 
 
