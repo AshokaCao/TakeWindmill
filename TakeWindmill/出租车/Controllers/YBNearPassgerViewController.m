@@ -7,6 +7,7 @@
 //
 
 #import "YBNearPassgerViewController.h"
+#import "YBRouteDetailsViewController.h"
 #import "YBNearPassTableViewCell.h"
 #import "YBTaxiStrokeModel.h"
 
@@ -26,6 +27,14 @@
     self.nearTableView.tableFooterView = [[UIView alloc] init];
     [self getNearDatails];
     [self.nearTableView registerNib:[UINib nibWithNibName:@"YBNearPassTableViewCell" bundle:nil] forCellReuseIdentifier:@"YBNearPassTableViewCell"];
+    self.nearTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refresh)];
+}
+
+- (void)refresh
+{
+    [self getNearDatails];
+    //结束刷新
+    [self.nearTableView.mj_header endRefreshing];
 }
 
 - (void)getNearDatails
@@ -80,7 +89,8 @@
         NSLog(@"rod- %@",dataArray);
         NSString *message = [NSString stringWithFormat:@"%@",dataArray[@"HasError"]];
         if ([message isEqualToString:@"0"]) {
-            
+            YBRouteDetailsViewController *route = [[YBRouteDetailsViewController alloc] init];
+            [self.navigationController pushViewController:route animated:YES];
         }
     } failure:^(id dataArray) {
         

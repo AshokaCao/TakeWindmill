@@ -33,7 +33,18 @@
 
 #import "YBTaxiStepModel.h"
 
+#import "MapPointModel.h"
+#import "UIImage+CoCo.h"
+#import "BMKGetTool.h"
+
 @interface YBTaxiViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate,UITextFieldDelegate,BMKPoiSearchDelegate,BMKRouteSearchDelegate, YBMapPositionSelectionVCDelegate, YBAddressSearchSelectionVCDelegate, YBTaxiChooseViewDelegate>
+{
+    NSInteger           _count;
+    NSMutableArray     *_pointArr;
+    BMKPointAnnotation *_annotationPoint;
+    BMKAnnotationView  *_markView;
+    BMKMapView         *_mapV;
+}
 //搜索框
 @property (nonatomic, strong) YBSearchView *searchView;
 
@@ -59,6 +70,7 @@
 @property (nonatomic, strong) NSDictionary *userTravle;
 @property (nonatomic, strong) NSString *currCityID;
 @property (nonatomic, assign) CLLocationCoordinate2D userStralocation;
+@property (nonatomic, assign) CLLocationCoordinate2D currentDriverlocation;
 @property (nonatomic, assign) BOOL isSelectEnd;
 
 //用户位置坐标
@@ -149,6 +161,8 @@
     [self selfLoction];
     [self jinXiangBin];
     
+    _pointArr = [NSMutableArray arrayWithCapacity:0];
+    _count = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taxiNotification:)name:@"TaxiNotigication" object:nil];
     
@@ -185,6 +199,7 @@
     end.pt = endPt;
     
     BMKDrivingRoutePlanOption *driveRouteSearchOption = [[BMKDrivingRoutePlanOption alloc]init];
+    driveRouteSearchOption.drivingPolicy = BMK_DRIVING_DIS_FIRST;
     driveRouteSearchOption.from = start;
     driveRouteSearchOption.to = end;
     
@@ -232,7 +247,7 @@
             item.degree = transitStep.direction * 30;
             item.type = 4;
             [self.mapView addAnnotation:item];
-            
+
             //轨迹点总数累计
             planPointCounts += transitStep.pointsCount;
         }
@@ -258,7 +273,6 @@
                 temppoints[i].y = transitStep.points[k].y;
                 i++;
             }
-            
         }
         // 通过points构建BMKPolyline
         if (self.polyLine) {
@@ -414,6 +428,11 @@
     }
     else if ([annotation isKindOfClass:[RouteAnnotation class]]) {
         return [self getRouteAnnotationView:mapView viewForAnnotation:(RouteAnnotation*)annotation];
+    } else if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
+        static NSString* annoId = @"Anno";
+        BMKAnnotationView *markView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annoId];
+        _markView = markView;
+        return markView;
     }
     return nil;
 }
@@ -517,6 +536,140 @@
         NSLog(@"点击了");
     }
 }
+
+- (void)mapViewDidFinishLoading:(BMKMapView *)mapView
+{
+//    [self startRouteSearch];
+}
+
+
+#pragma mark -- 小车移动
+- (void)startRouteSearch
+{
+    //起点经纬度
+    CLLocationCoordinate2D annotationCoordS;
+    annotationCoordS.latitude = 22.602079;//纬度－－y坐标
+    annotationCoordS.longitude = 114.011904;//经度－－x坐标
+    //目的经纬度
+    CLLocationCoordinate2D annotationCoordE;
+    annotationCoordE.latitude = 22.536516;//纬度－－y坐标
+    annotationCoordE.longitude = 114.066336;//经度－－x坐标
+    //终点位置显示
+    NSString *progress = [NSString stringWithFormat:@"%@·%@",self.endPointDict[@"City"],self.endPointDict[@"Name"]];
+    [_searchView.endButton setTitle:progress forState:UIControlStateNormal];
+    
+    self.isSelectEnd = YES;
+    [self openMapViewStartCityName:self.currCity startPT:self.currentDriverlocation endCityName:self.currCity endPT:self.currPoin];
+    //设置地图比例范围
+    //    CLLocationCoordinate2D center = CLLocationCoordinate2DMake((22.602079 + 22.536516) / 2, (114.011904 + 114.066336) / 2);
+    //    BMKCoordinateSpan span = BMKCoordinateSpanMake(fabs(22.602079 - 22.536516) , fabs(114.011904 - 114.066336));
+    //    BMKCoordinateRegion region ;
+    //    region.span.latitudeDelta = span.latitudeDelta * 3;
+    //    region.span.longitudeDelta = span.longitudeDelta * 3;
+    //    region.center = center;
+    //    [_mapV setRegion:region animated:YES];
+    
+//    CLLocationCoordinate2D annotationCoord;
+//    annotationCoord.latitude = 22.602079;
+//    annotationCoord.longitude = 114.011904;
+    _annotationPoint = [[BMKPointAnnotation alloc]init];
+    _annotationPoint.coordinate = self.currentDriverlocation;
+    [self.mapView addAnnotation:_annotationPoint];
+    
+    BMKGetTool *search = [[BMKGetTool alloc]init];//路线检索
+    [search searchStartPt:self.currentDriverlocation endPt:annotationCoordE];
+    __weak __typeof(self) weakSelf = self;
+    search.SearchResult = ^(NSMutableArray *array){
+        if (array) {
+            BMKDrivingRouteLine *planLine = [array firstObject];
+            //在此处理正常结果
+            int i = 0;
+            //收集轨迹点
+            for (int j = 0; j < planLine.steps.count; j++) {
+                BMKDrivingStep* transitStep = [planLine.steps objectAtIndex:j];
+                int k=0;
+                for(k=0;k<transitStep.pointsCount;k++) {
+                    CLLocationCoordinate2D pt = BMKCoordinateForMapPoint(transitStep.points[k]);
+                    MapPointModel *model = [[MapPointModel alloc]init];
+                    model.lat = pt.latitude;
+                    model.lon = pt.longitude;
+                    if (k>0) {
+                        CLLocationCoordinate2D lastPt = BMKCoordinateForMapPoint(transitStep.points[k-1]);
+                        model.angle = [BMKGetTool getAngleSPt:lastPt endPt:pt];
+                    }
+                    [_pointArr addObject:model];
+                    i++;
+                }
+            }
+            //计算轨迹点之间的距离
+            for (int i = 0; i<_pointArr.count; i++) {
+                if (i<_pointArr.count-1) {
+                    MapPointModel *model = _pointArr[i];
+                    MapPointModel *model1 = _pointArr[i+1];
+                    CLLocationCoordinate2D pt;
+                    pt.latitude = model.lat;
+                    pt.longitude = model.lon;
+                    float distance = [BMKGetTool getDistanceLat:model1.lat Lng:model1.lon pt:pt];
+                    model1.distance = distance;
+                    
+                }
+            }
+            [weakSelf moveAnnotionV];
+        }
+    };
+}
+- (void)moveAnnotionV
+{
+    MapPointModel *model = _pointArr[_count];
+    [UIView animateWithDuration:model.distance/40 animations:^{
+        
+        if ([_mapView.annotations containsObject:_annotationPoint]) {
+            CLLocationCoordinate2D coor;
+            coor.latitude = model.lat;
+            coor.longitude = model.lon;
+            _annotationPoint.coordinate = coor;
+            
+            UIImage * pinImage = [UIImage imageNamed:@"car2"];
+            if (model.angle) {
+                _markView.image = [pinImage imageRotatedByAngle:model.angle];
+            }else{
+                if (_count>0) {
+                    MapPointModel *model = _pointArr[_count-1];
+                    _markView.image = [pinImage imageRotatedByAngle:model.angle];
+                }
+            }
+        }
+        
+    } completion:^(BOOL finished) {
+        if (_count<_pointArr.count-1) {
+            MapPointModel *model1 = _pointArr[_count+1];
+            CLLocationCoordinate2D center = CLLocationCoordinate2DMake((model.lat + model1.lat) / 2, (model.lon + model1.lon) / 2);
+            BMKCoordinateRegion region ;
+            region.span.latitudeDelta = 0.005;
+            region.span.longitudeDelta = 0.005;
+            region.center = center;
+            [_mapView setRegion:region animated:YES];
+        }
+        _count++;
+        if (_count == _pointArr.count-1) {
+            return;
+        }
+        [self moveAnnotionV];
+    }];
+    
+}
+
+//#pragma mark -- 返回各种点的标注图
+//- (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation
+//{
+//    if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
+//        static NSString* annoId = @"Anno";
+//        BMKAnnotationView *markView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annoId];
+//        _markView = markView;
+//        return markView;
+//    }
+//    return nil;
+//}
 
 
 - (void)willStartLocatingUser
@@ -682,7 +835,6 @@
     CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([self.endPointDict[@"Lat"] doubleValue],[self.endPointDict[@"Lng"] doubleValue]);
     self.isSelectEnd = YES;
     [self openMapViewStartCityName:self.currCity startPT:self.currPoin endCityName:self.currCity endPT:endPt];
-    NSLog(@"路线规划");
 }
 #pragma mark 出租车要求
 - (void)showTaxiDetails
@@ -909,6 +1061,7 @@
             
         } else if ([taxiState isEqualToString:@"BindPassenger"]) {
             [self actionSheetWith:@"司机已接单" andMessage:@"司机已经接单,请准备好与之同行."];
+            [self getDriverLocation];
         } else if ([taxiState isEqualToString:@"ArriveToStart"]) {
             [self actionSheetWith:@"司机到达乘客上车点" andMessage:@"司机到达乘客上车点,请准备好与之同行."];
         } else if ([taxiState isEqualToString:@"PassangerGetOn"]) {
@@ -943,6 +1096,33 @@
     
 }
 
+#pragma mark 获取司机的位置
+- (void)getDriverLocation
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+        
+        while (TRUE) {
+            
+            // 每隔5秒执行一次（当前线程阻塞5秒）
+            [NSThread sleepForTimeInterval:5];
+            
+            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+            [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+            
+            [YBRequest postWithURL:TaxiDriveCurrentLocation MutableDict:dict success:^(id dataArray) {
+                NSLog(@"-------- : %@",dataArray);
+                self.currentDriverlocation =  CLLocationCoordinate2DMake([dataArray[@"Lat"] doubleValue], [dataArray[@"Lng"] doubleValue]);
+                [self startRouteSearch];
+            } failure:^(id dataArray) {
+                
+            }];
+            // 这里写你要反复处理的代码，如网络请求
+            NSLog(@"***每5秒输出一次这段文字***");
+            
+        };
+    });
+    
+}
 
 - (void)driverButtonAction:(UIButton *)sender {
     YBTaxiDriverViewController *driver = [[YBTaxiDriverViewController alloc] init];

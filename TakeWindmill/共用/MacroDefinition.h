@@ -282,3 +282,5 @@
 //用户位置信息保存（单个，实时）
 #define TaxiSaveLocation (ServerPath@"userruntime/setuserposition")
 
+//获取用户位置信息（单个，实时
+#define TaxiDriveCurrentLocation (ServerPath@"userruntime/getuserposition")

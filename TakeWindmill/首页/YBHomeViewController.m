@@ -454,6 +454,7 @@
         dict[@"userid"] = userID;
         [dict setObject:[NSString stringWithFormat:@"%f",coordinate.longitude] forKey:@"lng"];
         [dict setObject:[NSString stringWithFormat:@"%f",coordinate.latitude] forKey:@"lat"];
+        
 //        NSLog(@"dict - %@",dict);
         [YBUserDefaults setObject:dict forKey:@"currentLocation"];
         [YBUserDefaults synchronize];

@@ -28,6 +28,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.keysTableView.mj_header beginRefreshing];
 }
 
 - (void)viewDidLoad {
@@ -40,7 +41,14 @@
     [self.keysTableView registerNib:[UINib nibWithNibName:@"YBTaxiStrokeTableViewCell" bundle:nil] forCellReuseIdentifier:@"YBTaxiStrokeTableViewCell"];
     self.keysTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self setStrokeTableDetails];
-    
+    self.keysTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refresh)];
+}
+
+- (void)refresh
+{
+    [self setStrokeTableDetails];
+    //结束刷新
+    [self.keysTableView.mj_header endRefreshing];
 }
 
 - (void)setStrokeTableDetails

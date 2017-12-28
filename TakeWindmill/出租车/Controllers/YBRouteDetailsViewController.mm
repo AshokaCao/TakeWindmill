@@ -140,6 +140,7 @@
 #pragma mark 消息 电话 状态
 - (void)didselectTaxiTralveBtn:(NSInteger)sender andYBPassengerTableViewCell:(YBPassengerTableViewCell *)cell
 {
+    NSArray *titleArray = @[@"到达上车点",@"乘客已上车",@"到达目的地",@"待支付"];
     switch (sender) {
         case 1:
             
@@ -149,20 +150,23 @@
             break;
         case 3:
         {
-            
-            [self selfLoction];
             NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
             YBTaxiStrokeModel *model = self.strokeArray[path.row];
             NSString *drivType = model.Stat;
-            
+            int driTy = [drivType intValue] + 1;
             NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
             dict[@"travelsysno"] = model.SysNo;
             dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
             dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
             dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
             
+            [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
+//            [self selfLoction];
+            
             [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
                 NSLog(@"self.currLocation. - %@",dataArray);
+                [self passengerDetails];
+                [self.passengerTableView reloadData];
             } failure:^(id dataArray) {
                 
             }];
@@ -185,14 +189,19 @@
     _routeSearch = [[BMKRouteSearch alloc] init];
     _routeSearch.delegate = self;
     
-    CLLocationCoordinate2D start = CLLocationCoordinate2DMake(30.778262, 120.755138);
+//    CLLocationCoordinate2D start = CLLocationCoordinate2DMake(30.778262, 120.755138);
     CLLocationCoordinate2D end = CLLocationCoordinate2DMake(30.769583, 120.755489);
     NSMutableArray *starCoordinate = [NSMutableArray array];
-    NSMutableArray *endCoordinate = [NSMutableArray array];
+//    NSMutableArray *endCoordinate = [NSMutableArray array];
     
+    NSMutableDictionary *dict = [YBUserDefaults valueForKey:@"currentLocation"];
+    NSMutableDictionary *currDict = [YBTooler dictinitWithMD5];
+    currDict[@"userid"] = dict[@"userid"];
+    currDict[@"currentlng"] = [NSString stringWithFormat:@"%@",dict[@"lng"]];
+    currDict[@"currentlat"] = [NSString stringWithFormat:@"%@",dict[@"lat"]];
     // 司机所在位置
-    BMKMapPoint point1 = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(_locService.userLocation.location.coordinate.latitude,_locService.userLocation.location.coordinate.longitude));
-    CLLocationCoordinate2D straPoin = CLLocationCoordinate2DMake(_locService.userLocation.location.coordinate.latitude,_locService.userLocation.location.coordinate.longitude);
+    BMKMapPoint point1 = BMKMapPointForCoordinate(CLLocationCoordinate2DMake([dict[@"lat"] floatValue], [dict[@"lng"] floatValue]));
+    CLLocationCoordinate2D straPoin = CLLocationCoordinate2DMake([dict[@"lat"] floatValue], [dict[@"lng"] floatValue]);
     if (self.strokeArray.count > 1) {
         for (int  i = 0; i< self.strokeArray.count - 1; i++) {
             for (int j = i + 1; j< self.strokeArray.count; j++) {
@@ -230,13 +239,15 @@
         [self openMapViewStartCityName:@"嘉兴市" startPT:straPoin endCityName:@"嘉兴市" endPT:end andWayArray:starCoordinate];
     } else {
         YBTaxiStrokeModel *modelI = self.strokeArray[0];
-        CLLocationCoordinate2D end = CLLocationCoordinate2DMake([modelI.EndLat doubleValue],[modelI.EndLng doubleValue]);
         CLLocationCoordinate2D passStr = CLLocationCoordinate2DMake([modelI.StartLat doubleValue],[modelI.StartLng doubleValue]);
+        CLLocationCoordinate2D end = CLLocationCoordinate2DMake([modelI.EndLat doubleValue],[modelI.EndLng doubleValue]);
+        NSString *staCityName = modelI.StatName;
+        NSString *endCityName = modelI.EndCity;
         
         BMKPlanNode* wayPointItem1             = [[BMKPlanNode alloc]init];
         wayPointItem1.pt                       = passStr;
         [starCoordinate addObject:wayPointItem1];
-        [self openMapViewStartCityName:@"嘉兴市" startPT:straPoin endCityName:@"嘉兴市" endPT:end andWayArray:starCoordinate];
+        [self openMapViewStartCityName:staCityName startPT:straPoin endCityName:endCityName endPT:end andWayArray:starCoordinate];
     }
 }
 
