@@ -57,7 +57,6 @@
 @property (nonatomic, strong) BMKRouteSearch *routeSearch;
 @property (nonatomic, strong) UIImageView *locnImageView;
 @property (nonatomic, strong) NSString *currCity;
-@property (nonatomic, assign) CLLocationCoordinate2D currPoin;
 @property (nonatomic, assign) BOOL isSeletJoin;
 @property (nonatomic, strong) RouteAnnotation* straItem;
 @property (nonatomic, strong) RouteAnnotation* endItem;
@@ -69,7 +68,9 @@
 @property (nonatomic, strong) NSString *isJoin;
 @property (nonatomic, strong) NSDictionary *userTravle;
 @property (nonatomic, strong) NSString *currCityID;
+@property (nonatomic, assign) CLLocationCoordinate2D currPoin;
 @property (nonatomic, assign) CLLocationCoordinate2D userStralocation;
+@property (nonatomic, assign) CLLocationCoordinate2D severLocation;
 @property (nonatomic, assign) CLLocationCoordinate2D currentDriverlocation;
 @property (nonatomic, assign) BOOL isSelectEnd;
 
@@ -118,22 +119,26 @@
         self.currCityID = dataArray[@"StartCityId"];
         CLLocationCoordinate2D strPt = CLLocationCoordinate2DMake([dataArray[@"StartLat"] doubleValue],[dataArray[@"StartLng"] doubleValue]);
         CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([dataArray[@"EndLat"] doubleValue],[dataArray[@"EndLng"] doubleValue]);
-        
+        self.severLocation = strPt;
         [self openMapViewStartCityName:self.currCity startPT:strPt endCityName:self.currCity endPT:endPt];
-        
-        UIView *taxiList = [[UIView alloc] init];
-        taxiList.backgroundColor = [UIColor orangeColor];
-        self.choosebackView = taxiList;
-        [self.view addSubview:taxiList];
-        
-        [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.view.mas_left).offset(10);
-            make.right.equalTo(self.view.mas_right).offset(-10);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.height.offset(200);
-        }];
+        if (self.chooseView) {
+            
+        } else {
+            UIView *taxiList = [[UIView alloc] init];
+            taxiList.backgroundColor = [UIColor orangeColor];
+            self.choosebackView = taxiList;
+            [self.view addSubview:taxiList];
+            
+            [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.equalTo(self.view.mas_left).offset(10);
+                make.right.equalTo(self.view.mas_right).offset(-10);
+                make.bottom.equalTo(self.view.mas_bottom).offset(-10);
+                make.height.offset(200);
+            }];
+        }
         self.userTravle = dataArray;
         [self addCancelTraveView];
+        [self getDriverLocation];
     } failure:^(id dataArray) {
         
     }];
@@ -218,6 +223,46 @@
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error
 {
     if (error == BMK_SEARCH_NO_ERROR) {
+        if (result.routes.count > 0) {
+            
+            NSMutableArray *array = [NSMutableArray arrayWithArray:result.routes];
+            if (array) {
+                BMKDrivingRouteLine *planLine = [array firstObject];
+                //在此处理正常结果
+                int i = 0;
+                //收集轨迹点
+                for (int j = 0; j < planLine.steps.count; j++) {
+                    BMKDrivingStep* transitStep = [planLine.steps objectAtIndex:j];
+                    int k=0;
+                    for(k=0;k<transitStep.pointsCount;k++) {
+                        CLLocationCoordinate2D pt = BMKCoordinateForMapPoint(transitStep.points[k]);
+                        MapPointModel *model = [[MapPointModel alloc]init];
+                        model.lat = pt.latitude;
+                        model.lon = pt.longitude;
+                        if (k>0) {
+                            CLLocationCoordinate2D lastPt = BMKCoordinateForMapPoint(transitStep.points[k-1]);
+                            model.angle = [BMKGetTool getAngleSPt:lastPt endPt:pt];
+                        }
+                        [_pointArr addObject:model];
+                        i++;
+                    }
+                }
+                //计算轨迹点之间的距离
+                for (int i = 0; i<_pointArr.count; i++) {
+                    if (i<_pointArr.count-1) {
+                        MapPointModel *model = _pointArr[i];
+                        MapPointModel *model1 = _pointArr[i+1];
+                        CLLocationCoordinate2D pt;
+                        pt.latitude = model.lat;
+                        pt.longitude = model.lon;
+                        float distance = [BMKGetTool getDistanceLat:model1.lat Lng:model1.lon pt:pt];
+                        model1.distance = distance;
+                        
+                    }
+                }
+                [self moveAnnotionV];
+            }
+        }
         
         BMKDrivingRouteLine* plan = (BMKDrivingRouteLine*)[result.routes objectAtIndex:0];
         self.routeLine = result.routes[0];
@@ -559,7 +604,7 @@
     [_searchView.endButton setTitle:progress forState:UIControlStateNormal];
     
     self.isSelectEnd = YES;
-    [self openMapViewStartCityName:self.currCity startPT:self.currentDriverlocation endCityName:self.currCity endPT:self.currPoin];
+    [self openMapViewStartCityName:self.currCity startPT:self.currentDriverlocation endCityName:self.currCity endPT:self.severLocation];
     //设置地图比例范围
     //    CLLocationCoordinate2D center = CLLocationCoordinate2DMake((22.602079 + 22.536516) / 2, (114.011904 + 114.066336) / 2);
     //    BMKCoordinateSpan span = BMKCoordinateSpanMake(fabs(22.602079 - 22.536516) , fabs(114.011904 - 114.066336));
@@ -577,7 +622,7 @@
     [self.mapView addAnnotation:_annotationPoint];
     
     BMKGetTool *search = [[BMKGetTool alloc]init];//路线检索
-    [search searchStartPt:self.currentDriverlocation endPt:annotationCoordE];
+    [search searchStartPt:self.currentDriverlocation endPt:self.severLocation];
     __weak __typeof(self) weakSelf = self;
     search.SearchResult = ^(NSMutableArray *array){
         if (array) {
@@ -839,6 +884,12 @@
 #pragma mark 出租车要求
 - (void)showTaxiDetails
 {
+    if (self.choosebackView) {
+        
+        self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, self.choosebackView.width, self.choosebackView.height)];
+        self.chooseView.delegate = self;
+        [self.choosebackView addSubview:self.chooseView];
+    } else {
         UIView *taxiList = [[UIView alloc] init];
         taxiList.backgroundColor = [UIColor orangeColor];
         self.choosebackView = taxiList;
@@ -854,7 +905,7 @@
         self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, taxiList.width, taxiList.height)];
         self.chooseView.delegate = self;
         [taxiList addSubview:self.chooseView];
-
+    }
 }
 #pragma mark 点击事件
 - (void)didselectBtn:(NSInteger)types
@@ -932,10 +983,10 @@
     dict[@"note"] = self.sendMessage;
     dict[@"isbymetercome"] = self.isCome;
     dict[@"isjoin"] = self.isJoin;
-    
+    self.severLocation =  CLLocationCoordinate2DMake([self.startingPointDict[@"Lat"] doubleValue],[self.startingPointDict[@"Lng"] doubleValue]);
 //    NSLog(@"taxi -  %@",dict);
     [YBRequest postWithURL:TaxiTravel MutableDict:dict success:^(id dataArray) {
-//        NSLog(@"taxi -  %@",dataArray);
+        NSLog(@"taxi -  %@",dataArray[@"SysNo"]);
         self.taxiSysNum = dataArray[@"SysNo"];
         NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
         [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
@@ -945,6 +996,8 @@
             NSLog(@"dataArray - --%@",dataArray);
             self.userTravle = dataArray;
             [self addCancelTraveView];
+            
+//            [self openMapViewStartCityName:self.currCity startPT:self.currentDriverlocation endCityName:self.currCity endPT:self.currPoin];
         } failure:^(id dataArray) {
             
         }];
@@ -1099,13 +1152,13 @@
 #pragma mark 获取司机的位置
 - (void)getDriverLocation
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
-        
-        while (TRUE) {
-            
-            // 每隔5秒执行一次（当前线程阻塞5秒）
-            [NSThread sleepForTimeInterval:5];
-            
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+//
+//        while (TRUE) {
+//
+//            // 每隔5秒执行一次（当前线程阻塞5秒）
+//            [NSThread sleepForTimeInterval:5];
+//
             NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
             [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
             
@@ -1118,9 +1171,9 @@
             }];
             // 这里写你要反复处理的代码，如网络请求
             NSLog(@"***每5秒输出一次这段文字***");
-            
-        };
-    });
+//
+//        };
+//    });
     
 }
 
