@@ -289,6 +289,7 @@
 		58FE7E341FC7E2240000D7DB /* YBHelpInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */; };
 		590E3CAA1FF4B859005F9FAA /* YBAdInfoListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 590E3CA91FF4B859005F9FAA /* YBAdInfoListModel.m */; };
 		596327211FF3387100821292 /* YBWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 596327201FF3387100821292 /* YBWebViewVC.m */; };
+		5972CF551FF5E25C0052E7EB /* YBLaunchScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5972CF541FF5E25C0052E7EB /* YBLaunchScreenVC.m */; };
 		599663AC1FF1F474008A9EE4 /* YBTaxiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */; };
 		59DF021D1FECF59400392472 /* YBSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DF021C1FECF59400392472 /* YBSettingModel.m */; };
 		7703235E1FD909D200CB03BC /* FirstAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 770323581FD909D000CB03BC /* FirstAnnotationView.m */; };
@@ -947,6 +948,8 @@
 		590E3CA91FF4B859005F9FAA /* YBAdInfoListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBAdInfoListModel.m; sourceTree = "<group>"; };
 		5963271F1FF3387100821292 /* YBWebViewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBWebViewVC.h; sourceTree = "<group>"; };
 		596327201FF3387100821292 /* YBWebViewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBWebViewVC.m; sourceTree = "<group>"; };
+		5972CF531FF5E25C0052E7EB /* YBLaunchScreenVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBLaunchScreenVC.h; sourceTree = "<group>"; };
+		5972CF541FF5E25C0052E7EB /* YBLaunchScreenVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBLaunchScreenVC.m; sourceTree = "<group>"; };
 		599663AA1FF1F474008A9EE4 /* YBTaxiModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBTaxiModel.h; sourceTree = "<group>"; };
 		599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBTaxiModel.m; sourceTree = "<group>"; };
 		59DF021B1FECF59400392472 /* YBSettingModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBSettingModel.h; sourceTree = "<group>"; };
@@ -2262,6 +2265,8 @@
 				585F56E01F38020A005F30F0 /* Main */,
 				585F56B51F38017C005F30F0 /* Main.storyboard */,
 				585F56BA1F38017C005F30F0 /* LaunchScreen.storyboard */,
+				5972CF531FF5E25C0052E7EB /* YBLaunchScreenVC.h */,
+				5972CF541FF5E25C0052E7EB /* YBLaunchScreenVC.m */,
 				58117A4F1F46D761004A2C88 /* Assets.xcassets */,
 				585F56BD1F38017C005F30F0 /* Info.plist */,
 				585F56AC1F38017C005F30F0 /* Supporting Files */,
@@ -3034,6 +3039,7 @@
 				582BF66C1F5D299A00AD2F34 /* YBNearbyPassengersVC.m in Sources */,
 				585041681FE22204009AEA8E /* YBStrokeCell.m in Sources */,
 				5822EB1A1FCBD711007EF7F1 /* YBRoadTestVC.m in Sources */,
+				5972CF551FF5E25C0052E7EB /* YBLaunchScreenVC.m in Sources */,
 				58FE7E341FC7E2240000D7DB /* YBHelpInfoVC.m in Sources */,
 				582777511F4ADB8C0053C8B9 /* MQVerCodeInputView.m in Sources */,
 				58D037811F5E7D1B00F3457A /* YBPassengerTravelVC.mm in Sources */,
@@ -3284,7 +3290,6 @@
 			baseConfigurationReference = 24549F5771E83340720CD605 /* Pods-TakeWindmill.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = TakeWindmill/TakeWindmill.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -3438,7 +3443,6 @@
 			baseConfigurationReference = BE0262D1BFE9C36BEEEF3D42 /* Pods-TakeWindmill.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = TakeWindmill/TakeWindmill.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;

@@ -161,7 +161,7 @@ static CGFloat headerH = 20;
             //[mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
             
             [YBRequest postWithURL:sysinfoGetsysinfo MutableDict:mutableDict success:^(id dataArray) {
-                //YBLog(@"%@",dataArray);
+                YBLog(@"%@",dataArray);
                 YBSettingModel * model = [YBSettingModel yy_modelWithJSON:dataArray];
                 model.version = @"1.2.1";
                 if ([HSHString compareVersion:model.version to:[HSHString getAppCurVersion]]) {

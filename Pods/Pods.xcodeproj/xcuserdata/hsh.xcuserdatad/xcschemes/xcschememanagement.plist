@@ -34,6 +34,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>LBLaunchImageAd.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>LBXScan.xcscheme</key>
 		<dict>
 			<key>isShown</key>

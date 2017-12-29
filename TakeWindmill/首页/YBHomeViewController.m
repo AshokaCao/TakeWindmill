@@ -187,7 +187,10 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kPersonreloadData object:nil userInfo:nil];
     
     [self updateMsgValue];
+    
+     
 }
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     

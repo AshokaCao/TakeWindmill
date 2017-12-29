@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'A42440821C1674F35C17DC3764A8919E'
+               BlueprintIdentifier = 'CE80818B9D5A95A479A77CA20D1BB6EB'
                BlueprintName = 'YQSlideMenController'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libYQSlideMenController.a'>
