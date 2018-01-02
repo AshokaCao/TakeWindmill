@@ -108,28 +108,28 @@ static BOOL isWebView = YES;
          NSString *jsFunctStr=@"turnTo('参数test')";
          [context evaluateScript:jsFunctStr];*/
         
-//        context[@"turnTo"] = ^() {
-//            NSArray *args = [JSContext currentArguments];
-//            for (JSValue *jsVal in args) {
-//                YBLog(@"%@", jsVal.toString);
-//            }
-//
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [weakSelf turnTo:nil];
-//            });
-//
-//        };
-//        context.exceptionHandler = ^(JSContext *context, JSValue *exceptionValue) {
-//            context.exception = exceptionValue;
-//            NSLog(@"异常信息：%@", exceptionValue);
-//        };
+        context[@"turnTo"] = ^() {
+            NSArray *args = [JSContext currentArguments];
+            for (JSValue *jsVal in args) {
+                YBLog(@"%@", jsVal.toString);
+            }
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf turnTo:nil];
+            });
+
+        };
+        context.exceptionHandler = ^(JSContext *context, JSValue *exceptionValue) {
+            context.exception = exceptionValue;
+            NSLog(@"异常信息：%@", exceptionValue);
+        };
         
-        YBJSObject * object = [[YBJSObject alloc]init];
-        context[@"NativeApi"] = object;
-        
-        //模拟一下js调用方法
-        NSString *jsStr1=@"NativeApi.turnTo('参数1)";
-        [context evaluateScript:jsStr1];
+//        YBJSObject * object = [[YBJSObject alloc]init];
+//        context[@"NativeApi"] = object;
+//
+//        //模拟一下js调用方法
+//        NSString *jsStr1=@"NativeApi.turnTo('参数1)";
+//        [context evaluateScript:jsStr1];
         
     }
     
