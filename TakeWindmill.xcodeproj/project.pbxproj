@@ -288,6 +288,7 @@
 		58FE7E311FC7CA770000D7DB /* YBOwnerInView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E2A1FC7CA770000D7DB /* YBOwnerInView.m */; };
 		58FE7E341FC7E2240000D7DB /* YBHelpInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */; };
 		590E3CAA1FF4B859005F9FAA /* YBAdInfoListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 590E3CA91FF4B859005F9FAA /* YBAdInfoListModel.m */; };
+		59119B1D1FFB56B8008BAA0E /* YBJSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 59119B1C1FFB56B8008BAA0E /* YBJSObject.m */; };
 		596327211FF3387100821292 /* YBWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 596327201FF3387100821292 /* YBWebViewVC.m */; };
 		5972CF551FF5E25C0052E7EB /* YBLaunchScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5972CF541FF5E25C0052E7EB /* YBLaunchScreenVC.m */; };
 		599663AC1FF1F474008A9EE4 /* YBTaxiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */; };
@@ -946,6 +947,8 @@
 		58FE7E331FC7E2240000D7DB /* YBHelpInfoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBHelpInfoVC.m; sourceTree = "<group>"; };
 		590E3CA81FF4B859005F9FAA /* YBAdInfoListModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBAdInfoListModel.h; sourceTree = "<group>"; };
 		590E3CA91FF4B859005F9FAA /* YBAdInfoListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBAdInfoListModel.m; sourceTree = "<group>"; };
+		59119B1B1FFB56B7008BAA0E /* YBJSObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBJSObject.h; sourceTree = "<group>"; };
+		59119B1C1FFB56B8008BAA0E /* YBJSObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBJSObject.m; sourceTree = "<group>"; };
 		5963271F1FF3387100821292 /* YBWebViewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBWebViewVC.h; sourceTree = "<group>"; };
 		596327201FF3387100821292 /* YBWebViewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBWebViewVC.m; sourceTree = "<group>"; };
 		5972CF531FF5E25C0052E7EB /* YBLaunchScreenVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBLaunchScreenVC.h; sourceTree = "<group>"; };
@@ -2024,6 +2027,8 @@
 				59DF021C1FECF59400392472 /* YBSettingModel.m */,
 				590E3CA81FF4B859005F9FAA /* YBAdInfoListModel.h */,
 				590E3CA91FF4B859005F9FAA /* YBAdInfoListModel.m */,
+				59119B1B1FFB56B7008BAA0E /* YBJSObject.h */,
+				59119B1C1FFB56B8008BAA0E /* YBJSObject.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2940,6 +2945,7 @@
 				5817FEEE1FD7D09600B66EB0 /* SKSTableViewCellIndicator.m in Sources */,
 				58F366431FB59C29006A3235 /* YBComplaintDriverVC.m in Sources */,
 				5817FEE11FD7D09600B66EB0 /* YBWriteCommentViewController.m in Sources */,
+				59119B1D1FFB56B8008BAA0E /* YBJSObject.m in Sources */,
 				5822EB0E1FCBD711007EF7F1 /* SDBrowserImageView.m in Sources */,
 				582BF67A1F5D4C6C00AD2F34 /* YBNearbyCell.m in Sources */,
 				5822EB1D1FCBD711007EF7F1 /* SDTimeLineCellCommentView.m in Sources */,

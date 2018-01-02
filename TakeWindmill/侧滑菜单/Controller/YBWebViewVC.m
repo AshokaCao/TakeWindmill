@@ -7,8 +7,10 @@
 //
 
 #import "YBWebViewVC.h"
+#import "YBJSObject.h"
+#import "YBCarpoolOrdersVC.h"
 
-@interface YBWebViewVC ()<UIWebViewDelegate,IMYWebViewDelegate>
+@interface YBWebViewVC ()<UIWebViewDelegate,IMYWebViewDelegate,JSObjectDelegate>
 {
     
 }
@@ -16,6 +18,7 @@
 @property (nonatomic, strong) UIWebView *htmlView;
 
 @property (nonatomic, strong) IMYWebView * webView;
+
 @end
 
 @implementation YBWebViewVC
@@ -54,7 +57,7 @@ static BOOL isWebView = YES;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
-   
+    
     [self setUI];
     
     [self requestData];
@@ -81,19 +84,75 @@ static BOOL isWebView = YES;
 #pragma mark - UIWebViewDelegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    WEAK_SELF;
     if (isWebView) {
         NSInteger height = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.scrollHeight"] integerValue];
         self.htmlView.frame=CGRectMake(0, 0, kScreenWidth,height);
         //CGFloat contentHeight = self.backScroll.contentSize.height;
         //YBLog(@"contentHeight==%f",kScreenHeight);
         self.backScroll.contentSize = CGSizeMake(kScreenWidth, height+kNaviHeight);
-    }
-   
-}
-//#pragma mark - IMYWebViewDelegate
-//- (void)webViewDidFinishLoad:(IMYWebView*)webView{
+        
+        
+        
+        JSContext *context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+        /*
+         //1.js里面直接调用方法
+         //2.js里面通过对象调用方法
+         //str对象是JS那边传递过来。
+         context[@"turnTo"] = ^(NSString *str){
+         YBLog(@"YBLog==%@",str);
+         };
+         YBJSObject * object = [[YBJSObject alloc]init];
+         context[@"NativeApi"] = object;
+         
+         NSString *jsFunctStr=@"turnTo('参数test')";
+         [context evaluateScript:jsFunctStr];*/
+        
+//        context[@"turnTo"] = ^() {
+//            NSArray *args = [JSContext currentArguments];
+//            for (JSValue *jsVal in args) {
+//                YBLog(@"%@", jsVal.toString);
+//            }
 //
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [weakSelf turnTo:nil];
+//            });
+//
+//        };
+//        context.exceptionHandler = ^(JSContext *context, JSValue *exceptionValue) {
+//            context.exception = exceptionValue;
+//            NSLog(@"异常信息：%@", exceptionValue);
+//        };
+        
+        YBJSObject * object = [[YBJSObject alloc]init];
+        context[@"NativeApi"] = object;
+        
+        //模拟一下js调用方法
+        NSString *jsStr1=@"NativeApi.turnTo('参数1)";
+        [context evaluateScript:jsStr1];
+        
+    }
+    
+    //NSString * str = [webView stringByEvaluatingJavaScriptFromString:@"window.NativeApi.turnTo()"];
+    //YBLog(@"str==%@",str);
+    
+}
+//- (BOOL)webView:(IMYWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType{
+//    YBLog(@"request==%@",request);
+//    return YES;
 //}
+-(void)turnTo:(NSString *)sender{
+    YBCarpoolOrdersVC *carpool = [[YBCarpoolOrdersVC alloc] init];
+    [self.navigationController pushViewController:carpool animated:YES];
+}
+
+
+#pragma mark - IMYWebViewDelegate
+///WKWebView 跟网页进行交互的方法。
+//- (void)addScriptMessageHandler:(id<WKScriptMessageHandler>)scriptMessageHandler name:(NSString*)name{
+//    
+//}
+
 - (void)dealloc {
     NSLog(@"%s",__func__);
 }
