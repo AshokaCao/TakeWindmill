@@ -158,7 +158,7 @@ static BOOL isWebView = YES;
 #pragma mark JSTurnToDelegate
 -(void)turnTo:(NSString *)jsonString{
     WEAK_SELF;
-    YBLog(@"jsonString==%@",jsonString);
+    //YBLog(@"jsonString==%@",jsonString);
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([jsonString isEqualToString:@"bbcar://host/pindan"]) {
             YBCarpoolOrdersVC *carpool = [[YBCarpoolOrdersVC alloc] init];
