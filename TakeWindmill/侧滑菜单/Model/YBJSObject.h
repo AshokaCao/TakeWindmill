@@ -15,7 +15,7 @@
 @protocol JSObjectDelegate <JSExport>
 
 #pragma mark -js调用该oc方法，并且将jsonstring打印出来
-- (void)turnTo:(NSString *)jsonString;
+-(void)turnTo:(NSString *)jsonString;
 
 @end
 

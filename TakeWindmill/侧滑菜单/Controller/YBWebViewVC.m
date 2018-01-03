@@ -10,7 +10,15 @@
 #import "YBJSObject.h"
 #import "YBCarpoolOrdersVC.h"
 
-@interface YBWebViewVC ()<UIWebViewDelegate,IMYWebViewDelegate,JSObjectDelegate>
+
+@protocol JSTurnToDelegate <JSExport>
+
+#pragma mark -js调用该oc方法，并且将jsonstring打印出来
+-(void)turnTo:(NSString *)jsonString;
+
+@end
+
+@interface YBWebViewVC ()<UIWebViewDelegate,IMYWebViewDelegate,JSTurnToDelegate>
 {
     
 }
@@ -92,9 +100,11 @@ static BOOL isWebView = YES;
         //YBLog(@"contentHeight==%f",kScreenHeight);
         self.backScroll.contentSize = CGSizeMake(kScreenWidth, height+kNaviHeight);
         
-        
-        
         JSContext *context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+        context.exceptionHandler = ^(JSContext *context, JSValue *exceptionValue) {
+            context.exception = exceptionValue;
+            YBLog(@"异常信息：%@", exceptionValue);
+        };
         /*
          //1.js里面直接调用方法
          //2.js里面通过对象调用方法
@@ -106,30 +116,27 @@ static BOOL isWebView = YES;
          context[@"NativeApi"] = object;
          
          NSString *jsFunctStr=@"turnTo('参数test')";
-         [context evaluateScript:jsFunctStr];*/
+         [context evaluateScript:jsFunctStr];
         
         context[@"turnTo"] = ^() {
             NSArray *args = [JSContext currentArguments];
             for (JSValue *jsVal in args) {
                 YBLog(@"%@", jsVal.toString);
             }
-
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf turnTo:nil];
             });
-
-        };
-        context.exceptionHandler = ^(JSContext *context, JSValue *exceptionValue) {
-            context.exception = exceptionValue;
-            NSLog(@"异常信息：%@", exceptionValue);
-        };
+            
+        };*/
         
-//        YBJSObject * object = [[YBJSObject alloc]init];
-//        context[@"NativeApi"] = object;
-//
-//        //模拟一下js调用方法
-//        NSString *jsStr1=@"NativeApi.turnTo('参数1)";
-//        [context evaluateScript:jsStr1];
+        
+        //YBJSObject * object = [[YBJSObject alloc]init];
+        context[@"NativeApi"] = weakSelf;
+        
+        //模拟一下js调用方法
+        //NSString *jsStr1=@"NativeApi.turnTo('参数1')";
+        //[context evaluateScript:jsStr1];
         
     }
     
@@ -141,17 +148,25 @@ static BOOL isWebView = YES;
 //    YBLog(@"request==%@",request);
 //    return YES;
 //}
--(void)turnTo:(NSString *)sender{
-    YBCarpoolOrdersVC *carpool = [[YBCarpoolOrdersVC alloc] init];
-    [self.navigationController pushViewController:carpool animated:YES];
-}
-
 
 #pragma mark - IMYWebViewDelegate
 ///WKWebView 跟网页进行交互的方法。
 //- (void)addScriptMessageHandler:(id<WKScriptMessageHandler>)scriptMessageHandler name:(NSString*)name{
-//    
+//
 //}
+
+#pragma mark JSTurnToDelegate
+-(void)turnTo:(NSString *)jsonString{
+    WEAK_SELF;
+    YBLog(@"jsonString==%@",jsonString);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([jsonString isEqualToString:@"bbcar://host/pindan"]) {
+            YBCarpoolOrdersVC *carpool = [[YBCarpoolOrdersVC alloc] init];
+            [weakSelf.navigationController pushViewController:carpool animated:YES];
+        }
+        
+    });
+}
 
 - (void)dealloc {
     NSLog(@"%s",__func__);

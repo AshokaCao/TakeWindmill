@@ -9,7 +9,7 @@
 #import "YBJSObject.h"
 
 @implementation YBJSObject
-- (void)turnTo:(NSString *)jsonString{
+-(void)turnTo:(NSString *)jsonString{
     
     YBLog(@"jsonString==%@",jsonString);
     
