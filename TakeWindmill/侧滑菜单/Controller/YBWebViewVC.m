@@ -13,7 +13,7 @@
 
 @protocol JSTurnToDelegate <JSExport>
 
-#pragma mark -js调用该oc方法，并且将jsonstring打印出来
+#pragma mark -js调用该oc方法
 -(void)turnTo:(NSString *)jsonString;
 
 @end
@@ -164,7 +164,6 @@ static BOOL isWebView = YES;
             YBCarpoolOrdersVC *carpool = [[YBCarpoolOrdersVC alloc] init];
             [weakSelf.navigationController pushViewController:carpool animated:YES];
         }
-        
     });
 }
 
