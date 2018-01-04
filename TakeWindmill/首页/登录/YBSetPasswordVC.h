@@ -24,4 +24,10 @@
  */
 @property (nonatomic, copy) NSString *typeStr;
 
+
+
+
+@property (nonatomic, copy) NSString *commendcode;//邀请码
+
+
 @end
