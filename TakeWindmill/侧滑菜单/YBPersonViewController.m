@@ -25,7 +25,6 @@
 /** data */
 @property (nonatomic, strong) NSArray *data;
 
-
 @property (nonatomic, strong) YBUserListModel *userModel;
 /** 头像图片 */
 @property (nonatomic, strong) UIImageView *headerIcon;
@@ -72,7 +71,7 @@
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     NSString *userID = [YBUserDefaults valueForKey:_userId];
     dict[@"userid"] = userID;
-    //    NSLog(@"dict - %@",dict);
+    //NSLog(@"dict - %@",dict);
     
     [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
         NSLog(@"dataArray - %@",dataArray);
@@ -85,7 +84,7 @@
         weakSelf.nameLabel.text = userModel.NickName;
        // weakSelf.levelLabel.text = @"";
     } failure:^(id dataArray) {
-        
+    
     }];
 }
 - (void)setupData {
@@ -238,7 +237,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
     if (indexPath.row == 0) {
         YBStrokeVC * vc = [[YBStrokeVC alloc]init];
         [self.slideMenuController showViewController:vc];
@@ -256,9 +254,7 @@
         YBSettingVC * vc = [[YBSettingVC alloc]init];
         [self.slideMenuController showViewController:vc];
     }
-    
 }
-
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
