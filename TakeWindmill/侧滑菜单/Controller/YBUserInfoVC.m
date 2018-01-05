@@ -71,10 +71,10 @@ static NSArray *textArray;
 -(void)submit{
     WEAK_SELF;
     NSString * nickName = @"";
-     NSString * sex = @"";
-     NSString * age = @"";
+    NSString * sex = @"";
+    NSString * age = @"";
     for (int i = 1; i<textArray.count; i++) {
-        NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:1 inSection:0];
+        NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:i inSection:0];
         YBInformationCell *cell = [weakSelf.tableView cellForRowAtIndexPath:indexPath1];
         if (i == 1) {
             nickName = cell.textField.text;
@@ -87,15 +87,22 @@ static NSArray *textArray;
     }
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     NSString *userID = [YBUserDefaults valueForKey:_userId];
-    //dict[@"userid"] = userID;
-    
-//    [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
-//        NSLog(@"dataArray - %@",dataArray);
-//
-//        
-//    } failure:^(id dataArray) {
-//
-    //    }];
+    dict[@"userid"] = userID;
+    dict[@"nickname"] = nickName;
+    dict[@"sex"] = sex;
+    dict[@"age"] = age;
+    if (self.imagesArrUrl.count) {
+         dict[@"headimgurl"] = self.imagesArrUrl;
+    }
+   
+
+    [YBRequest postWithURL:UserUserinfoupdate MutableDict:dict success:^(id dataArray) {
+        YBLog(@"dataArray - %@",dataArray);
+          [MBProgressHUD showError:@"修改成功"toView:weakSelf.view];
+        
+    } failure:^(id dataArray) {
+          [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
 }
 - (void)getUserListAction
 {
@@ -107,7 +114,7 @@ static NSArray *textArray;
     //    NSLog(@"dict - %@",dict);
     
     [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
-        NSLog(@"dataArray - %@",dataArray);
+        YBLog(@"dataArray - %@",dataArray);
         NSDictionary *dic = dataArray;
         NSDictionary *newDic = [NSDictionary changeType:dic];
         
@@ -117,7 +124,7 @@ static NSArray *textArray;
         }
         
     } failure:^(id dataArray) {
-        
+         [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
     }];
 }
 
@@ -173,7 +180,7 @@ static NSArray *textArray;
                 if(weakSelf.userModel.Sex.length){
                     cell.textField.text = weakSelf.userModel.Sex;
                 }
-            }else{
+            }else if(indexPath.row == 3){
                 if(weakSelf.userModel.Age.length){
                     cell.textField.text = weakSelf.userModel.Age;
                 }

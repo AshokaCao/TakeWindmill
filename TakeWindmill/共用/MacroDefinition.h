@@ -141,6 +141,9 @@
 //通过userID获取用户信息
 #define UserList (ServerPath@"user/userinfodetailbyuserid")
 
+//用户信息修改：
+#define UserUserinfoupdate (ServerPath@"user/userinfoupdate")
+
 //根据用户Id查询收入明细列表（最新）
 #define IncomeListNew (ServerPath@"packetinfo/incomeinfolisttopbyuserid")
 

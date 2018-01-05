@@ -82,7 +82,7 @@
             [dict setObject:_phoneText.textFiled.text  forKey:@"userpwd"];
             [dict setObject:self.phoneStr  forKey:@"mobile"];
             [dict setObject:self.verifyCode forKey:@"verifycode"];
-            [dict setObject:self.commendcode forKey:@"commendcode"];
+            [dict setObject:[HSHString IsNotNull:self.commendcode] forKey:@"commendcode"];
             
             if ([self.typeStr isEqualToString:@"注册"]) {
                 URLStr = [NSString stringWithFormat:@"%@",RegisterPath];
