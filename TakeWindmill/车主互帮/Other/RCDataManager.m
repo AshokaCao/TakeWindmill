@@ -14,6 +14,7 @@
 #import "AppDelegate.h"
 #import "YBTaxiStepModel.h"
 #import "YBTaxiModel.h"
+#import "YBDownwindModel.h"
 @implementation RCDataManager{
     NSMutableArray *dataSoure;
 }
@@ -23,6 +24,7 @@
         [RCIM sharedRCIM].userInfoDataSource = self;
         [RCIM sharedRCIM].receiveMessageDelegate = self;
         
+        [[RCIM sharedRCIM] registerMessageType:[YBDownwindModel class]];
         [[RCIM sharedRCIM] registerMessageType:[YBTaxiModel class]];
         [[RCIM sharedRCIM] registerMessageType:[YBTaxiStepModel class]];
         [[RCIM sharedRCIM] registerMessageType:[YBHelpMessage class]];
