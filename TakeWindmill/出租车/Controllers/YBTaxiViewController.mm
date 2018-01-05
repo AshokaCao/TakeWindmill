@@ -198,6 +198,8 @@
     }
     self.locnImageView.center = point;
     [self.locnImageView setFrame:CGRectMake( point.x - 10, point.y - 29, 20, 29)];
+    
+    
 }
 
 #pragma mark - 发起线路规划
@@ -1030,7 +1032,13 @@
     [self.cancelView showDetailWith:self.userTravle];
     __weak __typeof(self)wself = self;
     self.cancelView.cancelBlock = ^(NSString *message) {
-        [wself traveCancel];
+        if ([message isEqualToString:@"pay"]) {
+            [wself againForMap];
+        } else if ([message isEqualToString:@"payNo"]) {
+            [MBProgressHUD showOnlyTextToView:wself.view title:@"支付失败"];
+        } else {
+            [wself traveCancel];
+        }
     };
     [self.choosebackView addSubview:self.cancelView];
 }
@@ -1083,18 +1091,28 @@
         } else if ([taxiState isEqualToString:@"PassengerInvite"]) {
             
         } else if ([taxiState isEqualToString:@"BindPassenger"]) {
-            [self actionSheetWith:@"司机已接单" andMessage:@"司机已经接单,请准备好与之同行."];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD showOnlyTextToView:self.view title:@"司机已接单"];
+            });
+//            [self actionSheetWith:@"司机已接单" andMessage:@"司机已经接单,请准备好与之同行."];
             self.isRet = YES;
             self.isShowTaxiMess = NO;
             [self getDriverCurrentLocation];
         } else if ([taxiState isEqualToString:@"ArriveToStart"]) {
-            [self actionSheetWith:@"司机到达乘客上车点" andMessage:@"司机到达乘客上车点,请准备好与之同行."];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD showOnlyTextToView:self.view title:@"司机到达乘客上车点"];
+            });
         } else if ([taxiState isEqualToString:@"PassangerGetOn"]) {
-            [self actionSheetWith:@"司机已确认乘客上车" andMessage:@"司机已确认乘客上车,请准备好与之同行."];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD showOnlyTextToView:self.view title:@"司机已确认乘客上车"];
+            });
         } else if ([taxiState isEqualToString:@"PassangerArriveToEnd"]) {
-            [self actionSheetWith:@"司机已确认到达目的地" andMessage:@"司机已确认到达目的地,请带好行李物品."];
-            [self.cancelView userNeedToPayWith:self.payOrder andMoney:self.payMoney];
-            self.isRet = NO;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD showOnlyTextToView:self.view title:@"司机已确认到达目的地"];
+                self.isRet = NO;
+                [self.cancelView userNeedToPayWith:self.payOrder andMoney:self.payMoney];
+            });
         } else if ([taxiState isEqualToString:@"PassangerPay"]) {
             self.isRet = NO;
             [self actionSheetWith:@"乘客付款" andMessage:@"乘客已确认付款"];

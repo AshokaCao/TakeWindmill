@@ -147,25 +147,68 @@
     YBTaxiStrokeModel *model = self.strokeArray[path.row];
     NSString *drivType = model.Stat;
     int driTy = [drivType intValue] + 1;
-    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    dict[@"travelsysno"] = model.SysNo;
-    dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
-    dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
-    dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
-    //            dict[@"paymoney"] =
+    
+    
     if (driTy == 3) {
-        dict[@"paymoney"] = self.payMoney;
-    }
-    
-    [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
-    
-    [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
-        NSLog(@"self.currLocation. - %@",dataArray);
-        [self passengerDetails];
-        [self.passengerTableView reloadData];
-    } failure:^(id dataArray) {
+        // 使用一个变量接收自定义的输入框对象 以便于在其他位置调用
         
-    }];
+        __block UITextField *tf = nil;
+        
+        [LEEAlert alert].config
+        .LeeTitle(@"输入金额")
+        .LeeContent(@"打车费用")
+        .LeeAddTextField(^(UITextField *textField) {
+            
+            // 这里可以进行自定义的设置
+            
+            textField.placeholder = @"输入框";
+            
+            textField.textColor = [UIColor darkGrayColor];
+            
+            tf = textField; //赋值
+        })
+        .LeeAction(@"好的", ^{
+            self.payMoney = tf.text;
+            [tf resignFirstResponder];
+            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+            dict[@"travelsysno"] = model.SysNo;
+            dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
+            dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
+            dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
+            dict[@"paymoney"] = self.payMoney;
+            
+            [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
+            
+            [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
+                NSLog(@"self.currLocation. - %@",dataArray);
+                [self passengerDetails];
+                [self.passengerTableView reloadData];
+            } failure:^(id dataArray) {
+                
+            }];
+            cell.drvBtn.enabled = NO;
+        })
+        .LeeCancelAction(@"取消", nil) // 点击事件的Block如果不需要可以传nil
+        .LeeShow();
+    } else {
+        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+        dict[@"travelsysno"] = model.SysNo;
+        dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
+        dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
+        dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
+        
+        
+        [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
+        
+        [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
+            NSLog(@"self.currLocation. - %@",dataArray);
+            [self passengerDetails];
+            [self.passengerTableView reloadData];
+        } failure:^(id dataArray) {
+            
+        }];
+        cell.drvBtn.enabled = YES;
+    }
 }
 
 - (void)upLoadDriverCurrentLocation

@@ -76,6 +76,11 @@
         req.sign = paymodel.Sign;//paymodel.sign;
         [FLPAYMANAGER fl_payWithOrderMessage:req callBack:^(FLErrCode errCode, NSString *errStr) {
             NSLog(@"errCode = %zd,errStr = %@",errCode,errStr);
+            if (errCode == 0) {
+                self.cancelBlock(@"pay");
+            } else {
+                self.cancelBlock(@"payNo");
+            }
         }];
     } failure:^(id dataArray) {
         //YBLog(@"failureDataArray==%@",dataArray);
@@ -168,6 +173,11 @@
                                      orderInfoEncoded, signedString];
             [FLPAYMANAGER fl_payWithOrderMessage:orderString callBack:^(FLErrCode errCode, NSString *errStr) {
                 NSLog(@"errCode = %zd,errStr = %@",errCode,errStr);
+                if (errCode == 0) {
+                    self.cancelBlock(@"pay");
+                } else {
+                    self.cancelBlock(@"payNo");
+                }
             }];
         }
         
