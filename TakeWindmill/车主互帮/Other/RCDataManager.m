@@ -12,7 +12,9 @@
 
 #import "RCDataManager.h"
 #import "AppDelegate.h"
+
 #import "YBTaxiStepModel.h"
+
 @implementation RCDataManager{
     NSMutableArray *dataSoure;
 }
@@ -21,7 +23,6 @@
     if (self = [super init]) {
         [RCIM sharedRCIM].userInfoDataSource = self;
         [RCIM sharedRCIM].receiveMessageDelegate = self;
-        
         [[RCIM sharedRCIM] registerMessageType:[YBTaxiStepModel class]];
         [[RCIM sharedRCIM] registerMessageType:[YBHelpMessage class]];
         //[[RCIM sharedRCIM] registerMessageType:[RCDTestMessage class]];
@@ -234,7 +235,7 @@
     NSLog(@"content==%@",message.content);
     YBTaxiStepModel *taxiStep = (YBTaxiStepModel *)message.content;
      NSLog(@"taxiStep==%@",taxiStep);
-   
+    
     if ([self.delegate respondsToSelector:@selector(receiveMessage:MsgValue:)]) {
          NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
         [self.delegate receiveMessage:message MsgValue:unreadMsgCount];
