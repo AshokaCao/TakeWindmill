@@ -88,6 +88,16 @@
 //司机_确认同行
 #define drivertravelbindpassengerPath (ServerPath@"travel/drivertravelbindpassenger?")
 
+//司机_行程绑定乘客列表
+#define passengertravelinfolistbydriverPath (ServerPath@"travel/passengertravelinfolistbydriver?")
+
+//司机_取消/解绑乘客行程
+#define drivercancelpassengertravelPath (ServerPath@"travel/drivercancelpassengertravel?")
+
+//司机端_乘客行程步骤更新
+//参数：StepType：1-司机到达乘客上车点，2-乘客上车，3-乘客到达终点，TravelSysNo：乘客行程SysNo
+#define travelinfostepupdatePath (ServerPath@"travel/travelinfostepupdate?")
+
 
 //路况直播列表
 #define RoadListPath (ServerPath@"roadcondition/roadconditionlist?")
@@ -107,8 +117,16 @@
 #define baseinfocommonlistPath (ServerPath@"base/baseinfocommonlist?")
 //乘客到达终点
 #define passangerarrivetoendPath (ServerPath@"travel/passangerarrivetoend?")
+
+//根据用户名查询所有行程列表（顺风车，包括司机）
+//UserId：用户Id
+//PageIndex：页码
+#define travelinfolistbyuseridPath (ServerPath@"travel/travelinfolistbyuserid?")
+
 //行程评论保存
+//TravelSysNo：行程SysNo，UserId：用户Id TypeFID：评论类型，1-乘客，2-司机
 #define travelcommentsavePath (ServerPath@"travel/travelcommentsave?")
+
 //司机附近乘客检索（按路或街道统计）
 #define passengernearbystatlistPath (ServerPath@"travel/passengernearbystatlist?")
 //司机附近乘客检索列表（市内）

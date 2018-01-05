@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class YBStrokeModel;
 
 @interface YBStrokeCell : UITableViewCell
+
+@property (nonatomic,strong) YBStrokeModel *model;
 
 @end

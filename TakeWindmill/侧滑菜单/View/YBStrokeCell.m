@@ -7,6 +7,9 @@
 //
 
 #import "YBStrokeCell.h"
+
+#import "YBStrokeModel.h"
+
 @interface YBStrokeCell()
 {
     
@@ -29,6 +32,7 @@
     return self;
 }
 -(void)setUI{
+    
     WEAK_SELF;
     CGFloat font = 14;
     CGFloat timeFont = 12;
@@ -134,14 +138,13 @@
 
 }
 
-//-(void)setUserInfoList:(UserInfoList *)userInfoList{
-//    [self.icon sd_setImageWithURL:[NSURL URLWithString:userInfoList.HeadImgUrl] placeholderImage:[UIImage imageNamed:@"车主认证"]];
-//    self.name.text = userInfoList.NickName;
-//    self.carNumber.text = userInfoList.VehicleNumber;
-//    self.info.text = userInfoList.Message;
-//    self.state.text = [Tools getState:userInfoList.ReplyStat];
-//    self.time.text = [HSHString timeWithStr:userInfoList.AddTime];
-//
-//}
+- (void)setModel:(YBStrokeModel *)model
+{
+    self.title.text         = model.TravelTypeName;
+    self.state.text         = model.StatNameSimple;
+    self.time.text          = model.SetoutTime;
+    self.startLoction.text  = model.StartAddress;
+    self.endLoction.text    = model.EndAddress;
+}
 
 @end
