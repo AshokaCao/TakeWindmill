@@ -18,7 +18,15 @@
 @property(nonatomic, strong) NSString *Mileage;
 @property(nonatomic, strong) NSString *SetoutTime;
 @property(nonatomic, strong) NSString *StartAddress;
-@property(nonatomic, strong) NSString *TravelSysNo;
+
+//顺风车消息
+@property(nonatomic, strong) NSString *TravelSysNo;//行程SysNo
+@property(nonatomic, strong) NSString *DriverUserId;//司机Id
+@property(nonatomic, strong) NSString *PassengerUserId;//乘客Id
+@property(nonatomic, strong) NSString *PayMoney;//支付金额
+
+
+
 
 @end
 

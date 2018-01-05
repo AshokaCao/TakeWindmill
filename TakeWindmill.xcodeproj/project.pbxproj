@@ -290,6 +290,7 @@
 		590E3CAA1FF4B859005F9FAA /* YBAdInfoListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 590E3CA91FF4B859005F9FAA /* YBAdInfoListModel.m */; };
 		59119B1D1FFB56B8008BAA0E /* YBJSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 59119B1C1FFB56B8008BAA0E /* YBJSObject.m */; };
 		596327211FF3387100821292 /* YBWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 596327201FF3387100821292 /* YBWebViewVC.m */; };
+		596AA2A71FFF2303005E051A /* YBDownwindModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 596AA2A61FFF2303005E051A /* YBDownwindModel.m */; };
 		5972CF551FF5E25C0052E7EB /* YBLaunchScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5972CF541FF5E25C0052E7EB /* YBLaunchScreenVC.m */; };
 		599663AC1FF1F474008A9EE4 /* YBTaxiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */; };
 		59DF021D1FECF59400392472 /* YBSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DF021C1FECF59400392472 /* YBSettingModel.m */; };
@@ -951,6 +952,8 @@
 		59119B1C1FFB56B8008BAA0E /* YBJSObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBJSObject.m; sourceTree = "<group>"; };
 		5963271F1FF3387100821292 /* YBWebViewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBWebViewVC.h; sourceTree = "<group>"; };
 		596327201FF3387100821292 /* YBWebViewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBWebViewVC.m; sourceTree = "<group>"; };
+		596AA2A51FFF2303005E051A /* YBDownwindModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBDownwindModel.h; sourceTree = "<group>"; };
+		596AA2A61FFF2303005E051A /* YBDownwindModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBDownwindModel.m; sourceTree = "<group>"; };
 		5972CF531FF5E25C0052E7EB /* YBLaunchScreenVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBLaunchScreenVC.h; sourceTree = "<group>"; };
 		5972CF541FF5E25C0052E7EB /* YBLaunchScreenVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBLaunchScreenVC.m; sourceTree = "<group>"; };
 		599663AA1FF1F474008A9EE4 /* YBTaxiModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBTaxiModel.h; sourceTree = "<group>"; };
@@ -1902,6 +1905,8 @@
 				5810BBC61FDBC09C009521D7 /* YBTaxiStepModel.m */,
 				599663AA1FF1F474008A9EE4 /* YBTaxiModel.h */,
 				599663AB1FF1F474008A9EE4 /* YBTaxiModel.m */,
+				596AA2A51FFF2303005E051A /* YBDownwindModel.h */,
+				596AA2A61FFF2303005E051A /* YBDownwindModel.m */,
 				5876D0351FCD32B90062F74C /* YBTabViewVC.h */,
 				5876D0361FCD32B90062F74C /* YBTabViewVC.m */,
 			);
@@ -3122,6 +3127,7 @@
 				58F3655D1FB59A43006A3235 /* UIImage+Extension.m in Sources */,
 				5817FEEC1FD7D09600B66EB0 /* SKSTableView.m in Sources */,
 				5817FEDF1FD7D09600B66EB0 /* YBCommentsViewController.m in Sources */,
+				596AA2A71FFF2303005E051A /* YBDownwindModel.m in Sources */,
 				58FE7E2B1FC7CA770000D7DB /* YBEvaluationViewController.m in Sources */,
 				5809131F1F3DA9820087C1D4 /* FSCustomButton.m in Sources */,
 				E779CB621FBD6FA600EC437E /* YBSlideTabView.m in Sources */,

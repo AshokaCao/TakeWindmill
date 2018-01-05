@@ -52,7 +52,6 @@ static NSArray *textArray;
     self.imagesArrUrl = [NSMutableArray array];
     
     [self setUpView];
-   
     
     [self getUserListAction];
 }
