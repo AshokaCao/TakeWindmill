@@ -53,7 +53,7 @@
     self.contentText.layer.borderWidth = 1;
     self.contentText.layer.borderColor = LightGreyColor.CGColor;
     self.contentText.delegate = self;
-    //self.contentText.returnKeyType = UIReturnKeyDefault;
+    self.contentText.returnKeyType = UIReturnKeyDone;
     [self.helpContentView addSubview:self.contentText];
     
     UIButton *helpButton = [[UIButton alloc] initWithFrame:CGRectMake(self.helpContentView.frame.size.width / 2 - 40, CGRectGetMaxY(self.contentText.frame) + 10, 80, 25)];
