@@ -163,9 +163,11 @@ static CGFloat headerH = 20;
             [YBRequest postWithURL:sysinfoGetsysinfo MutableDict:mutableDict success:^(id dataArray) {
                 YBLog(@"%@",dataArray);
                 YBSettingModel * model = [YBSettingModel yy_modelWithJSON:dataArray];
-                model.version = @"1.2.1";
+                //model.version = @"1.2.1";
                 if ([HSHString compareVersion:model.version to:[HSHString getAppCurVersion]]) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/qq/id444934666?mt=8"]];
+                    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/qq/id444934666?mt=8"]];
+                  
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: [HSHString IsNotNull:model.APPDownLoadUrlIOS]]];
                 }else{
                      [MBProgressHUD showError:@"已经是最新版本" toView:weakSelf.view];
                 }

@@ -19,6 +19,8 @@
 //VerionUpdateTime = 2017-12-16;
 //HasError = 0;
 //ErrorMessage = ;
+//public string APPUpdateTimeIOS { get; set; } //版本更新时间（IOS）
+//public string APPDownLoadUrlIOS { get; set; } //版本下载地址（IOS）
 //}
 
 /**
@@ -65,5 +67,13 @@
  *欢迎页图片地址
  */
 @property(nonatomic,strong) NSString *WelcomePicPath;
+/**
+ *版本更新时间（IOS）
+ */
+@property(nonatomic,strong) NSString *APPUpdateTimeIOS;
+/**
+ *版本下载地址（IOS）
+ */
+@property(nonatomic,strong) NSString *APPDownLoadUrlIOS;
 
 @end
