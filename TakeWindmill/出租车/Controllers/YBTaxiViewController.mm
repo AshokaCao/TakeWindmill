@@ -72,7 +72,14 @@
 @property (nonatomic, assign) CLLocationCoordinate2D userStralocation;
 @property (nonatomic, assign) CLLocationCoordinate2D severLocation;
 @property (nonatomic, assign) CLLocationCoordinate2D currentDriverlocation;
+@property (nonatomic, assign) CLLocationCoordinate2D lastDriverlocation;
 @property (nonatomic, assign) BOOL isSelectEnd;
+@property (nonatomic, assign) BOOL isShowTaxiMess;
+@property (nonatomic, assign) BOOL isRet;
+
+@property (nonatomic, strong) NSString *payMoney;
+@property (nonatomic, strong) NSString *payOrder;
+
 
 //用户位置坐标
 @property (nonatomic, strong) BMKUserLocation *positionUserLocation;
@@ -111,8 +118,7 @@
     [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
     dict[@"traveltypefid"] = @"2";
     
-    [YBRequest postWithURL:TaxiTraveling MutableDict:dict success:^(id dataArray) {
-//        NSLog(@"dataArray - --%@",dataArray);
+    [YBRequest postWithURL:TaxiTraveling MutableDict:dict success:^(id dataArray) {        self.isShowTaxiMess = NO;
         self.taxiSysNum = dataArray[@"SysNo"];
         
         self.currCity = dataArray[@"StartCity"];
@@ -121,24 +127,29 @@
         CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([dataArray[@"EndLat"] doubleValue],[dataArray[@"EndLng"] doubleValue]);
         self.severLocation = strPt;
         [self openMapViewStartCityName:self.currCity startPT:strPt endCityName:self.currCity endPT:endPt];
-        if (self.chooseView) {
-            
-        } else {
-            UIView *taxiList = [[UIView alloc] init];
-            taxiList.backgroundColor = [UIColor orangeColor];
-            self.choosebackView = taxiList;
-            [self.view addSubview:taxiList];
-            
-            [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.equalTo(self.view.mas_left).offset(10);
-                make.right.equalTo(self.view.mas_right).offset(-10);
-                make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-                make.height.offset(200);
-            }];
+        if (self.choosebackView) {
+            [self.choosebackView removeFromSuperview];
         }
+        self.choosebackView = [[UIView alloc] init];
+        [self.view addSubview:self.choosebackView];
+        
+        [self.choosebackView  mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.view.mas_left).offset(10);
+            make.right.equalTo(self.view.mas_right).offset(-10);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
+            make.height.offset(200);
+        }];
         self.userTravle = dataArray;
         [self addCancelTraveView];
-        [self getDriverLocation];
+        self.payMoney = [NSString stringWithFormat:@"%@",dataArray[@"PayMoney"]];
+        self.payOrder = [NSString stringWithFormat:@"%@",dataArray[@"OrderNo"]];
+        NSLog(@"viewWillAppear - %@ - %@",self.payMoney,dataArray[@"OrderNo"]);
+
+        if (self.payMoney.length > 1) {
+            [self.cancelView userNeedToPayWith:self.payOrder andMoney:self.payMoney];
+        } else {
+            [self getDriverCurrentLocation];
+        }
     } failure:^(id dataArray) {
         
     }];
@@ -166,8 +177,6 @@
     [self selfLoction];
     [self jinXiangBin];
     
-    _pointArr = [NSMutableArray arrayWithCapacity:0];
-    _count = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taxiNotification:)name:@"TaxiNotigication" object:nil];
     
@@ -212,18 +221,23 @@
     if (flag) {
         YBLog(@"查询成功");
         self.locnImageView.hidden = YES;
-        [self showTaxiDetails];
+        if (self.isShowTaxiMess) {
+            [self showTaxiDetails];
+        }
     }
     else {
         YBLog(@"查询失败");
     }
-    NSLog(@"self.startingPointDict - %@",self.startingPointDict[@"Name"]);
+//    NSLog(@"self.startingPointDict - %@",self.startingPointDict[@"Name"]);
 }
 
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error
 {
     if (error == BMK_SEARCH_NO_ERROR) {
         if (result.routes.count > 0) {
+            
+            _pointArr = [NSMutableArray array];
+            _count = 0;
             
             NSMutableArray *array = [NSMutableArray arrayWithArray:result.routes];
             if (array) {
@@ -272,6 +286,10 @@
         for (int i = 0; i < size; i++) {
             BMKDrivingStep* transitStep = [plan.steps objectAtIndex:i];
             if(i == 0 ){
+                
+                if (self.straItem) {
+                    [_mapView removeAnnotation:self.straItem];
+                }
                 self.straItem = [[RouteAnnotation alloc]init];
                 self.straItem.coordinate = plan.starting.location;
                 self.straItem.title = @"起点";
@@ -279,6 +297,9 @@
                 [self.mapView addAnnotation:self.straItem]; // 添加起点标注
             }
             if(i == size-1){
+                if (self.endItem) {
+                    [_mapView removeAnnotation:self.endItem];
+                }
                 self.endItem = [[RouteAnnotation alloc]init];
                 self.endItem.coordinate = plan.terminal.location;
                 self.endItem.title = @"终点";
@@ -584,124 +605,66 @@
 
 - (void)mapViewDidFinishLoading:(BMKMapView *)mapView
 {
-//    [self startRouteSearch];
+    
 }
 
 
 #pragma mark -- 小车移动
 - (void)startRouteSearch
 {
-    //起点经纬度
-    CLLocationCoordinate2D annotationCoordS;
-    annotationCoordS.latitude = 22.602079;//纬度－－y坐标
-    annotationCoordS.longitude = 114.011904;//经度－－x坐标
-    //目的经纬度
-    CLLocationCoordinate2D annotationCoordE;
-    annotationCoordE.latitude = 22.536516;//纬度－－y坐标
-    annotationCoordE.longitude = 114.066336;//经度－－x坐标
-    //终点位置显示
-    NSString *progress = [NSString stringWithFormat:@"%@·%@",self.endPointDict[@"City"],self.endPointDict[@"Name"]];
-    [_searchView.endButton setTitle:progress forState:UIControlStateNormal];
-    
     self.isSelectEnd = YES;
     [self openMapViewStartCityName:self.currCity startPT:self.currentDriverlocation endCityName:self.currCity endPT:self.severLocation];
-    //设置地图比例范围
-    //    CLLocationCoordinate2D center = CLLocationCoordinate2DMake((22.602079 + 22.536516) / 2, (114.011904 + 114.066336) / 2);
-    //    BMKCoordinateSpan span = BMKCoordinateSpanMake(fabs(22.602079 - 22.536516) , fabs(114.011904 - 114.066336));
-    //    BMKCoordinateRegion region ;
-    //    region.span.latitudeDelta = span.latitudeDelta * 3;
-    //    region.span.longitudeDelta = span.longitudeDelta * 3;
-    //    region.center = center;
-    //    [_mapV setRegion:region animated:YES];
     
-//    CLLocationCoordinate2D annotationCoord;
-//    annotationCoord.latitude = 22.602079;
-//    annotationCoord.longitude = 114.011904;
+    if (_annotationPoint) {
+        [self.mapView removeAnnotation:_annotationPoint];
+        [self.view.layer removeAllAnimations];
+    }
     _annotationPoint = [[BMKPointAnnotation alloc]init];
     _annotationPoint.coordinate = self.currentDriverlocation;
     [self.mapView addAnnotation:_annotationPoint];
-    
-    BMKGetTool *search = [[BMKGetTool alloc]init];//路线检索
-    [search searchStartPt:self.currentDriverlocation endPt:self.severLocation];
-    __weak __typeof(self) weakSelf = self;
-    search.SearchResult = ^(NSMutableArray *array){
-        if (array) {
-            BMKDrivingRouteLine *planLine = [array firstObject];
-            //在此处理正常结果
-            int i = 0;
-            //收集轨迹点
-            for (int j = 0; j < planLine.steps.count; j++) {
-                BMKDrivingStep* transitStep = [planLine.steps objectAtIndex:j];
-                int k=0;
-                for(k=0;k<transitStep.pointsCount;k++) {
-                    CLLocationCoordinate2D pt = BMKCoordinateForMapPoint(transitStep.points[k]);
-                    MapPointModel *model = [[MapPointModel alloc]init];
-                    model.lat = pt.latitude;
-                    model.lon = pt.longitude;
-                    if (k>0) {
-                        CLLocationCoordinate2D lastPt = BMKCoordinateForMapPoint(transitStep.points[k-1]);
-                        model.angle = [BMKGetTool getAngleSPt:lastPt endPt:pt];
-                    }
-                    [_pointArr addObject:model];
-                    i++;
-                }
-            }
-            //计算轨迹点之间的距离
-            for (int i = 0; i<_pointArr.count; i++) {
-                if (i<_pointArr.count-1) {
-                    MapPointModel *model = _pointArr[i];
-                    MapPointModel *model1 = _pointArr[i+1];
-                    CLLocationCoordinate2D pt;
-                    pt.latitude = model.lat;
-                    pt.longitude = model.lon;
-                    float distance = [BMKGetTool getDistanceLat:model1.lat Lng:model1.lon pt:pt];
-                    model1.distance = distance;
-                    
-                }
-            }
-            [weakSelf moveAnnotionV];
-        }
-    };
+
+//    BMKGetTool *search = [[BMKGetTool alloc]init];//路线检索
+//    [search searchStartPt:self.currentDriverlocation endPt:self.severLocation];
 }
+#pragma mark -------
 - (void)moveAnnotionV
 {
-    MapPointModel *model = _pointArr[_count];
-    [UIView animateWithDuration:model.distance/40 animations:^{
+    CGFloat angle = [BMKGetTool getAngleSPt:self.lastDriverlocation endPt:self.currentDriverlocation];
+    UIImage * pinImage = [UIImage imageNamed:@"car2"];
+    if (_count >=_pointArr.count) {
         
-        if ([_mapView.annotations containsObject:_annotationPoint]) {
-            CLLocationCoordinate2D coor;
-            coor.latitude = model.lat;
-            coor.longitude = model.lon;
-            _annotationPoint.coordinate = coor;
+    } else {
+        
+        NSLog(@"_pointArr - %ld - %ld",_pointArr.count,_count);
+        MapPointModel *model = _pointArr[_count];
+        [UIView animateWithDuration:5 animations:^{
             
-            UIImage * pinImage = [UIImage imageNamed:@"car2"];
-            if (model.angle) {
-                _markView.image = [pinImage imageRotatedByAngle:model.angle];
-            }else{
-                if (_count>0) {
-                    MapPointModel *model = _pointArr[_count-1];
-                    _markView.image = [pinImage imageRotatedByAngle:model.angle];
-                }
+            if ([_mapView.annotations containsObject:_annotationPoint]) {
+                CLLocationCoordinate2D coor;
+                coor.latitude = self.currentDriverlocation.latitude;
+                coor.longitude = self.currentDriverlocation.longitude;
+                _annotationPoint.coordinate = coor;
+                
+                _markView.image = [pinImage imageRotatedByAngle:angle];
+//                if (model.angle) {
+//                    _markView.image = [pinImage imageRotatedByAngle:model.angle];
+//                }else{
+//                    if (_count>0) {
+//                        MapPointModel *model = _pointArr[_count-1];
+//                    }
+//                }
             }
-        }
-        
-    } completion:^(BOOL finished) {
-        if (_count<_pointArr.count-1) {
-            MapPointModel *model1 = _pointArr[_count+1];
-            CLLocationCoordinate2D center = CLLocationCoordinate2DMake((model.lat + model1.lat) / 2, (model.lon + model1.lon) / 2);
-            BMKCoordinateRegion region ;
-            region.span.latitudeDelta = 0.005;
-            region.span.longitudeDelta = 0.005;
-            region.center = center;
-            [_mapView setRegion:region animated:YES];
-        }
-        _count++;
-        if (_count == _pointArr.count-1) {
-            return;
-        }
-        [self moveAnnotionV];
-    }];
-    
+            
+        } completion:^(BOOL finished) {
+            _count++;
+            
+            if (_count == _pointArr.count-1) {
+                return;
+            }
+//            [self moveAnnotionV];
+        }];
+    }
+//    [self mapViewFitPolyLine:self.polyLine];
 }
 
 //#pragma mark -- 返回各种点的标注图
@@ -879,33 +842,29 @@
     //终点位置经纬度
     CLLocationCoordinate2D endPt = CLLocationCoordinate2DMake([self.endPointDict[@"Lat"] doubleValue],[self.endPointDict[@"Lng"] doubleValue]);
     self.isSelectEnd = YES;
+    self.isShowTaxiMess = YES;
     [self openMapViewStartCityName:self.currCity startPT:self.currPoin endCityName:self.currCity endPT:endPt];
 }
 #pragma mark 出租车要求
 - (void)showTaxiDetails
 {
     if (self.choosebackView) {
-        
-        self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, self.choosebackView.width, self.choosebackView.height)];
-        self.chooseView.delegate = self;
-        [self.choosebackView addSubview:self.chooseView];
-    } else {
-        UIView *taxiList = [[UIView alloc] init];
-        taxiList.backgroundColor = [UIColor orangeColor];
-        self.choosebackView = taxiList;
-        [self.view addSubview:taxiList];
-        
-        [taxiList mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.view.mas_left).offset(10);
-            make.right.equalTo(self.view.mas_right).offset(-10);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.height.offset(200);
-        }];
-        
-        self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, taxiList.width, taxiList.height)];
-        self.chooseView.delegate = self;
-        [taxiList addSubview:self.chooseView];
+        [self.choosebackView removeFromSuperview];
     }
+    self.choosebackView = [[UIView alloc] init];
+    [self.view addSubview:self.choosebackView];
+    
+    [self.choosebackView  mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view.mas_left).offset(10);
+        make.right.equalTo(self.view.mas_right).offset(-10);
+        make.bottom.equalTo(self.view.mas_bottom).offset(-10);
+        make.height.offset(200);
+    }];
+    
+    self.chooseView = [[YBTaxiChooseView alloc] initWithFrame:CGRectMake(0, 0, self.choosebackView .width, self.choosebackView .height)];
+    self.chooseView.delegate = self;
+    [self.choosebackView  addSubview:self.chooseView];
+    
 }
 #pragma mark 点击事件
 - (void)didselectBtn:(NSInteger)types
@@ -1031,6 +990,7 @@
 #pragma mark 重新预约
 - (void)againForMap
 {
+    self.isRet = NO;
     self.isSelectEnd = NO;
     if (self.choosebackView) {
         [self.choosebackView removeFromSuperview];
@@ -1061,8 +1021,12 @@
 - (void)addCancelTraveView
 {
 //    [self.chooseView removeFromSuperview];
+    
+    self.isRet = NO;
     self.cancelView = [[YBCancelTraveView alloc] initWithFrame:CGRectMake(0, 0, self.choosebackView.width, self.choosebackView.height)];
+    
 //    NSLog(@"self.userTravle - %@",self.userTravle);
+    
     [self.cancelView showDetailWith:self.userTravle];
     __weak __typeof(self)wself = self;
     self.cancelView.cancelBlock = ^(NSString *message) {
@@ -1073,6 +1037,8 @@
 
 - (void)traveCancel
 {
+    self.isShowTaxiMess = NO;
+    [self.mapView removeAnnotation:_annotationPoint];
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
     dict[@"travelsysno"] = self.taxiSysNum;
@@ -1098,12 +1064,16 @@
 }
 
 
-
+#pragma mark 单子的状态
 - (void)taxiNotification:(NSNotification *)notification{
     
     YBTaxiStepModel *model = notification.userInfo[@"TaxiNotigication"];
+
+    Travelinfo *travelinModel = [Travelinfo yy_modelWithJSON:model.travelinfo];
     
-    NSLog(@"－－－－－接收到通知------%@",model.travelinfo);
+    self.payMoney = travelinModel.PayMoney;
+    
+    NSLog(@"========== getMessage - %@",travelinModel.PayMoney);
     NSString *taxiType = [NSString stringWithFormat:@"%@",model.content];
 //    NSString *taxiState = [NSString stringWithFormat:@"%@",model.op];
     if ([taxiType isEqualToString:@"操作信息"]) {
@@ -1114,18 +1084,25 @@
             
         } else if ([taxiState isEqualToString:@"BindPassenger"]) {
             [self actionSheetWith:@"司机已接单" andMessage:@"司机已经接单,请准备好与之同行."];
-            [self getDriverLocation];
+            self.isRet = YES;
+            self.isShowTaxiMess = NO;
+            [self getDriverCurrentLocation];
         } else if ([taxiState isEqualToString:@"ArriveToStart"]) {
             [self actionSheetWith:@"司机到达乘客上车点" andMessage:@"司机到达乘客上车点,请准备好与之同行."];
         } else if ([taxiState isEqualToString:@"PassangerGetOn"]) {
             [self actionSheetWith:@"司机已确认乘客上车" andMessage:@"司机已确认乘客上车,请准备好与之同行."];
         } else if ([taxiState isEqualToString:@"PassangerArriveToEnd"]) {
             [self actionSheetWith:@"司机已确认到达目的地" andMessage:@"司机已确认到达目的地,请带好行李物品."];
+            [self.cancelView userNeedToPayWith:self.payOrder andMoney:self.payMoney];
+            self.isRet = NO;
         } else if ([taxiState isEqualToString:@"PassangerPay"]) {
+            self.isRet = NO;
             [self actionSheetWith:@"乘客付款" andMessage:@"乘客已确认付款"];
         } else if ([taxiState isEqualToString:@"DriverTravelCancel"]) {
+            self.isRet = NO;
             [self actionSheetWith:@"司机取消行程" andMessage:@"司机取消行程,请注意查看."];
         } else if ([taxiState isEqualToString:@"PassengerTravelCancel"]) {
+            self.isRet = NO;
             [self actionSheetWith:@"乘客取消行程" andMessage:@"乘客取消行程,请注意查看."];
         }
     } else {
@@ -1150,31 +1127,47 @@
 }
 
 #pragma mark 获取司机的位置
-- (void)getDriverLocation
+- (void)getDriverCurrentLocation
 {
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
-//
-//        while (TRUE) {
-//
-//            // 每隔5秒执行一次（当前线程阻塞5秒）
-//            [NSThread sleepForTimeInterval:5];
-//
-            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-            [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
-            
-            [YBRequest postWithURL:TaxiDriveCurrentLocation MutableDict:dict success:^(id dataArray) {
-                NSLog(@"-------- : %@",dataArray);
-                self.currentDriverlocation =  CLLocationCoordinate2DMake([dataArray[@"Lat"] doubleValue], [dataArray[@"Lng"] doubleValue]);
-                [self startRouteSearch];
-            } failure:^(id dataArray) {
+    _pointArr = [NSMutableArray arrayWithCapacity:0];
+    _count = 0;
+    [self driverLocation];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+
+        while (self.isRet) {
+
+            [NSThread sleepForTimeInterval:10];
+
+            [self driverLocation];
+
+            NSLog(@"***每20秒输出一次这段文字***");
+            if (self.isRet) {
                 
-            }];
-            // 这里写你要反复处理的代码，如网络请求
-            NSLog(@"***每5秒输出一次这段文字***");
-//
-//        };
-//    });
-    
+            }
+        };
+    });
+
+}
+
+- (void)driverLocation
+{
+    if (self.isRet) {
+        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+        [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];
+        
+        [YBRequest postWithURL:TaxiDriveCurrentLocation MutableDict:dict success:^(id dataArray) {
+            if (self.currentDriverlocation.latitude) {
+                self.lastDriverlocation = self.currentDriverlocation;
+            }
+            self.currentDriverlocation =  CLLocationCoordinate2DMake([dataArray[@"Lat"] doubleValue], [dataArray[@"Lng"] doubleValue]);
+            
+            if (dataArray[@"Lat"]) {
+                [self startRouteSearch];
+            }
+        } failure:^(id dataArray) {
+            
+        }];
+    }
 }
 
 - (void)driverButtonAction:(UIButton *)sender {

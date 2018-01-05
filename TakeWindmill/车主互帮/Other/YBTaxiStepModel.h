@@ -19,6 +19,9 @@
 @property(nonatomic, strong) NSString *SetoutTime;
 @property(nonatomic, strong) NSString *StartAddress;
 @property(nonatomic, strong) NSString *TravelSysNo;
+@property (nonatomic, strong) NSString *PassengerUserId;
+@property (nonatomic, strong) NSString *PayMoney;
+@property (nonatomic, strong) NSString *DriverUserId;
 
 @end
 

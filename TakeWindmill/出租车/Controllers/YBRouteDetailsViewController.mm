@@ -36,6 +36,8 @@
 @property (nonatomic, strong) BMKRouteSearch *routeSearch;
 @property (nonatomic, assign) CLLocationCoordinate2D currLocation;;
 
+@property (nonatomic, strong) NSString *payMoney;
+
 @end
 
 @implementation YBRouteDetailsViewController
@@ -141,44 +143,69 @@
 - (void)didselectTaxiTralveBtn:(NSInteger)sender andYBPassengerTableViewCell:(YBPassengerTableViewCell *)cell
 {
     NSArray *titleArray = @[@"到达上车点",@"乘客已上车",@"到达目的地",@"待支付"];
-    switch (sender) {
-        case 1:
-            
-            break;
-        case 2:
-            
-            break;
-        case 3:
-        {
-            NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
-            YBTaxiStrokeModel *model = self.strokeArray[path.row];
-            NSString *drivType = model.Stat;
-            int driTy = [drivType intValue] + 1;
-            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-            dict[@"travelsysno"] = model.SysNo;
-            dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
-            dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
-            dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
-            
-            [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
-//            [self selfLoction];
-            
-            [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
-                NSLog(@"self.currLocation. - %@",dataArray);
-                [self passengerDetails];
-                [self.passengerTableView reloadData];
-            } failure:^(id dataArray) {
-                
-            }];
-        }
-            break;
-            
-        default:
-            break;
+    NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
+    YBTaxiStrokeModel *model = self.strokeArray[path.row];
+    NSString *drivType = model.Stat;
+    int driTy = [drivType intValue] + 1;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    dict[@"travelsysno"] = model.SysNo;
+    dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
+    dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
+    dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
+    //            dict[@"paymoney"] =
+    if (driTy == 3) {
+        dict[@"paymoney"] = self.payMoney;
     }
+    
+    [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
+    
+    [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
+        NSLog(@"self.currLocation. - %@",dataArray);
+        [self passengerDetails];
+        [self.passengerTableView reloadData];
+    } failure:^(id dataArray) {
+        
+    }];
 }
 
-
+- (void)upLoadDriverCurrentLocation
+{
+//    switch (sender) {
+//        case 1:
+//
+//            break;
+//        case 2:
+//
+//            break;
+//        case 3:
+//        {
+//            NSIndexPath *path = [self.passengerTableView indexPathForCell:cell];
+//            YBTaxiStrokeModel *model = self.strokeArray[path.row];
+//            NSString *drivType = model.Stat;
+//            int driTy = [drivType intValue] + 1;
+//            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+//            dict[@"travelsysno"] = model.SysNo;
+//            dict[@"steptype"] = [NSString stringWithFormat:@"%d",[drivType intValue] + 1];
+//            dict[@"currentlng"] = [NSString stringWithFormat:@"%f",self.currLocation.longitude];
+//            dict[@"currentlat"] = [NSString stringWithFormat:@"%f",self.currLocation.latitude];
+//            //            dict[@"paymoney"] =
+//
+//            [cell.drvBtn setTitle:titleArray[driTy] forState:UIControlStateNormal];
+//
+//            [YBRequest postWithURL:TaxiUpload MutableDict:dict success:^(id dataArray) {
+//                NSLog(@"self.currLocation. - %@",dataArray);
+//                [self passengerDetails];
+//                [self.passengerTableView reloadData];
+//            } failure:^(id dataArray) {
+//
+//            }];
+//        }
+//            break;
+//
+//        default:
+//            break;
+//    }
+}
 
 
 

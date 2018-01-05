@@ -17,6 +17,14 @@ typedef void(^CancelTravle)(NSString *message);
 @property (weak, nonatomic) IBOutlet UILabel *moneyLabel;
 @property (nonatomic, copy) CancelTravle cancelBlock;
 @property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (weak, nonatomic) IBOutlet UIButton *wechatPayBtn;
+@property (weak, nonatomic) IBOutlet UIButton *aliPayBtn;
+
+@property (nonatomic, strong) NSString *orderNum;
+@property (nonatomic, strong) NSString *needPayNum;
+@property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
+
+- (void)userNeedToPayWith:(NSString *)orderNum andMoney:(NSString *)money;
 
 - (void)showDetailWith:(NSDictionary *)diction;
 

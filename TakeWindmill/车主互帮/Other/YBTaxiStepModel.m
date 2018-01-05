@@ -10,6 +10,11 @@
 
 @implementation YBTaxiStepModel
 
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    
+}
+
 /////初始化
 +(instancetype)messageWithContent:(NSString *)content {
     YBTaxiStepModel *msg = [[YBTaxiStepModel alloc] init];
