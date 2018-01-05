@@ -10,6 +10,7 @@
 #import "YBTaxiStrokeModel.h"
 #import "YBTaxiStrokeTableViewCell.h"
 #import "YBRouteDetailsViewController.h"
+#import "YBNearPassgerViewController.h"
 
 @interface YBTaxiHomeViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UIButton *beginBtn;
@@ -47,7 +48,7 @@
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     NSString *userID = [YBUserDefaults valueForKey:_userId];
     dict[@"userid"] = userID;
-    NSLog(@"坐标 %@",dict);
+    NSLog(@"坐标 - %@",TaxiStrokeTable);
     self.strokeArray = [NSMutableArray array];
     [YBRequest postWithURL:TaxiStrokeTable MutableDict:dict success:^(id dataArray) {
         NSLog(@"dataArray - %@",dataArray);
@@ -117,6 +118,11 @@
 }
 - (IBAction)settingAction:(UIButton *)sender {
     
+}
+- (IBAction)nearbyAction:(UIButton *)sender {
+    YBNearPassgerViewController *near = [[YBNearPassgerViewController alloc] init];
+    near.currLocation = self.currLocation;
+    [self.navigationController pushViewController:near animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

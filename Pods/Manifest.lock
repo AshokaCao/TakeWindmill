@@ -18,9 +18,12 @@ PODS:
   - BRPickerView (1.1.0):
     - MJExtension (~> 3.0.13)
   - DSAlert-OC (1.0.8)
-  - HXWeiboPhotoPicker (2.1.3):
+  - HXWeiboPhotoPicker (2.1.4):
     - SDWebImage (~> 4.0)
+  - IMYWebView (0.8.1)
   - JSONModel (1.7.0)
+  - LBLaunchImageAd (1.0.2):
+    - SDWebImage (~> 4.0.0)
   - LBXScan/LBXZXing (2.2):
     - LBXScan/Types (~> 2.2)
   - LBXScan/Types (2.2)
@@ -56,8 +59,10 @@ DEPENDENCIES:
   - BaiduMapKit
   - BRPickerView (= 1.1.0)
   - DSAlert-OC (= 1.0.8)
-  - HXWeiboPhotoPicker (~> 2.1.1)
+  - HXWeiboPhotoPicker (~> 2.1.4)
+  - IMYWebView
   - JSONModel
+  - LBLaunchImageAd (~> 1.0.2)
   - LBXScan/LBXZXing (~> 2.2)
   - Masonry
   - MBProgressHUD (~> 1.0.0)
@@ -89,8 +94,10 @@ SPEC CHECKSUMS:
   BaiduMapKit: f61b19ecf07a3f2deede72b221b366bf698739ed
   BRPickerView: 9c93d5d9390eaed650c55b44e3eea7b0d619218c
   DSAlert-OC: 01b1490b7112f697f42086b2f4674777ca62a559
-  HXWeiboPhotoPicker: 8cc62f2885229530fe1553b8734dd5f7c50c1fbe
+  HXWeiboPhotoPicker: 9ca45976c87df32d76ad8fc5119f3dc48e62b0ec
+  IMYWebView: a6a9a52718ba6a44fb927d65f6d60930a8218cea
   JSONModel: 840bc0fcffb24b8454d2c026bf26fea454b8e98d
+  LBLaunchImageAd: c77a64a5c6bd10f73ab778bd2559e527bfd1400a
   LBXScan: 31b69c9657404133324e6b68ef814802ef9cacc0
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
@@ -110,6 +117,6 @@ SPEC CHECKSUMS:
   YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
   ZFPlayer: 8a80bf8eb4638b97fbceaefcd3ca9978e9f17c9d
 
-PODFILE CHECKSUM: 10e7055f23151c84273c56112e7927cd15d243d7
+PODFILE CHECKSUM: 657bd85f0ac9b73bd6cdb4ddde4ba23b981dc42b
 
 COCOAPODS: 1.4.0.beta.2

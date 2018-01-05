@@ -28,10 +28,9 @@
 #import "PPNetworkHelper.h"
 
 #import "HSHString.h"
-#import "HXPhotoViewController.h"
-#import "HXPhotoView.h"
 #import "RCDataManager.h"
 #import "FLPayManager.h"
+
 //cocoapods
 #import <Masonry.h>
 #import <BRPickerView.h>
@@ -44,6 +43,8 @@
 #import <YQSlideMenuController.h>
 #import <UIViewController+YQSlideMenu.h>
 #import <ZXingWrapper.h>
+#import <HXPhotoPicker.h>
+#import <IMYWebView.h>
 
 
 //百度

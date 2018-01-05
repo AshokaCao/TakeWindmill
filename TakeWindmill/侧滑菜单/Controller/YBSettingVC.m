@@ -10,6 +10,8 @@
 #import "YBInformationCell.h"
 #import "YBSettingDetailVC.h"
 #import "YBCommonAddressVC.h"
+#import "YBSettingModel.h"
+#import "YBWebViewVC.h"
 
 @interface YBSettingVC ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) UITableView *identityTabView;
@@ -48,11 +50,11 @@
 }
 #pragma mark - 数据源方法
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return 4;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section != 2) {
+    if (section == 2) {
         return 2;
     }
     
@@ -67,10 +69,10 @@
     }
     //去掉底部多余的表格线
     [tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
-    NSArray * dataArr = [NSArray arrayWithObjects:@"账号与安全",@"常用地址", nil];
+    NSArray * dataArr = [NSArray arrayWithObjects:@"常用地址", nil];//@"账号与安全",
     if (indexPath.section == 1) {
         //dataArr = [NSArray arrayWithObjects:@"法律条款与隐私政策",@"用户指南", nil];
-        dataArr = [NSArray arrayWithObjects:@"版本更新",@"关于皕夶", nil];
+        dataArr = [NSArray arrayWithObjects:@"版本更新", nil];
         if (indexPath.row == 0) {
             
             cell.textField.text = [NSString stringWithFormat:@"%@",[HSHString getAppCurVersion]];
@@ -80,6 +82,9 @@
             
         }
     } else if (indexPath.section == 2){
+         dataArr = [NSArray arrayWithObjects:@"关于皕夶",@"联系我们", nil];
+      
+    }else if (indexPath.section == 3){
         UILabel * label = [[UILabel alloc]init];
         label.text = @"退出登录";
         label.textColor = BtnOrangeColor;
@@ -135,30 +140,57 @@ static CGFloat headerH = 20;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    WEAK_SELF;
     YBInformationCell * cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    
-    YBSettingDetailVC * vc = [[YBSettingDetailVC alloc]init];
-    vc.title = cell.text.text;
+//    YBSettingDetailVC * vc = [[YBSettingDetailVC alloc]init];
+//    vc.title = cell.text.text;
     
     if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            vc.isAccount = YES;
-            [self.navigationController pushViewController:vc animated:NO];
-        }else{
+//        if (indexPath.row == 0) {
+//            vc.isAccount = YES;
+//            [self.navigationController pushViewController:vc animated:NO];
+//        }else{
             YBCommonAddressVC * vc = [[YBCommonAddressVC alloc]init];
             [self.navigationController pushViewController:vc animated:NO];
-        }
+//        }
         
     } else if (indexPath.section == 1){
-        if (indexPath.row == 0) {
+//        if (indexPath.row == 0) {//版本更新
+        
+            NSMutableDictionary *mutableDict = [YBTooler dictinitWithMD5];
+            //[mutableDict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
             
-        }else{
-            vc.isAbout = YES;
-            [self.navigationController pushViewController:vc animated:NO];
-        }
+            [YBRequest postWithURL:sysinfoGetsysinfo MutableDict:mutableDict success:^(id dataArray) {
+                YBLog(@"%@",dataArray);
+                YBSettingModel * model = [YBSettingModel yy_modelWithJSON:dataArray];
+                //model.version = @"1.2.1";
+                if ([HSHString compareVersion:model.version to:[HSHString getAppCurVersion]]) {
+                    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/qq/id444934666?mt=8"]];
+                  
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: [HSHString IsNotNull:model.APPDownLoadUrlIOS]]];
+                }else{
+                     [MBProgressHUD showError:@"已经是最新版本" toView:weakSelf.view];
+                }
+                
+            } failure:^(id dataArray) {
+                [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+            }];
+            
+//        }else{
+//            vc.isAbout = YES;
+//            [self.navigationController pushViewController:vc animated:NO];
+//        }
     }else if (indexPath.section == 2){
+        YBWebViewVC * vc = [[YBWebViewVC alloc]init];
+        vc.title = cell.text.text;
+        if (indexPath.row == 0) {
+            vc.urlString = AboutHtml;
+        } else {
+             vc.urlString = ContactHtml;
+        }
+         [self.navigationController pushViewController:vc animated:NO];
+        
+    }else if (indexPath.section == 3){
         UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"提示" message:@"确认退出登录？" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *alertOK = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [YBUserDefaults setBool:NO forKey:isLogin];
@@ -186,6 +218,7 @@ static CGFloat headerH = 20;
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

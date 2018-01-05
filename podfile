@@ -3,7 +3,7 @@ platform :ios,'8.0'
 target :'TakeWindmill' do
     pod 'ZFPlayer'
     pod 'PPNetworkHelper',:git => 'https://github.com/jkpang/PPNetworkHelper.git'
-    pod 'HXWeiboPhotoPicker', '~> 2.1.1'
+    pod 'HXWeiboPhotoPicker', '~> 2.1.4'
     pod 'SDAutoLayout', '~> 2.1.3'
     pod 'JSONModel'
     pod 'SDCycleScrollView','~> 1.66'
@@ -23,6 +23,6 @@ target :'TakeWindmill' do
     pod 'PGDatePicker',	 '>= 1.5.7'
     pod 'YQSlideMenController',	'0.0.5' 
     pod 'LBXScan/LBXZXing','~> 2.2'
-
-
+    pod 'IMYWebView'
+    pod 'LBLaunchImageAd','~> 1.0.2'
 end 

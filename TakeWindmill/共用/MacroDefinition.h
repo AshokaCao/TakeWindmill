@@ -8,6 +8,8 @@
 
 //百度地图apk
 #define BMMapKey @"GRLxwuup0DkvSAeg8Ab3cawpcB5RPNSc"
+//融云 key
+#define rongAppKey @"82hegw5u8k8ex"
 //记录状态
 #define YBUserDefaults [NSUserDefaults standardUserDefaults] 
 //用户账号
@@ -21,12 +23,31 @@
 //个人中心
 #define kPersonreloadData @"PersonreloadData"
 
+// 测试端口 121.40.76.10:88//接口
+// 正式端口 www.bibizl.com
+// 测试端口 121.40.76.10:93//图片
+// 正式端口 img.bibizl.com
+#if 0
+/**
+ *======================正式环境
+ */
+#define ServerPath @"http://www.bibizl.com/Service/"
+//长传图片
+#define UploadPhoto @"http://img.bibizl.com/UploadService.ashx"
+//下载图片
+#define DownloadPhoto(name)      [NSString stringWithFormat:@"http://img.bibizl.com/images/driver/%@.png",name]
 
-
-//接口地址(临时)
+#else
+/**
+ *======================测试环境
+ */
 #define ServerPath @"http://121.40.76.10:88/Service/"
-//接口地址(正式)
-//#define ServerPath @"http://www.bibizl.com/Service/"
+//长传图片
+#define UploadPhoto @"http://121.40.76.10:93/UploadService.ashx"
+//下载图片
+#define DownloadPhoto(name)      [NSString stringWithFormat:@"http://121.40.76.10:93/images/driver/%@.png",name]
+
+#endif
 
 //用户检测验证
 #define CheckuserPath (ServerPath@"user/checkuser?")
@@ -80,23 +101,6 @@
 #define commonaddressdriverdeletePath (ServerPath@"travel/commonaddressdriverdelete?")
 //司机常用路线保存
 #define commonaddressdriversavePath (ServerPath@"travel/commonaddressdriversave?")
-//乘客行程起点附近乘客检索（可拼座）
-#define passengerstartpointnearbypassengerlistPath (ServerPath@"travel/passengerstartpointnearbypassengerlist?")
-//司机_我的订单
-#define passengertravelinfolistbydriverPath (ServerPath@"travel/passengertravelinfolistbydriver?")
-
-//司机_确认同行
-#define drivertravelbindpassengerPath (ServerPath@"travel/drivertravelbindpassenger?")
-
-//司机_行程绑定乘客列表
-#define passengertravelinfolistbydriverPath (ServerPath@"travel/passengertravelinfolistbydriver?")
-
-//司机_取消/解绑乘客行程
-#define drivercancelpassengertravelPath (ServerPath@"travel/drivercancelpassengertravel?")
-
-//司机端_乘客行程步骤更新
-//参数：StepType：1-司机到达乘客上车点，2-乘客上车，3-乘客到达终点，TravelSysNo：乘客行程SysNo
-#define travelinfostepupdatePath (ServerPath@"travel/travelinfostepupdate?")
 
 
 //路况直播列表
@@ -117,16 +121,8 @@
 #define baseinfocommonlistPath (ServerPath@"base/baseinfocommonlist?")
 //乘客到达终点
 #define passangerarrivetoendPath (ServerPath@"travel/passangerarrivetoend?")
-
-//根据用户名查询所有行程列表（顺风车，包括司机）
-//UserId：用户Id
-//PageIndex：页码
-#define travelinfolistbyuseridPath (ServerPath@"travel/travelinfolistbyuserid?")
-
 //行程评论保存
-//TravelSysNo：行程SysNo，UserId：用户Id TypeFID：评论类型，1-乘客，2-司机
 #define travelcommentsavePath (ServerPath@"travel/travelcommentsave?")
-
 //司机附近乘客检索（按路或街道统计）
 #define passengernearbystatlistPath (ServerPath@"travel/passengernearbystatlist?")
 //司机附近乘客检索列表（市内）
@@ -136,12 +132,6 @@
 //司机跨域乘客检索列表
 #define passengeroverareadriverlistPath (ServerPath@"travel/passengeroverareadriverlist?")
 
-
-//长传图片
-#define UploadPhoto @"http://img.bibizl.com/UploadService.ashx"
-
-//下载图片
-#define DownloadPhoto(name)      [NSString stringWithFormat:@"http://img.bibizl.com/images/driver/%@.png",name]
 //上传路况信息
 #define UploadContent (ServerPath@"roadcondition/roadconditionsave")
 
@@ -150,6 +140,9 @@
 
 //通过userID获取用户信息
 #define UserList (ServerPath@"user/userinfodetailbyuserid")
+
+//用户信息修改：
+#define UserUserinfoupdate (ServerPath@"user/userinfoupdate")
 
 //根据用户Id查询收入明细列表（最新）
 #define IncomeListNew (ServerPath@"packetinfo/incomeinfolisttopbyuserid")
@@ -205,7 +198,7 @@
 //根据UserId获取用户信息
 #define UserUserinfodetailbyuserid (ServerPath@"user/userinfodetailbyuserid")
 
-#define Alipay (ServerPath@"apiconfig")
+#define Apiconfig (ServerPath@"apiconfig")
 
 //融云获取Token
 #define RongcloudGettoken (ServerPath@"rongcloud/gettoken")
@@ -261,5 +254,45 @@
 //
 #define WeixinPay (ServerPath@"pay/travelweixinorderunifyapp")
 
+//支付宝发起支付接口（APP）
+#define AliPay (ServerPath@"pay/travelalipayorderapp")
+
 #define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
+
+//我的名片信息
+#define userMycardinfo (ServerPath@"user/mycardinfo")
+
+//获取系统信息
+#define sysinfoGetsysinfo (ServerPath@"sysinfo/getsysinfo")
+
+//打车费用计算（出租车）
+#define TaxiMoney (ServerPath@"travel/traveltaxicostcalc")
+
+//保存行程信息
+#define TaxiTravel (ServerPath@"travel/travelinfosave")
+
+#define TaxiTraveling (ServerPath@"travel/travelinfodetailinprogress")
+
+//乘客行程步骤更新
+#define TaxiUpload (ServerPath@"travel/travelinfostepupdate")
+
+//司机附近乘客有效行程列表（出租车）
+#define TaxiNear (ServerPath@"travel/drivernearbypassengertaxitravelvalidlist")
+
+//司机抢单（出租车）
+#define TaxiRob (ServerPath@"travel/drivertaxigrab")
+
+//用户位置信息保存（单个，实时）
+#define TaxiSaveLocation (ServerPath@"userruntime/setuserposition")
+
+//关于
+#define AboutHtml (ServerPath@"WebPage/About.html")
+//联系
+#define ContactHtml (ServerPath@"WebPage/Contact.html")
+//分销
+#define DistributionHtml (ServerPath@"WebPage/Distribution.html")
+
+//广告列表
+#define Adinfolist (ServerPath@"ad/adinfolist")
+
 

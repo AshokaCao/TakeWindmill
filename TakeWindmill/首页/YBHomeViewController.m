@@ -25,27 +25,22 @@
 #import "YBRoadTestVC.h"
 #import "YBConversationListVC.h"
 #import "YBChatVC.h"
+#import "YZLocationManager.h"
+#import "YBAdInfoListModel.h"
+#import "YBWebViewVC.h"
 
-//支付
-#import "YBPayconfigModel.h"
-#import "APAuthInfo.h"
-#import "APOrderInfo.h"
-#import "APRSASigner.h"
-#import "HBRSAHandler.h"
 
 
 
 @interface YBHomeViewController ()<SDCycleScrollViewDelegate,YBReceiveMsgValueDelegate>
 {
-   
-    APOrderInfo* order;
-    
-    HBRSAHandler* _handler;
+
 }
 //头部按钮试图
 @property (nonatomic, strong) UIView *itemView;
 
 //无限轮播视图
+@property (nonatomic, strong)SDCycleScrollView *cycleScrollView;
 //定时器
 @property (nonatomic, strong) NSTimer *rotateTimer;
 //点
@@ -53,160 +48,24 @@
 
 @property (nonatomic, strong) UILabel *msgValue;
 
-@property (nonatomic, strong) YBPayconfigModel * pfModel;
+@property (nonatomic, strong) NSArray *adInfoArray;
+
 
 @end
 
 @implementation YBHomeViewController
 
-- (NSString *)generateTradeNO
-{
-    static int kNumber = 15;
-    NSString *sourceStr = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    NSMutableString *resultStr = [[NSMutableString alloc] init];
-    srand((unsigned)time(0));
-    for (int i = 0; i < kNumber; i++)
-    {
-        unsigned index = rand() % [sourceStr length];
-        NSString *oneStr = [sourceStr substringWithRange:NSMakeRange(index, 1)];
-        [resultStr appendString:oneStr];
-    }
-    return resultStr;
-}
 
-//
-// 选中商品调用支付宝极简支付
-//
-- (void)doAPPay
-{
-    WEAK_SELF;
-    // 重要说明
-    // 这里只是为了方便直接向商户展示支付宝的整个支付流程；所以Demo中加签过程直接放在客户端完成；
-    // 真实App里，privateKey等数据严禁放在客户端，加签过程务必要放在服务端完成；
-    // 防止商户私密数据泄露，造成不必要的资金损失，及面临各种安全风险；
-    /*============================================================================*/
-    /*=======================需要填写商户app申请的===================================*/
-    /*============================================================================*/
-    NSString *appID = weakSelf.pfModel.APPID;
-    
-    // 如下私钥，rsa2PrivateKey 或者 rsaPrivateKey 只需要填入一个
-    // 如果商户两个都设置了，优先使用 rsa2PrivateKey
-    // rsa2PrivateKey 可以保证商户交易在更加安全的环境下进行，建议使用 rsa2PrivateKey
-    // 获取 rsa2PrivateKey，建议使用支付宝提供的公私钥生成工具生成，
-    // 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1
-    NSString *rsa2PrivateKey =@"MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAKs0SG4ob9o4E7hAD9quQPruxT3aCEJFxFUcllkBak4be+yodc2R/O4lmMog2TS6aT7T4OJ6Stcr/k0mn2ppY/pANDWE09TSJcDNrQxXfzJdYe+QRkZK07qnlfK840fou1oUtQmfheaOKq1q9eFPGPy53jJUH4yZviK5EH2LrSNBAgMBAAECgYAgLb2HZvZPD8c1FGVmduYjxAkyrO5sdmyGis7/f7KZZ7UNMESkFNJzeIGVTENHE9qAQpa8OrwiYVR079N6zsBJlGDb8/OWBU7gzVUFqFxBUf3RKXlTLctUUAJtuAWC4W/4yt0gLvByxfnGktLwJORb7wvSJ6kjLa5Ef+7plrApeQJBANGP6fel09AuBYvFE4m1kzLxQwpJkcSxXWWq0tdEf4khP6/s4/A7GOh7aaOb5VwOv/Ewdcb60m8hR+Y4O94ufe8CQQDRJGRj/4jdnvzNJzaqatwYYJBwp3D/s6yJOppWsY0qNux9BBqghf+EQTr0Vc663/1zbv1cvBcW1tWfsLJJPqHPAkEAjnNaYoopqniuMm17s39nGRjhLmwGF4NNbp+pBMW+P/QG+8p2w0UY0GebzqhZR7OLDCOZ2/GB/CLOYhNVttk5pwJBAL3VCIJzyWlQDCqysz3QLOK7k5+NfFW8YplU5g5WrslofROki/60Yg9LnhV1ZWXeNhF25uYrm9GRQunl2o39GaUCQQCJoyLYD8xqpAeSklNHqogqP1VKHd62q728NnCiGDJT38WrNU6dKHaFsJNcuFc8DcE0xfBjgnoNZx+XblpiD5fp";
-    NSString *rsaPrivateKey = weakSelf.pfModel.PrivateKey;
-    
-    /*
-     *生成订单信息及签名
-     */
-    //将商品信息赋予AlixPayOrder的成员变量
-    order = [[APOrderInfo alloc]init];
-    
-    
-    // NOTE: app_id设置
-    order.app_id =@"2017103009610990";
-    
-    order.notify_url = weakSelf.pfModel.NotifyUrl;
-    
-    // NOTE: 支付接口名称
-    order.method = @"alipay.trade.app.pay";
-    
-    // NOTE: 参数编码格式
-    order.charset = @"utf-8";
-    
-    // NOTE: 当前时间点
-    NSDateFormatter* formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    order.timestamp = [formatter stringFromDate:[NSDate date]];
-    
-    // NOTE: 支付版本
-    order.version = @"1.0";
-    
-    // NOTE: sign_type 根据商户设置的私钥来决定
-    order.sign_type = (rsa2PrivateKey.length > 1)?@"RSA2":@"RSA";
-    
-    // NOTE: 商品数据
-    order.biz_content = [[APBizContent alloc] init];
-    order.biz_content.body = @"我是测试数据";
-    order.biz_content.subject = @"1";
-    order.biz_content.out_trade_no = [self generateTradeNO]; //订单ID（由商家自行制定）
-    order.biz_content.timeout_express = @"30m"; //超时时间设置
-    order.biz_content.total_amount = [NSString stringWithFormat:@"%.2f", 0.01]; //商品价格
-    
-    //将商品信息拼接成字符串
-    NSString *orderInfo = [order orderInfoEncoded:NO];
-    NSString *orderInfoEncoded = [order orderInfoEncoded:YES];
-    NSLog(@"orderInfo = %@",orderInfo);
-    NSLog(@"orderInfoEncoded = %@",orderInfoEncoded);
-    NSLog(@"=================================================================");
-    
-    
-    // NOTE: 获取私钥并将商户信息签名，外部商户的加签过程请务必放在服务端，防止公私钥数据泄露；
-    //       需要遵循RSA签名规范，并将签名字符串base64编码和UrlEncode
-    NSString *signedString = nil;
-    APRSASigner* signer = [[APRSASigner alloc] initWithPrivateKey:((rsa2PrivateKey.length > 1)?rsa2PrivateKey:rsaPrivateKey)];
-    
-    if (orderInfo.length) {
-        if ((rsa2PrivateKey.length > 1)) {
-            signedString = [signer signString:orderInfo withRSA2:YES];
-        } else {
-            signedString = [signer signString:orderInfo withRSA2:NO];
-        }
-    }
 
-    //NOTE: 如果加签成功，则继续执行支付
-    if (signedString != nil) {
-        //应用注册scheme,在AliSDKDemo-Info.plist定义URL types
-        NSString *appScheme = @"bibiguide";
-        
-        // NOTE: 将签名成功字符串格式化为订单字符串,请严格按照该格式
-        NSString *orderString = [NSString stringWithFormat:@"%@&sign=%@",
-                                 orderInfoEncoded, signedString];
-        
-        // NOTE: 调用支付结果开始支付
-        [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-            NSLog(@"reslut = %@",resultDic);
-        }];
-        
-//    [FLPAYMANAGER fl_payWithOrderMessage:orderString callBack:^(FLErrCode errCode, NSString *errStr) {
-//        NSLog(@"errCode = %zd,errStr = %@",errCode,errStr);
-//    }];
-    }else{
-        YBLog(@"加签失败");
-    }
-    
-    
 
-}
--(void)aliPay{
-    WEAK_SELF;
-    NSMutableDictionary *parm = [YBTooler dictinitWithMD5];
-    parm[@"configtype"] =@"alipay";
-    
-    //YBLog(@"url==%@",Apiconfig);
-    //YBLog(@"parm==%@",parm);
-    
-    [YBRequest postWithURL:Apiconfig MutableDict:parm success:^(id dataArray) {
-         YBLog(@"dataArray==%@",dataArray);
-        weakSelf.pfModel = [YBPayconfigModel yy_modelWithJSON:dataArray[@"ConfigBody"]];
-
-    } failure:^(id dataArray) {
-        YBLog(@"failureDataArray==%@",dataArray);
-        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
-    }];
-    
-}
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//     [self doAPPay];
-//    [self wechatPay];
+    // [self aliPay];//支付宝
+//    [self wechatPay];//微信
 }
-- (void)wechatPay {
-    
+- (void)wechatPay{
     WEAK_SELF;
-    
     NSMutableDictionary *parm = [YBTooler dictinitWithMD5];
-    parm[@"orderno"] =[self generateTradeNO];
+    parm[@"orderno"] = @"kjdfljfjf";//传订单号
     [YBRequest postWithURL:WeixinPay MutableDict:parm success:^(id dataArray) {
         //YBLog(@"dataArray==%@",dataArray);
         YBPayconfigModel *paymodel = [YBPayconfigModel yy_modelWithJSON:dataArray];
@@ -227,16 +86,113 @@
         [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
     }];
 }
+-(void)aliPay{
+    WEAK_SELF;
+    NSMutableDictionary *parm = [YBTooler dictinitWithMD5];
+    parm[@"configtype"] =@"alipay";
+    
+    //YBLog(@"url==%@",Apiconfig);
+    //YBLog(@"parm==%@",parm);
+    
+    [YBRequest postWithURL:Apiconfig MutableDict:parm success:^(id dataArray) {
+        YBLog(@"dataArray==%@",dataArray);
+        YBPayconfigModel *payModel = [YBPayconfigModel yy_modelWithJSON:dataArray];
+        // 重要说明
+        // 这里只是为了方便直接向商户展示支付宝的整个支付流程；所以Demo中加签过程直接放在客户端完成；
+        // 真实App里，privateKey等数据严禁放在客户端，加签过程务必要放在服务端完成；
+        // 防止商户私密数据泄露，造成不必要的资金损失，及面临各种安全风险；
+        
+        NSString *appID = payModel.APPID;
+        
+        // 如下私钥，rsa2PrivateKey 或者 rsaPrivateKey 只需要填入一个
+        // 如果商户两个都设置了，优先使用 rsa2PrivateKey
+        // rsa2PrivateKey 可以保证商户交易在更加安全的环境下进行，建议使用 rsa2PrivateKey
+        // 获取 rsa2PrivateKey，建议使用支付宝提供的公私钥生成工具生成，
+        // 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1
+        NSString *rsa2PrivateKey = payModel.PrivateKeyIOS;
+        NSString *rsaPrivateKey = @"";
+        
+        /*
+         *生成订单信息及签名
+         */
+        //将商品信息赋予AlixPayOrder的成员变量
+        APOrderInfo *order = [[APOrderInfo alloc]init];
+        
+        // NOTE: app_id设置
+        order.app_id =appID;
+        
+        order.notify_url = payModel.NotifyUrl;
+        
+        // NOTE: 支付接口名称
+        order.method = @"alipay.trade.app.pay";
+        
+        // NOTE: 参数编码格式
+        order.charset = @"utf-8";
+        
+        // NOTE: 当前时间点
+        NSDateFormatter* formatter = [NSDateFormatter new];
+        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        order.timestamp = [formatter stringFromDate:[NSDate date]];
+        
+        // NOTE: 支付版本
+        order.version = @"1.0";
+        
+        // NOTE: sign_type 根据商户设置的私钥来决定
+        order.sign_type = (rsa2PrivateKey.length > 1)?@"RSA2":@"RSA";
+        
+        // NOTE: 商品数据
+        order.biz_content = [[APBizContent alloc] init];
+        order.biz_content.body = @"我是测试数据";
+        order.biz_content.subject = @"皕夶打车扣费";
+        order.biz_content.out_trade_no = @"hfkhkfhhffhfjfjf"; //订单ID（由商家自行制定）
+        order.biz_content.timeout_express = @"30m"; //超时时间设置
+        order.biz_content.total_amount = [NSString stringWithFormat:@"%.2f", 0.01]; //商品价格
+        
+        //将商品信息拼接成字符串
+        NSString *orderInfo = [order orderInfoEncoded:NO];
+        NSString *orderInfoEncoded = [order orderInfoEncoded:YES];
+        
+        // NOTE: 获取私钥并将商户信息签名，外部商户的加签过程请务必放在服务端，防止公私钥数据泄露；
+        //       需要遵循RSA签名规范，并将签名字符串base64编码和UrlEncode
+        NSString *signedString = nil;
+        APRSASigner* signer = [[APRSASigner alloc] initWithPrivateKey:((rsa2PrivateKey.length > 1)?rsa2PrivateKey:rsaPrivateKey)];
+        
+        if (orderInfo.length) {
+            if ((rsa2PrivateKey.length > 1)) {
+                signedString = [signer signString:orderInfo withRSA2:YES];
+            } else {
+                signedString = [signer signString:orderInfo withRSA2:NO];
+            }
+        }
+        //NOTE: 如果加签成功，则继续执行支付
+        if (signedString != nil) {
+            // NOTE: 将签名成功字符串格式化为订单字符串,请严格按照该格式
+            NSString *orderString = [NSString stringWithFormat:@"%@&sign=%@",
+                                     orderInfoEncoded, signedString];
+            [FLPAYMANAGER fl_payWithOrderMessage:orderString callBack:^(FLErrCode errCode, NSString *errStr) {
+                NSLog(@"errCode = %zd,errStr = %@",errCode,errStr);
+            }];
+        }
+        
+    } failure:^(id dataArray) {
+        YBLog(@"failureDataArray==%@",dataArray);
+        [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
+    
+}
+
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self aliPay];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kPersonreloadData object:nil userInfo:nil];
-}
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
     
     [self updateMsgValue];
+    
+     
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     
     //        "rc" : {
     //            "oName" : "RC:TxtMsg",
@@ -266,31 +222,6 @@
     [YBUserDefaults removeObjectForKey:kPushRC];
 
 }
--(void)updateMsgValue{
-    NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
-    
-    //YBLog(@"unreadMsgCount==%ld",unreadMsgCount);
-    WEAK_SELF;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (unreadMsgCount == 0) {
-            weakSelf.msgValue.text = nil;
-            weakSelf.msgValue.hidden = YES;
-        }else{
-            weakSelf.msgValue.text = [NSString stringWithFormat:@"%ld",unreadMsgCount];
-            weakSelf.msgValue.hidden = NO;
-        }
-    });
-    
-}
-
-#pragma mark YBReceiveMsgValue
--(void)receiveMessage:(RCMessage *)message MsgValue:(NSInteger)MsgValue{
-    
-//    YBTaxiHelpMessage *helpMessage = (YBTaxiHelpMessage *)message.content;
-//    NSLog(@"message - - %@",helpMessage.StartAddress);
-    [self updateMsgValue];
-}
-
 -(UILabel *)msgValue{
     if (_msgValue == nil) {
         UILabel * label = [[UILabel alloc]init];
@@ -315,6 +246,7 @@
     // 这个方法是为了，不让隐藏状态栏的时候出现view上移
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.view.backgroundColor = [UIColor whiteColor];
+    self.adInfoArray = [NSArray array];
     [self setupNav];
     
     RCDataManager * mg =[RCDataManager shareManager];
@@ -339,7 +271,7 @@
         
         [YBRequest postWithURL:URLStr MutableDict:dict View:self.view success:^(id dataArray) {
             
-            YBLog(@"%@",dataArray);
+            YBLog(@"dataArray==%@",dataArray);
             [YBUserDefaults setBool:YES forKey:isLogin];
             [YBUserDefaults synchronize];
             
@@ -366,24 +298,85 @@
 
 #pragma mark - 用户校验
 
-
+-(SDCycleScrollView *)cycleScrollView{
+    if (_cycleScrollView == nil) {
+        SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, CGRectGetMaxY(self.itemView.frame), YBWidth, YBHeight - _itemView.bounds.size.height) delegate:self placeholderImage:[UIImage imageNamed:@"首页4_01"]];
+        //cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;
+        cycleScrollView.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        cycleScrollView.currentPageDotColor = [UIColor whiteColor];
+        //         --- 轮播时间间隔，默认1.0秒，可自定义
+        cycleScrollView.autoScrollTimeInterval = 3.0;
+        _cycleScrollView = cycleScrollView;
+    }
+    return _cycleScrollView;
+}
 - (void)scrollViewInit {
-    
+    WEAK_SELF;
     //滚动图片
-    NSArray *imageArray = @[@"首页4_01",@"首页4_02"];
-    
+    //NSArray *imageArray = @[@"首页4_01",@"首页4_02"];
     // >>>>>>>>>>>>>>>>>>>>>>>>> demo轮播图1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // 本地加载 --- 创建不带标题的图片轮播器
-    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, CGRectGetMaxY(self.itemView.frame), YBWidth, YBHeight - _itemView.bounds.size.height ) shouldInfiniteLoop:YES imageNamesGroup:imageArray];
-    cycleScrollView.delegate = self;
-    cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;
-    [self.view addSubview:cycleScrollView];
-    cycleScrollView.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    //         --- 轮播时间间隔，默认1.0秒，可自定义
-    cycleScrollView.autoScrollTimeInterval = 3.0;
+    //SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, CGRectGetMaxY(self.itemView.frame), YBWidth, YBHeight - _itemView.bounds.size.height ) shouldInfiniteLoop:YES imageNamesGroup:imageArray];
+
+    [self.view addSubview:self.cycleScrollView];
+    
+//   NSArray *imagesURLStrings = @[
+//                         @"http://121.40.76.10:93/UploadFiles/ad/index_slide/路况首页图.jpg",
+//                         @"http://121.40.76.10:93/UploadFiles/ad/index_slide/配单首页图.jpg?v=1.1",
+//                         @"http://121.40.76.10:93/UploadFiles/ad/index_slide/分润首页图.jpg?v=1.1",
+//                         @"http://121.40.76.10:93/images/driver/drivecard.png"
+//                         ];
+    //weakSelf.cycleScrollView.imageURLStringsGroup = imagesURLStrings;
+    
+    
+ 
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    //NSString *userID = [YBUserDefaults valueForKey:_userId];
+    //dict[@"userid"] = userID;
+    dict[@"classsysno"] = @"1";
+    
+    [YBRequest postWithURL:Adinfolist MutableDict:dict success:^(id dataArray) {
+        YBLog(@"dataArray - %@",dataArray);
+        //NSArray * adInfoList = dataArray[@"AdInfoList"];
+        
+        YBAdInfoListModel * adInfoListModel = [YBAdInfoListModel yy_modelWithJSON:dataArray];
+        weakSelf.adInfoArray = adInfoListModel.AdInfoList;
+        
+        NSMutableArray *imageArray = [NSMutableArray array];
+        for (AdInfoModel * adInfo in adInfoListModel.AdInfoList) {
+             [imageArray addObject:adInfo.PicUrl];
+        }
+        YBLog(@"imageArray - %@",imageArray);
+        weakSelf.cycleScrollView.imageURLStringsGroup = imageArray;
+    
+    } failure:^(id dataArray) {
+        //YBLog(@"failureDataArray - %@",dataArray);
+         [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
     
     
 }
+#pragma mark - SDCycleScrollViewDelegate
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index
+{
+    YBLog(@"---点击了第%ld张图片", (long)index);
+    if (index<self.adInfoArray.count) {
+        YBWebViewVC * vc = [[YBWebViewVC alloc]init];
+        AdInfoModel * model =self.adInfoArray[index];
+        vc.urlString = model.LinkUrl;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    
+}
+
+/*
+ // 滚动到第几张图回调
+ - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index
+ {
+ NSLog(@">>>>>> 滚动到第%ld张图", (long)index);
+ }
+ 
+ */
 
 - (void)buttonsAction {
     
@@ -511,8 +504,69 @@
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(msgClick)];
     [self.msgValue addGestureRecognizer:tap];
     
+    NSString *userID = [YBUserDefaults valueForKey:_userId];
+    if (userID) {
+        [self initWithlocService];
+    }
+}
+
+- (void)initWithlocService
+{
+    YZLocationManager *manager = [YZLocationManager sharedLocationManager];
+    manager.isBackGroundLocation = YES;
+    manager.locationInterval = 10;
+    [manager setYZBackGroundLocationHander:^(CLLocationCoordinate2D coordinate) {
+//        _plc(coordinate);
+//        NSLog(@">>>>>>>>>>>>>%f,,%f",coordinate.latitude,coordinate.longitude);
+        //起点位置信息
+        NSMutableDictionary *dict = [YBTooler dictinitWithMD5];;
+        
+        NSString *userID = [YBUserDefaults valueForKey:_userId];
+        dict[@"userid"] = userID;
+        [dict setObject:[NSString stringWithFormat:@"%f",coordinate.longitude] forKey:@"lng"];
+        [dict setObject:[NSString stringWithFormat:@"%f",coordinate.latitude] forKey:@"lat"];
+//        NSLog(@"dict - %@",dict);
+        [YBUserDefaults setObject:dict forKey:@"currentLocation"];
+        [YBUserDefaults synchronize];
+        [self uploadCurrentLocationWith:dict];
+    }];
+    
+    [manager startLocationService];
+}
+
+- (void)uploadCurrentLocationWith:(NSMutableDictionary *)location
+{
+    [PPNetworkHelper POST:TaxiSaveLocation parameters:location success:^(id responseObject) {
+//        NSLog(@"current - %@",responseObject);
+    } failure:^(NSError *error) {
+
+    }];
+}
+#pragma mark YBReceiveMsgValue
+-(void)receiveMessage:(RCMessage *)message MsgValue:(NSInteger)MsgValue{
+    
+    //    YBTaxiHelpMessage *helpMessage = (YBTaxiHelpMessage *)message.content;
+    //    NSLog(@"message - - %@",helpMessage.StartAddress);
+    [self updateMsgValue];
+}
+-(void)updateMsgValue{
+    NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
+    
+    //YBLog(@"unreadMsgCount==%ld",unreadMsgCount);
+    WEAK_SELF;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (unreadMsgCount == 0) {
+            weakSelf.msgValue.text = nil;
+            weakSelf.msgValue.hidden = YES;
+        }else{
+            weakSelf.msgValue.text = [NSString stringWithFormat:@"%ld",unreadMsgCount];
+            weakSelf.msgValue.hidden = NO;
+        }
+    });
     
 }
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     

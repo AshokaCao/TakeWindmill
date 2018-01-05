@@ -12,9 +12,9 @@
 
 #import "RCDataManager.h"
 #import "AppDelegate.h"
-
 #import "YBTaxiStepModel.h"
-
+#import "YBTaxiModel.h"
+#import "YBDownwindModel.h"
 @implementation RCDataManager{
     NSMutableArray *dataSoure;
 }
@@ -23,9 +23,11 @@
     if (self = [super init]) {
         [RCIM sharedRCIM].userInfoDataSource = self;
         [RCIM sharedRCIM].receiveMessageDelegate = self;
+        
+        [[RCIM sharedRCIM] registerMessageType:[YBDownwindModel class]];
+        [[RCIM sharedRCIM] registerMessageType:[YBTaxiModel class]];
         [[RCIM sharedRCIM] registerMessageType:[YBTaxiStepModel class]];
         [[RCIM sharedRCIM] registerMessageType:[YBHelpMessage class]];
-        //[[RCIM sharedRCIM] registerMessageType:[RCDTestMessage class]];
     }
     return self;
 }
@@ -165,25 +167,24 @@
         NSString * Token= dataArray[@"Token"];
         YBLog(@"Token==%@",Token);
         [[RCIM sharedRCIM] connectWithToken:Token  success:^(NSString *userId) {
-            NSLog(@"==登陆成功。当前登录的用户ID：%@", userId);
-            
+            YBLog(@"==登陆成功。当前登录的用户ID：%@", userId);
+            /*
             RCUserInfo * userInfo;
             if ([userID isEqualToString:@"8FA57A8A259E42EB95766C7E04E3BC1A"]) {
-                
+
                 userInfo = [[RCUserInfo alloc]initWithUserId:@"8FA57A8A259E42EB95766C7E04E3BC1A" name:@"王五" portrait:@"http://121.40.76.10:93/images/driver/servicecard.png"];
             }else{
                 userInfo = [[RCUserInfo alloc]initWithUserId:@"A651B4968A96438F924A4F7139687C1F" name:@"HSH" portrait:@"http://121.40.76.10:93/images/driver/identcard.png"];
             }
-            
-            [RCIMClient sharedRCIMClient].currentUserInfo = userInfo;
+            [RCIMClient sharedRCIMClient].currentUserInfo = userInfo;*/
             
         } error:^(RCConnectErrorCode status) {
-            NSLog(@"==登陆的错误码为:%ld", status);
+            YBLog(@"==登陆的错误码为:%ld", status);
         } tokenIncorrect:^{
             //token过期或者不正确。
             //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
             //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
-            NSLog(@"==token错误");
+            YBLog(@"==token错误");
         }];
         
     } failure:^(id dataArray) {
@@ -220,8 +221,6 @@
     //            return YES;
     //        }
     //    }
-    
-    
     return NO;
 }
 
@@ -231,17 +230,25 @@
  */
 -(void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left
 {
+
     //YBHelpMessage *helpMessage = (YBHelpMessage *)message.content;
     NSLog(@"content==%@",message.content);
-    YBTaxiStepModel *taxiStep = (YBTaxiStepModel *)message.content;
-     NSLog(@"taxiStep==%@",taxiStep);
+   
+    if([message.content isMemberOfClass:YBTaxiModel.class] || [message.content isMemberOfClass:YBTaxiStepModel.class]){
+        
+        NSMutableDictionary *diction = [NSMutableDictionary dictionary];
+        [diction setValue:message.content forKey:@"TaxiNotigication"];
+        
+        NSNotification *notification =[NSNotification notificationWithName:@"TaxiNotigication" object:nil userInfo:diction];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
     
     if ([self.delegate respondsToSelector:@selector(receiveMessage:MsgValue:)]) {
          NSInteger unreadMsgCount = (NSInteger)[[RCIMClient sharedRCIMClient] getUnreadCount:@[@(ConversationType_PRIVATE),@(ConversationType_DISCUSSION),@(ConversationType_GROUP),@(ConversationType_CHATROOM)]];
         [self.delegate receiveMessage:message MsgValue:unreadMsgCount];
     }
     
-    //[[RCDataManager shareManager] refreshBadgeValue];
+//[[RCDataManager shareManager] refreshBadgeValue];
 //    [self.conversationListTableView reloadData];
 }
 

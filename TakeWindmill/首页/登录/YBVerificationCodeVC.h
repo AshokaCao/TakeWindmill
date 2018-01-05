@@ -14,4 +14,10 @@
 
 @property (nonatomic, copy) NSString *typeStr;
 
+@property (nonatomic, copy) NSString *verifyCode;
+
+@property (nonatomic, copy) NSString *commendcode;
+
+
+
 @end

@@ -16,6 +16,7 @@
 #import "YBRedEnvelopesViewController.h"
 #import "YBUserListModel.h"
 #import "YBUserInfoVC.h"
+#import "YBWebViewVC.h"
 
 @interface YBPersonViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -23,7 +24,6 @@
 @property (nonatomic, weak) UITableView *tableView;
 /** data */
 @property (nonatomic, strong) NSArray *data;
-
 
 @property (nonatomic, strong) YBUserListModel *userModel;
 /** 头像图片 */
@@ -71,7 +71,7 @@
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     NSString *userID = [YBUserDefaults valueForKey:_userId];
     dict[@"userid"] = userID;
-    //    NSLog(@"dict - %@",dict);
+    //NSLog(@"dict - %@",dict);
     
     [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
         NSLog(@"dataArray - %@",dataArray);
@@ -84,7 +84,7 @@
         weakSelf.nameLabel.text = userModel.NickName;
        // weakSelf.levelLabel.text = @"";
     } failure:^(id dataArray) {
-        
+    
     }];
 }
 - (void)setupData {
@@ -191,8 +191,25 @@
         label.centerX = imageV.centerX;
         label.text = btnNameArray[i];
         [footerView addSubview:label];
+        
+        if (i != 1) {
+            imageV.hidden = YES;
+            label.hidden = YES;
+        }else{
+             imageV.image = [UIImage imageNamed:btnNameArray[2]];
+            imageV.userInteractionEnabled = YES;
+            
+            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(imageVTap)];
+            [imageV addGestureRecognizer:tap];
+        }
     }
     
+}
+-(void)imageVTap{
+    YBWebViewVC * vc = [[YBWebViewVC alloc]init];
+    vc.urlString = DistributionHtml;
+    vc.title = @"分销提成";
+    [self.slideMenuController showViewController:vc];
 }
 
 -(void)userInfoTap{
@@ -220,7 +237,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
     if (indexPath.row == 0) {
         YBStrokeVC * vc = [[YBStrokeVC alloc]init];
         [self.slideMenuController showViewController:vc];
@@ -238,9 +254,7 @@
         YBSettingVC * vc = [[YBSettingVC alloc]init];
         [self.slideMenuController showViewController:vc];
     }
-    
 }
-
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

@@ -20,8 +20,11 @@
 //@property (nonatomic, assign) BOOL enabled;
 
 @property (nonatomic, strong) UIButton *SMSButton;
+@property (nonatomic, strong) UIButton *jumpBtn;
 
 @property (nonatomic, strong) NSTimer *time;
+
+@property (nonatomic, strong) MQVerCodeInputView *verView;
 
 
 @end
@@ -30,7 +33,68 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self verificationUI];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(activiTap)];
+    [self.view addGestureRecognizer:tap];
+}
+-(void)activiTap{
+     [self.view endEditing:YES];
+}
 
+-(void)invitationUI{
+    
+    NSArray * viewArr = [self.view subviews];
+    for (UIView * view in viewArr) {
+        [view removeFromSuperview];
+    }
+    [self.time invalidate];
+    
+    self.title = @"邀请码";
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView *regImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"注册验证码"]];
+    regImage.frame = CGRectMake(YBWidth / 2 - 20, 104, 40, 80);
+    [self.view addSubview:regImage];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(regImage.frame) + 5, YBWidth, 20)];
+    label.text = @"输入邀请码";
+    label.font = YBFont(22);
+    label.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:label];
+    
+    MQVerCodeInputView *verView = [[MQVerCodeInputView alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(label.frame)+10,  YBWidth-20, 50)];
+    verView.maxLenght = 6;//最大长度
+    verView.keyBoardType = UIKeyboardTypeNumberPad;
+    [verView mq_verCodeViewWithMaxLenght];
+    WEAK_SELF;
+    verView.block = ^(NSString *text){
+        if (text.length == 6) {
+            weakSelf.commendcode = text;
+            [weakSelf jumpOver:nil];
+        }
+    };
+    // verView.center = self.view.center;
+    [self.view addSubview:verView];
+    self.verView = verView;
+    
+    CGFloat btnW = 140;
+    UIButton * btn = [[UIButton alloc]init];
+    btn.frame = CGRectMake(self.view.centerX - btnW/2, CGRectGetMaxY(verView.frame) + 10, btnW,40);
+    btn.selected = YES;
+    btn.layer.cornerRadius = 3.0;
+    btn.clipsToBounds = YES;
+    btn.selected = YES;
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    btn.backgroundColor = BtnBlueColor;
+    [btn setTitle:@"跳过" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(jumpOver:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+    _jumpBtn = btn;
+    //[self.view endEditing:NO];
+}
+//验证码UI
+-(void)verificationUI{
     self.title = @"验证码";
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -62,29 +126,33 @@
     [_SMSButton setTitle:@"获取验证码" forState:UIControlStateNormal];
     [_SMSButton addTarget:self action:@selector(codeBtnVerification:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_SMSButton];
-
+    
     [self timeFailBeginFrom:60];  // 倒计时60s
-
+    
     MQVerCodeInputView *verView = [[MQVerCodeInputView alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(_SMSButton.frame) + 20 , YBWidth / 1.5 , 50)];
     verView.maxLenght = 4;//最大长度
     verView.keyBoardType = UIKeyboardTypeNumberPad;
     [verView mq_verCodeViewWithMaxLenght];
+    WEAK_SELF;
     verView.block = ^(NSString *text){
         
         if (text.length == 4) {
-            
             NSString *URLStr = [NSString stringWithFormat:@"%@",CheckregisterverifyPath];
             NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
             [dict setObject:text  forKey:@"verifycode"];
             [dict setObject:self.phoneStr  forKey:@"mobile"];
 
             [YBRequest postWithURL:URLStr MutableDict:dict View:self.view success:^(id dataArray) {
-                self.typeDict = dataArray;
-                YBSetPasswordVC *ver = [[YBSetPasswordVC alloc] init];
-                ver.phoneStr = self.phoneStr;
-                ver.typeStr = self.typeStr;
-                ver.verifyCode = text;
-                [self.navigationController pushViewController:ver animated:YES];
+                weakSelf.typeDict = dataArray;
+                weakSelf.verifyCode = text;
+            
+                if ([self.typeStr isEqualToString:@"注册"]) {
+                    //self.title = @"注册";
+                      [weakSelf invitationUI];
+                }else {
+                   // self.title = @"重置密码";
+                    [weakSelf jumpOver:nil];
+                }
             } failure:^(id dataArray) {
                 [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:self.view];
             }];
@@ -92,6 +160,19 @@
     };
     verView.center = self.view.center;
     [self.view addSubview:verView];
+    self.verView = verView;
+}
+//跳过
+- (void)jumpOver:(UIButton *)sender {
+    if (sender.selected) {
+        self.commendcode = @"";
+    }
+    YBSetPasswordVC *ver = [[YBSetPasswordVC alloc] init];
+    ver.phoneStr = self.phoneStr;
+    ver.typeStr = self.typeStr;
+    ver.verifyCode = self.verifyCode;
+    ver.commendcode = self.commendcode;
+    [self.navigationController pushViewController:ver animated:YES];
 }
 
 // 获取验证码点击事件
@@ -135,13 +216,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

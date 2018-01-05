@@ -27,7 +27,7 @@
 			<string>zhifubao</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>bibiguide</string>
+				<string>com.cytz.TakeWindmill</string>
 			</array>
 		</dict>
 		<dict>

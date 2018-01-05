@@ -43,6 +43,10 @@
 #define YBWidth [UIScreen mainScreen].bounds.size.width
 
 #define YBHeight ([UIScreen mainScreen].bounds.size.height - 64)
+
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+#define kNaviHeight (kScreenHeight == 812 ? 88 : 64) // 812是iPhoneX的高度
 //百分比
 
 

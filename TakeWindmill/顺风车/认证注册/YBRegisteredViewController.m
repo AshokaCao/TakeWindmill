@@ -21,6 +21,7 @@
 @property (nonatomic, weak) UITextField *nameText;
 @property (nonatomic, weak) UILabel *dateText;
 @property (strong, nonatomic) HXPhotoManager *manager;
+@property (strong, nonatomic) HXDatePhotoToolManager *toolManager;
 @property (strong, nonatomic) HXPhotoView *photoView;
 @property (strong, nonatomic) UIScrollView *photoScrollView;
 @property (strong,nonatomic) NSMutableArray *imagesArrUrl;
@@ -52,14 +53,20 @@ static const CGFloat kPhotoScrollView = 150;
 }
 - (HXPhotoManager *)manager {
     if (!_manager) {
-        _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhotoAndVideo];
-        _manager.openCamera = YES;
-        _manager.style = HXPhotoAlbumStylesSystem;
-        _manager.photoMaxNum = 1;
+        _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhoto];
+        _manager.configuration.openCamera = YES;
+        //_manager.configuration.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.photoMaxNum = 1;
         // _manager.videoMaxNum = 9;
-        _manager.maxNum = 1;
+        _manager.configuration.maxNum = 1;
     }
     return _manager;
+}
+- (HXDatePhotoToolManager *)toolManager {
+    if (!_toolManager) {
+        _toolManager = [[HXDatePhotoToolManager alloc] init];
+    }
+    return _toolManager;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -482,14 +489,13 @@ static const CGFloat kPhotoScrollView = 150;
         }];
     }
 }
-#pragma mark =HXPhotoViewDelegate
+
 // 代理返回 选择、移动顺序、删除之后的图片以及视频
+#pragma mark HXPhotoViewDelegate
 - (void)photoView:(HXPhotoView *)photoView changeComplete:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photos videos:(NSArray<HXPhotoModel *> *)videos original:(BOOL)isOriginal{
-    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-        //NSSLog(@"images==%@",images);
-        
+    [self.toolManager getSelectedImageList:photos success:^(NSArray<UIImage *> *imageList) {
         NSMutableArray *imStrArray = [NSMutableArray array];
-        for (UIImage *image in images) {
+        for (UIImage *image in imageList) {
             NSString *base64 = [self imageChangeBase64:image];
             NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
             [imStrArray addObject:typeStr];
@@ -520,8 +526,9 @@ static const CGFloat kPhotoScrollView = 150;
         } failure:^(NSError *error) {
             NSLog(@"faile - :%@",error);
         }];
+    } failed:^{
+        
     }];
-    
 }
 // 当view更新高度时调用
 - (void)photoView:(HXPhotoView *)photoView updateFrame:(CGRect)frame{
@@ -575,37 +582,15 @@ static const CGFloat kPhotoScrollView = 150;
 - (NSMutableDictionary *)dictionaryWithArray:(NSMutableArray *)imStrArray
 {
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    switch (imStrArray.count) {
-        case 1:
-            dict[@"files"] = [NSString stringWithFormat:@"%@",imStrArray[0]];
-            break;
-        case 2:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@",imStrArray[0],imStrArray[1]];
-            break;
-        case 3:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2]];
-            break;
-        case 4:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3]];
-            break;
-        case 5:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4]];
-            break;
-        case 6:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5]];
-            break;
-        case 7:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6]];
-            break;
-        case 8:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6],imStrArray[7]];
-            break;
-        case 9:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6],imStrArray[7],imStrArray[8]];
-            break;
-        default:
-            break;
+    NSString * files = @"";
+    for (int i = 0; i<imStrArray.count; i++) {
+        if (i == 0) {
+            files = [NSString stringWithFormat:@"%@",imStrArray[i]];
+        }else{
+            files = [NSString stringWithFormat:@"%@;%@",files,imStrArray[i]];
+        }
     }
+    dict[@"files"] = files;
     return dict;
 }
 - (void)didReceiveMemoryWarning {

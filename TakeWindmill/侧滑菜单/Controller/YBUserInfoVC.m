@@ -10,14 +10,16 @@
 #import "YBInformationCell.h"
 #import "YBUserListModel.h"
 
-@interface YBUserInfoVC ()<HXPhotoViewControllerDelegate>
+@interface YBUserInfoVC ()<HXAlbumListViewControllerDelegate>
 {
     
 }
 @property (nonatomic,strong) HXPhotoManager *manager;
+@property (nonatomic,strong) HXDatePhotoToolManager *toolManager;
+@property (nonatomic,strong) YBUserListModel *userModel;
 @property (nonatomic,strong) NSMutableArray * imagesArrUrl;
 @property (nonatomic,strong) YBInformationCell *infoCell;
-@property (nonatomic,strong) YBUserListModel *userModel;
+
 
 @end
 
@@ -28,13 +30,19 @@ static NSArray *textArray;
 - (HXPhotoManager *)manager {
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhoto];
-        _manager.openCamera = YES;
-        _manager.style = HXPhotoAlbumStylesSystem;
-        _manager.photoMaxNum = 1;
+        _manager.configuration.openCamera = YES;
+        //_manager.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.photoMaxNum = 1;
         // _manager.videoMaxNum = 1;
-        _manager.maxNum = 1;
+        _manager.configuration.maxNum = 1;
     }
     return _manager;
+}
+- (HXDatePhotoToolManager *)toolManager {
+    if (!_toolManager) {
+        _toolManager = [[HXDatePhotoToolManager alloc] init];
+    }
+    return _toolManager;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,7 +52,6 @@ static NSArray *textArray;
     self.imagesArrUrl = [NSMutableArray array];
     
     [self setUpView];
-   
     
     [self getUserListAction];
 }
@@ -63,10 +70,10 @@ static NSArray *textArray;
 -(void)submit{
     WEAK_SELF;
     NSString * nickName = @"";
-     NSString * sex = @"";
-     NSString * age = @"";
+    NSString * sex = @"";
+    NSString * age = @"";
     for (int i = 1; i<textArray.count; i++) {
-        NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:1 inSection:0];
+        NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:i inSection:0];
         YBInformationCell *cell = [weakSelf.tableView cellForRowAtIndexPath:indexPath1];
         if (i == 1) {
             nickName = cell.textField.text;
@@ -79,15 +86,22 @@ static NSArray *textArray;
     }
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
     NSString *userID = [YBUserDefaults valueForKey:_userId];
-    //dict[@"userid"] = userID;
-    
-//    [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
-//        NSLog(@"dataArray - %@",dataArray);
-//
-//        
-//    } failure:^(id dataArray) {
-//
-    //    }];
+    dict[@"userid"] = userID;
+    dict[@"nickname"] = nickName;
+    dict[@"sex"] = sex;
+    dict[@"age"] = age;
+    if (self.imagesArrUrl.count) {
+         dict[@"headimgurl"] = self.imagesArrUrl;
+    }
+   
+
+    [YBRequest postWithURL:UserUserinfoupdate MutableDict:dict success:^(id dataArray) {
+        YBLog(@"dataArray - %@",dataArray);
+          [MBProgressHUD showError:@"修改成功"toView:weakSelf.view];
+        
+    } failure:^(id dataArray) {
+          [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+    }];
 }
 - (void)getUserListAction
 {
@@ -99,7 +113,7 @@ static NSArray *textArray;
     //    NSLog(@"dict - %@",dict);
     
     [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
-        NSLog(@"dataArray - %@",dataArray);
+        YBLog(@"dataArray - %@",dataArray);
         NSDictionary *dic = dataArray;
         NSDictionary *newDic = [NSDictionary changeType:dic];
         
@@ -109,7 +123,7 @@ static NSArray *textArray;
         }
         
     } failure:^(id dataArray) {
-        
+         [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
     }];
 }
 
@@ -165,7 +179,7 @@ static NSArray *textArray;
                 if(weakSelf.userModel.Sex.length){
                     cell.textField.text = weakSelf.userModel.Sex;
                 }
-            }else{
+            }else if(indexPath.row == 3){
                 if(weakSelf.userModel.Age.length){
                     cell.textField.text = weakSelf.userModel.Age;
                 }
@@ -190,10 +204,12 @@ static NSArray *textArray;
 
     if (indexPath.row == 0) {
         // 照片选择控制器
-        HXPhotoViewController *vc = [[HXPhotoViewController alloc] init];
-        vc.delegate = self;
-        vc.manager = self.manager;
-        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
+//        HXPhotoViewController *vc = [[HXPhotoViewController alloc] init];
+//        vc.delegate = self;
+//        vc.manager = self.manager;
+//        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
+        
+         [self hx_presentAlbumListViewControllerWithManager:self.manager delegate:self];
         
     }else if (indexPath.row == 1){
         
@@ -219,19 +235,16 @@ static NSArray *textArray;
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 75;
 }
-
-#pragma  mark HXPhotoViewControllerDelegate
-// 通过 HXPhotoViewControllerDelegate 代理返回选择的图片以及视频
-- (void)photoViewControllerDidNext:(NSArray *)allList Photos:(NSArray *)photos Videos:(NSArray *)videos Original:(BOOL)original{
-    //YBLog(@"allList==%@,photos==%@,videos==%@",allList,photos,videos);
+#pragma  mark HXAlbumListViewControllerDelegate
+- (void)albumListViewController:(HXAlbumListViewController *)albumListViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original {
     WEAK_SELF;
-    self.manager = nil;
+   //YBLog(@"allList==%@,photos==%@,videos==%@",allList,photoList,videoList);
+    [self.manager clearSelectedList];
     
-    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-        //NSSLog(@"images==%@",images);
-        weakSelf.infoCell.imageV.image = images[0];
+    [self.toolManager getSelectedImageList:photoList success:^(NSArray<UIImage *> *imageList) {
+        weakSelf.infoCell.imageV.image = imageList[0];
         NSMutableArray *imStrArray = [NSMutableArray array];
-        for (UIImage *image in images) {
+        for (UIImage *image in imageList) {
             NSString *base64 = [self imageChangeBase64:image];
             NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
             [imStrArray addObject:typeStr];
@@ -257,13 +270,11 @@ static NSArray *textArray;
         } failure:^(NSError *error) {
             NSLog(@"faile - :%@",error);
         }];
+    } failed:^{
+        
     }];
-    
 }
-// 点击取消
-- (void)photoViewControllerDidCancel{
-    
-}
+
 #pragma mark -- image转化成Base64位
 -(NSString *)imageChangeBase64: (UIImage *)image{
     

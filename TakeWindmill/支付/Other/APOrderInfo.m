@@ -17,7 +17,7 @@
     [tmpDict addEntriesFromDictionary:@{@"subject":_subject?:@"",
                                         @"out_trade_no":_out_trade_no?:@"",
                                         @"total_amount":_total_amount?:@"",
-                                        @"seller_id":_seller_id?:@"",
+                                        @"seller_id":_seller_id?:@"hzbluesun@163.com",
                                         @"product_code":_product_code?:@"QUICK_MSECURITY_PAY"}];
     
     // NOTE: 增加可变部分数据

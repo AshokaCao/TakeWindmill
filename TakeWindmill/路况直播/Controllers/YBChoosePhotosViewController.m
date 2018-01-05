@@ -7,9 +7,6 @@
 //
 
 #import "YBChoosePhotosViewController.h"
-#import "HXPhotoViewController.h"
-#import "HXPhotoView.h"
-#import "AFNetworking.h"
 
 static const CGFloat kPhotoViewMargin = 12.0;
 
@@ -19,6 +16,7 @@ static const CGFloat kPhotoViewMargin = 12.0;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topViewHeight;
 
 @property (strong, nonatomic) HXPhotoManager *manager;
+@property (strong, nonatomic) HXDatePhotoToolManager *toolManager;
 @property (strong, nonatomic) HXPhotoView *photoView;
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (nonatomic, strong) NSString *testStr;
@@ -49,27 +47,33 @@ static const CGFloat kPhotoViewMargin = 12.0;
 - (HXPhotoManager *)manager {
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhotoAndVideo];
-        _manager.openCamera = YES;
-        _manager.cacheAlbum = YES;
-        _manager.lookLivePhoto = YES;
-        _manager.outerCamera = YES;
-        _manager.cameraType = HXPhotoManagerCameraTypeFullScreen;
-        _manager.photoMaxNum = 9;
-        _manager.videoMaxNum = 1;
-        _manager.maxNum = 9;
-        _manager.videoMaxDuration = 500.f;
-        _manager.saveSystemAblum = NO;
-        _manager.style = HXPhotoAlbumStylesSystem;
-        _manager.reverseDate = YES;
-        _manager.showDateHeaderSection = NO;
+        _manager.configuration.openCamera = YES;
+        //_manager.configuration.cacheAlbum = YES;
+        _manager.configuration.lookLivePhoto = YES;
+        //_manager.configuration.outerCamera = YES;
+        //_manager.configuration.cameraType = HXPhotoManagerCameraTypeFullScreen;
+        _manager.configuration.photoMaxNum = 9;
+        _manager.configuration.videoMaxNum = 1;
+        _manager.configuration.maxNum = 9;
+        _manager.configuration.videoMaxDuration = 500.f;
+        _manager.configuration.saveSystemAblum = NO;
+        // _manager.configuration.style = HXPhotoAlbumStylesSystem;
+        _manager.configuration.reverseDate = YES;
+        // _manager.configuration.showDateHeaderSection = NO;
         //        _manager.selectTogether = NO;
         //        _manager.rowCount = 3;
         
-        _manager.UIManager.navBar = ^(UINavigationBar *navBar) {
-            //            [navBar setBackgroundImage:[UIImage imageNamed:@"APPCityPlayer_bannerGame"] forBarMetrics:UIBarMetricsDefault];
-        };
+        // _manager.configuration.UIManager.navBar = ^(UINavigationBar *navBar) {
+        //            [navBar setBackgroundImage:[UIImage imageNamed:@"APPCityPlayer_bannerGame"] forBarMetrics:UIBarMetricsDefault];
+        //        };
     }
     return _manager;
+}
+- (HXDatePhotoToolManager *)toolManager {
+    if (!_toolManager) {
+        _toolManager = [[HXDatePhotoToolManager alloc] init];
+    }
+    return _toolManager;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -83,19 +87,19 @@ static const CGFloat kPhotoViewMargin = 12.0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    self.view.backgroundColor = [UIColor redColor];
+    //    self.view.backgroundColor = [UIColor redColor];
     
     //开始定位
     [self initWithlocService];
     
     self.automaticallyAdjustsScrollViewInsets = YES;
     
-//    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-//    scrollView.alwaysBounceVertical = YES;
-//    [self.view addSubview:scrollView];
-//    self.scrollView = scrollView;
+    //    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    //    scrollView.alwaysBounceVertical = YES;
+    //    [self.view addSubview:scrollView];
+    //    self.scrollView = scrollView;
     
-//    CGFloat width = scrollView.frame.size.width;
+    //    CGFloat width = scrollView.frame.size.width;
     HXPhotoView *photoView = [HXPhotoView photoManager:self.manager];
     photoView.frame = CGRectMake(kPhotoViewMargin, 120, YBWidth - kPhotoViewMargin * 2, 0);
     photoView.delegate = self;
@@ -114,8 +118,9 @@ static const CGFloat kPhotoViewMargin = 12.0;
     } failure:^(NSError *error) {
         
     }];
-//    [self.photoView goPhotoViewController];
+    //    [self.photoView goPhotoViewController];
 }
+
 
 - (void)photoView:(HXPhotoView *)photoView changeComplete:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photos videos:(NSArray<HXPhotoModel *> *)videos original:(BOOL)isOriginal {
     NSSLog(@"所有:%ld - 照片:%ld - 视频:%ld",allList.count,photos.count,videos.count);
@@ -124,13 +129,10 @@ static const CGFloat kPhotoViewMargin = 12.0;
     if (allList.count >= 3) {
         self.topViewHeight.constant = 100 + 300;
     }
-        
-    [HXPhotoTools getImageForSelectedPhoto:photos type:HXPhotoToolsFetchHDImageType completion:^(NSArray<UIImage *> *images) {
-        NSSLog(@"%@",images);
+    [self.toolManager getSelectedImageList:photos success:^(NSArray<UIImage *> *imageList) {
         NSMutableArray *imStrArray = [NSMutableArray array];
-        
         self.testStr = @"";
-        for (UIImage *image in images) {
+        for (UIImage *image in imageList) {
             NSString *base64 = [self imageChangeBase64:image];
             NSString *typeStr = [NSString stringWithFormat:@"png,%@",base64];
             [imStrArray addObject:typeStr];
@@ -145,6 +147,8 @@ static const CGFloat kPhotoViewMargin = 12.0;
         } failure:^(NSError *error) {
             NSLog(@"faile - :%@",error);
         }];
+    } failed:^{
+        
     }];
 }
 
@@ -186,37 +190,15 @@ static const CGFloat kPhotoViewMargin = 12.0;
 - (NSMutableDictionary *)dictionaryWithArray:(NSMutableArray *)imStrArray
 {
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
-    switch (imStrArray.count) {
-        case 1:
-            dict[@"files"] = [NSString stringWithFormat:@"%@",imStrArray[0]];
-            break;
-        case 2:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@",imStrArray[0],imStrArray[1]];
-            break;
-        case 3:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2]];
-            break;
-        case 4:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3]];
-            break;
-        case 5:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4]];
-            break;
-        case 6:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5]];
-            break;
-        case 7:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6]];
-            break;
-        case 8:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6],imStrArray[7]];
-            break;
-        case 9:
-            dict[@"files"] = [NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;%@;%@",imStrArray[0],imStrArray[1],imStrArray[2],imStrArray[3],imStrArray[4],imStrArray[5],imStrArray[6],imStrArray[7],imStrArray[8]];
-            break;
-        default:
-            break;
+    NSString * files = @"";
+    for (int i = 0; i<imStrArray.count; i++) {
+        if (i == 0) {
+            files = [NSString stringWithFormat:@"%@",imStrArray[i]];
+        }else{
+            files = [NSString stringWithFormat:@"%@;%@",files,imStrArray[i]];
+        }
     }
+    dict[@"files"] = files;
     return dict;
 }
 
@@ -259,7 +241,7 @@ static const CGFloat kPhotoViewMargin = 12.0;
     if (result.sematicDescription) {
         NSString *str = [NSString stringWithFormat:@"%@·%@",result.addressDetail.city,result.sematicDescription];
         self.startingPoint = result;
-//        [self.trainView.startingPointView initLabelStr:str];
+        //        [self.trainView.startingPointView initLabelStr:str];
         NSLog(@"str - %@",str);
     }
 }
@@ -271,13 +253,13 @@ static const CGFloat kPhotoViewMargin = 12.0;
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
