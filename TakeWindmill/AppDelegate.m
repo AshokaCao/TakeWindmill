@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "BNCoreServices.h"
 #import "YBNavigationController.h"
 #import "YBHomeViewController.h"
 #import "YBPersonViewController.h"
@@ -22,6 +23,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+    //初始化百度
     [self baiduMap];
     //初始化融云相关
     [self initRongClould];
@@ -161,6 +163,14 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         NSLog(@"百度地图失败!");
     }
     [self.window makeKeyAndVisible];
+    
+    //初始化导航SDK
+    [BNCoreServices_Instance initServices:BMMapKey];
+    //TTS在线授权
+    [BNCoreServices_Instance setTTSAppId:@"10381219"];
+    //设置是否自动退出导航
+    [BNCoreServices_Instance setAutoExitNavi:YES];
+    [BNCoreServices_Instance startServicesAsyn:nil fail:nil];
 }
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {

@@ -24,6 +24,7 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [_mapView viewWillAppear];
     
     //开启反地理编码
@@ -33,6 +34,7 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [_mapView viewWillDisappear];
     
     _mapView.delegate = nil; // 不用时，置nil
@@ -100,6 +102,7 @@
         [self.mapView updateLocationData:userLocation];
         //获取用户的坐标
         self.mapView.centerCoordinate = userLocation.location.coordinate;
+        self.positionUserLocation = userLocation;
         //展示定位
 //        self.mapView.showsUserLocation = YES;
 
