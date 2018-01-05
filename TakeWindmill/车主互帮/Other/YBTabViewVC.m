@@ -13,7 +13,8 @@
 @end
 
 @implementation YBTabViewVC
--(UITableView *)tableView{
+
+- (UITableView *)tableView{
     if (_tableView == nil) {
         UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
         tableView.backgroundColor = LightGreyColor;
@@ -21,6 +22,8 @@
         tableView.showsHorizontalScrollIndicator = NO;
         tableView.delegate = self;
         tableView.dataSource = self;
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
         //去掉底部多余的表格线
         [tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
         _tableView = tableView;
@@ -50,11 +53,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
+
     return 20;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     static NSString * reuseIdentifier = @"reuseIdentifier";
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
@@ -64,9 +70,9 @@
     
     cell.textLabel.text = @"冷风机福利大家发了的空间";
     
-    
     return cell;
 }
+
 //分割线
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {

@@ -110,7 +110,7 @@
     self.timeLabel.text      = [NSString stringWithFormat:@"%@ %@",timeArray[0],timeArray[1]];
     
     self.sectionLabel.text   = [NSString stringWithFormat:@"%@->%@",dict[@"StartAddress"],dict[@"EndAddress"]];
-    self.typeLabe.text       = @"待出发";
+    self.typeLabe.text       = dict[@"StatName"];
 }
 
 @end

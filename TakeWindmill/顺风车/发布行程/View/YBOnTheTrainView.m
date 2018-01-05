@@ -54,7 +54,7 @@
     [self.startTime aboutViewImage:[UIImage imageNamed:@"时间"] imageFrame:CGSizeMake(10, 10) imageBacColor:nil LabelTitle:@"最早出发时间" titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
     
     self.arrowIamgeView.frame = CGRectMake(CGRectGetMaxX(self.startTime.frame), self.frame.size.height / 2 - 3, 28, 5);
-    self.arrowIamgeView.image = [UIImage imageNamed:@"jiantou"];
+    self.arrowIamgeView.image = [UIImage imageNamed:@"jiantou001"];
 
     self.endTime.frame = CGRectMake(CGRectGetMaxX(self.arrowIamgeView.frame) , 0,  self.frame.size.width / 2 - 14, self.frame.size.height);
     self.endTime.CanClick = YES;

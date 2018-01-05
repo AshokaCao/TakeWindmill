@@ -85,7 +85,7 @@
 {
     if (!_arrowIamge) {
         UIImageView *arrow = [[UIImageView alloc] init];
-        arrow.image        = [UIImage imageNamed:@"jiantou"];
+        arrow.image        = [UIImage imageNamed:@"jiantou001"];
         [self addSubview:arrow];
         _arrowIamge = arrow;
     }

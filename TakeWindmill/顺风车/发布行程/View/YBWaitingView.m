@@ -384,6 +384,8 @@
 #pragma mark 司机端- 寻找乘客的下一个界面
 - (void)dictWitihDataDict:(NSDictionary *)dict
 {
+    [self nearbyPassengersFrame];
+    
     [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
     self.ownerNameLabel.text                 = dict[@"NickName"];
 }
@@ -396,15 +398,15 @@
     //用户头像
     self.avatarImageView.frame  = CGRectMake(10, 10, heit, heit);
     //用户姓名
-    self.ownerNameLabel.frame   = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 5, self.avatarImageView.frame.origin.y , 40, heit / 3);
+    self.ownerNameLabel.frame   = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 5, self.avatarImageView.frame.origin.y , 40, heit);
     //用户性别
-    self.genderImageView.frame  = CGRectMake(CGRectGetMaxX(self.ownerNameLabel.frame), self.avatarImageView.frame.origin.y , heit / 3 - 2, heit / 3 - 3);
+//    self.genderImageView.frame  = CGRectMake(CGRectGetMaxX(self.ownerNameLabel.frame), self.avatarImageView.frame.origin.y , heit / 3 - 2, heit / 3 - 3);
     //印象
-    self.impressionLabel.frame  = CGRectMake(CGRectGetMaxX(self.genderImageView.frame) + 10, self.avatarImageView.frame.origin.y, 100, heit / 3);
+//    self.impressionLabel.frame  = CGRectMake(CGRectGetMaxX(self.genderImageView.frame) + 10, self.avatarImageView.frame.origin.y, 100, heit / 3);
     //收到的印象次数
-    self.numberPlateLabel.frame = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 5, CGRectGetMaxY(self.ownerNameLabel.frame) + 2, 100, heit / 3);
+//    self.numberPlateLabel.frame = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 5, CGRectGetMaxY(self.ownerNameLabel.frame) + 2, 100, heit / 3);
     //出行次数
-    self.ownerTypeLabel.frame   = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 5, CGRectGetMaxY(self.numberPlateLabel.frame) + 2, 100, heit/3);
+//    self.ownerTypeLabel.frame   = CGRectMake(CGRectGetMaxX(self.avatarImageView.frame) + 5, CGRectGetMaxY(self.numberPlateLabel.frame) + 2, 100, heit/3);
     //电话
     self.phoneButton.frame      = CGRectMake(self.frame.size.width - 80, 15, self.frame.size.height - 30, self.frame.size.height - 30);
     //短信
@@ -414,13 +416,13 @@
 - (void)evaluatioOfPassengersDict:(NSDictionary *)dict
 {
     [self.avatarImageView sd_setImageWithURL:dict[@"HeadImgUrl"] placeholderImage:[UIImage imageNamed:@"headimg.gif"]];
-    self.ownerNameLabel.text        = @"木星";
-    self.impressionLabel.text       = @"90后·贸易 物流·外贸";
-    self.genderImageView.image      = [UIImage imageNamed:@"男士"];
-    self.numberPlateLabel.text      = @"收到了328个印象";
-    self.numberPlateLabel.textColor = [UIColor lightGrayColor];
-    self.ownerTypeLabel.text        = @"顺风车出行了233次";
-    self.ownerTypeLabel.textColor   = [UIColor lightGrayColor];
+    self.ownerNameLabel.text        = dict[@"NickName"];
+//    self.impressionLabel.text       = @"90后·贸易 物流·外贸";
+//    self.genderImageView.image      = [UIImage imageNamed:@"男士"];
+//    self.numberPlateLabel.text      = @"收到了328个印象";
+//    self.numberPlateLabel.textColor = [UIColor lightGrayColor];
+//    self.ownerTypeLabel.text        = @"顺风车出行了233次";
+//    self.ownerTypeLabel.textColor   = [UIColor lightGrayColor];
 }
 
 
@@ -578,9 +580,9 @@
     self.timeView.frame          = CGRectMake(0, 0, self.frame.size.width, labelH);
     self.startingPointView.frame = CGRectMake(0, CGRectGetMaxY(self.timeView.frame) , self.frame.size.width - 80, labelH);
     self.endView.frame           = CGRectMake(0, CGRectGetMaxY(self.startingPointView.frame), self.frame.size.width - 80, labelH);
-    self.spellLabel.frame        = CGRectMake(CGRectGetMaxX(self.startingPointView.frame),CGRectGetMaxY(self.timeView.frame) , 80, labelH);
-    self.noSpellLabel.frame      = CGRectMake(CGRectGetMaxX(self.endView.frame), CGRectGetMaxY(self.startingPointView.frame),80, labelH);
-    self.backgroundColor = [UIColor whiteColor];
+    self.spellLabel.frame        = CGRectMake(CGRectGetMaxX(self.startingPointView.frame),labelH * 0.5 , 80, labelH * 1.5);
+    self.noSpellLabel.frame      = CGRectMake(CGRectGetMaxX(self.endView.frame), CGRectGetMaxY(self.spellLabel.frame),80, labelH);
+    self.backgroundColor         = [UIColor whiteColor];
 }
 
 - (void)orderDetailsDictionary:(NSDictionary *)dict
@@ -609,15 +611,14 @@
     
     [self.timeView aboutViewImage:[UIImage imageNamed:@"时间"] imageFrame:CGSizeMake(10, 10) imageBacColor:nil LabelTitle:ste titleFont:13 titleColor:[UIColor grayColor] subTitle:[NSString stringWithFormat:@"%@人 %@",driverDict[@"PeopleNumber"],[driverDict[@"IsJoin"] intValue] > 0 ? @"愿拼座" : @"不愿拼座"] subTitleFont:12 subtitleColor:[UIColor grayColor]];
     
-    [self.startingPointView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnBlueColor LabelTitle:[NSString stringWithFormat:@"%@·%@",driverDict[@"StartCity"],driverDict[@"StartAddress"]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
+    [self.startingPointView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnBlueColor LabelTitle:[NSString stringWithFormat:@"%@",driverDict[@"StartAddress"]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
     
     NSArray *endArray = [driverDict[@"EndAddress"] componentsSeparatedByString:@","];
-    [self.endView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnGreenColor LabelTitle:[NSString stringWithFormat:@"%@·%@",driverDict[@"EndCity"],endArray[0]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
+    [self.endView aboutViewImage:nil imageFrame:CGSizeMake(0, 0) imageBacColor:BtnGreenColor LabelTitle:[NSString stringWithFormat:@"%@",endArray[0]] titleFont:13 titleColor:[UIColor grayColor] subTitle:nil subTitleFont:0 subtitleColor:nil];
     
-    self.spellLabel.text   = [NSString stringWithFormat:@"%@元",driverDict[@"TravelCost"]];
+    self.spellLabel.text   = [NSString stringWithFormat:@"%.2f元",[driverDict[@"TravelCostJoin"] floatValue]];
     self.spellLabel.font   = YBFont(17);
-    self.noSpellLabel.text = [NSString stringWithFormat:@"拼成价%@元",driverDict[@"TravelCostJoin"]];
-    ;
+    self.noSpellLabel.text = [NSString stringWithFormat:@"拼不成%.2f元",[driverDict[@"TravelCost"] floatValue]];
 }
 
 #pragma mark - 一个价格 拼成
@@ -847,13 +848,15 @@
 - (UIButton *)callButton
 {
     if (!_callButton) {
-        //用户头像
+        //
         UIButton *callButton          = [[UIButton alloc] init];
+        callButton.tag                = 0;
         callButton.titleLabel.font    = YBFont(11);
         callButton.layer.cornerRadius = 5;
         callButton.imageEdgeInsets    = UIEdgeInsetsMake(0, - 10, 0, 0);
         [callButton setBackgroundColor:BtnBlueColor];
         [callButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+        [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.bottomView addSubview:callButton];
         _callButton = callButton;
     }
@@ -877,7 +880,7 @@
     if (!_moreBottomView) {
         YBMoreBottomView *moreBottomView = [[YBMoreBottomView alloc] init];
         moreBottomView.backgroundColor   = [UIColor whiteColor];
-        [self addSubview:moreBottomView];
+        [self.bottomView addSubview:moreBottomView];
         
         _moreBottomView = moreBottomView;
     }
@@ -915,15 +918,15 @@
 
 - (void)passenger_PleaseTakeHim
 {
-    self.moreBottomView.frame       = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 40);
+    self.moreBottomView.frame       = CGRectMake(0, 0, self.frame.size.width, 40);
     [self.moreBottomView PassengerTravelButtonsArray:@[@"感谢费",@"联系客服",@"更多"]];
     
-    self.bottomView.frame           = CGRectMake(0, CGRectGetMaxY(self.moreBottomView.frame) + 1, self.frame.size.width, 60);
+    self.bottomView.frame           = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) , self.frame.size.width, 60 + 40);
     
-    self.contentLabel.frame         = CGRectMake(10, 10, self.frame.size.width / 2 - 20, 40);
+    self.contentLabel.frame         = CGRectMake(10, CGRectGetMaxY(self.moreBottomView.frame) + 10, self.frame.size.width / 2 - 20, 40);
     self.contentLabel.text          = @"请在到达乘客起点后，点击【到达乘客起点】";
     
-    self.callButton.frame           = CGRectMake(CGRectGetMaxX(self.contentLabel.frame) + 10, 10,self.frame.size.width / 2 - 20, 40);
+    self.callButton.frame           = CGRectMake(CGRectGetMaxX(self.contentLabel.frame) + 10, self.contentLabel.frame.origin.y ,self.frame.size.width / 2 - 20, 40);
     self.callButton.tag             = 1;
     self.callButton.titleLabel.font = YBFont(15);
     [self.callButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
@@ -939,7 +942,7 @@
 - (void)duringTheTrip
 {
     [self.callButton setTitle:@"确认到达" forState:UIControlStateNormal];
-    self.callButton.tag ++;
+//    self.callButton.tag ++;
 }
 
 
@@ -971,7 +974,7 @@
     self.callButton.frame   = CGRectMake(CGRectGetMaxX(self.contentLabel.frame)+ 5, 10 ,80, 30);
     [self.callButton setTitle:@"请他接我" forState:UIControlStateNormal];
     [self.callButton setImage:[UIImage imageNamed:@"请他接我"] forState:UIControlStateNormal];
-    [self.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - 刷新价格金额
@@ -982,42 +985,44 @@
 
 - (void)foldButtonAction:(UIButton *)sender
 {
+    WEAK_SELF;
     sender.selected = !sender.selected;
     if (sender.selected) {//收回
         [UIView animateWithDuration:0.2 animations:^{
             sender.imageView.transform = CGAffineTransformMakeRotation(M_PI);
             
-            self.detailsView.hidden = YES;
+            CGRect details              = weakSelf.detailsView.frame;
+            details.size.height         = 0;
+            weakSelf.detailsView.frame  = details;
+            weakSelf.detailsView.hidden = YES;
             
-            CGRect bottom = self.bottomView.frame;
-            bottom.origin.y = CGRectGetMaxY(self.formationView.frame) + 1;
-            self.bottomView.frame = bottom;
+            CGRect bottom               = weakSelf.bottomView.frame;
+            bottom.origin.y             = CGRectGetMaxY(weakSelf.detailsView.frame);
+            weakSelf.bottomView.frame   = bottom;
             
-            CGRect frame = self.frame;
-            frame.size.height = 130;
-            frame.origin.y = YBHeight - 150;
-            self.frame = frame;
+            CGRect frame = weakSelf.frame;
+            frame.size.height = CGRectGetMaxY(weakSelf.bottomView.frame);
+            frame.origin.y = YBHeight - CGRectGetMaxY(weakSelf.bottomView.frame) - 20;
+            weakSelf.frame = frame;
         }];
     }
     else {//展开
         [UIView animateWithDuration:0.2 animations:^{
             sender.imageView.transform = CGAffineTransformIdentity;
             
-            self.detailsView.hidden = NO;
+            CGRect details = weakSelf.detailsView.frame;
+            details.size.height = 90;
+            weakSelf.detailsView.frame = details;
+            weakSelf.detailsView.hidden = NO;
 
-            CGRect bottom = self.bottomView.frame;
-            if (self.moreBottomView.frame.origin.y !=  0) {
-                bottom.origin.y = CGRectGetMaxY(self.moreBottomView.frame) + 1;
-            }
-            else {
-                bottom.origin.y = CGRectGetMaxY(self.detailsView.frame) + 1;
-            }
-            self.bottomView.frame = bottom;
+            CGRect bottom               = weakSelf.bottomView.frame;
+            bottom.origin.y             = CGRectGetMaxY(weakSelf.detailsView.frame) + 1;
+            weakSelf.bottomView.frame   = bottom;
             
-            CGRect frame = self.frame;
-            frame.origin.y = YBHeight - CGRectGetMaxY(self.bottomView.frame) - 20;
-            frame.size.height = CGRectGetMaxY(self.bottomView.frame);
-            self.frame = frame;
+            CGRect frame = weakSelf.frame;
+            frame.origin.y = YBHeight - CGRectGetMaxY(weakSelf.bottomView.frame) - 20;
+            frame.size.height = CGRectGetMaxY(weakSelf.bottomView.frame);
+            weakSelf.frame = frame;
         }];
     }
 }
@@ -1054,55 +1059,88 @@
     self.headView.frame      = CGRectMake(0, 0, self.frame.size.width, 15);
     //乘客的信息
     self.formationView.frame = CGRectMake(0, CGRectGetMaxY(self.headView.frame), self.frame.size.width, 60);
-    [self.formationView nearbyPassengersFrame];
     [self.formationView dictWitihDataDict:driverDict];
     //乘客行程信息
     self.detailsView.frame   = CGRectMake(0, CGRectGetMaxY(self.formationView.frame) + 1, self.frame.size.width, 90);
-    [self.detailsView basseView];
     [self.detailsView InvitePeersWithDict:driverDict];
-
+    
+    //底部
+    self.bottomView.frame    = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 60);
+    self.callButton.frame   = CGRectMake(10, 10 ,self.frame.size.width - 20, 40);
+    [self.callButton setTitle:@"确认同行" forState:UIControlStateNormal];
 }
 
+#pragma mark - 司机_改变当前乘客显示信息
+- (void)changeheCurrentDisplayInformation:(NSDictionary *)dict
+{
+    [self.formationView dictWitihDataDict:dict];
+    [self.detailsView InvitePeersWithDict:dict];
+}
+
+#pragma mark -司机端_接送乘客行程变化
 - (void)passengerTravel_ConfirmPeer:(NSInteger)page
 {
-    self.callButton.tag         = page ;
+    self.callButton.tag = page;
     if (page == 0) {
         //底部
-        self.bottomView.frame    = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 60);
-        self.callButton.frame   = CGRectMake(10, 10 ,self.frame.size.width - 20, 40);
         [self.callButton setTitle:@"确认同行" forState:UIControlStateNormal];
-        [self.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     }
-    else if (page == -1) {
-        
+    else if (page == -1) {// 取消行程
+        self.contentLabel.text          = @"行程已取消,试试重新发布吧";
+        self.contentLabel.font          = YBFont(17);
+        self.contentLabel.textAlignment = NSTextAlignmentCenter;
+        [self.callButton setTitle:@"我知道了" forState:UIControlStateNormal];
     }
     else {
-        self.moreBottomView.frame   = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame) + 1, self.frame.size.width, 40);
-        [self.moreBottomView PassengerTravelButtonsArray:@[@"导航",@"取消行程",@"更多"]];
-        
-        self.bottomView.frame       = CGRectMake(0, CGRectGetMaxY(self.moreBottomView.frame) + 1, self.frame.size.width, 60);
-        self.contentLabel.frame     = CGRectMake(10, 10, self.frame.size.width / 2 - 20, 40);
-        self.contentLabel.text      = @"请在到达乘客起点后，点击【到达乘客起点】";
-        self.callButton.frame       = CGRectMake(CGRectGetMaxX(self.contentLabel.frame) + 10, 10,self.frame.size.width / 2 - 20, 40);
-        self.callButton.titleLabel.font = YBFont(15);
-        switch (page) {
-            case 1:
+        [self.moreBottomView driver_sideCarpoolOrders:@[@"导航",@"取消行程",@"更多"] tagPage:page];
+        switch (self.callButton.tag) {
+            case 1://已点击确认同行
+                self.contentLabel.text      = @"请在到达乘客起点后，点击【到达乘客起点】";
                 [self.callButton setTitle:@"到达乘客起点" forState:UIControlStateNormal];
                 break;
-            case 2:
+            case 2://已点击到达乘客起点
+                self.contentLabel.text      = @"请在乘客上车之后，点击【接到乘客】";
                 [self.callButton setTitle:@"接到乘客" forState:UIControlStateNormal];
                 break;
-            case 3:
+            case 3://已点击接到乘客
+                self.contentLabel.text      = @"请在乘客下车之后，点击【到达目的地】";
                 [self.callButton setTitle:@"到达目的地" forState:UIControlStateNormal];
+                break;
+            case 4://已点击接到乘客
+                self.contentLabel.text      = @"如果您想去评价,点击【去评价】";
+                [self.callButton setTitle:@"去评价" forState:UIControlStateNormal];
                 break;
             default:
                 break;
         }
+    }
+}
+
+- (void)passengerTravel_ConfirmPeerFrame:(NSInteger)page
+{
+    if (page == -1) {// 取消行程
+        self.bottomView.frame           = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame), self.frame.size.width, 100);
+        self.contentLabel.frame         = CGRectMake(0, 0, self.frame.size.width, self.bottomView.frame.size.height / 2);
+        self.callButton.frame           = CGRectMake(10, CGRectGetMaxY(self.contentLabel.frame) ,self.frame.size.width - 20, 40);
+        
         CGRect viewFrame = self.frame;
-        viewFrame.origin.y = viewFrame.origin.y - 40;
+        viewFrame.origin.y = viewFrame.origin.y - 10;
         viewFrame.size.height = viewFrame.size.height + 40;
         self.frame = viewFrame;
     }
+    else {
+        self.bottomView.frame       = CGRectMake(0, CGRectGetMaxY(self.detailsView.frame), self.frame.size.width, 60 + 40);
+        self.moreBottomView.frame   = CGRectMake(0, 0, self.frame.size.width, 40);
+        
+        self.contentLabel.frame     = CGRectMake(10, CGRectGetMaxY(self.moreBottomView.frame) + 10, self.frame.size.width / 2 - 20, 40);
+        self.callButton.frame       = CGRectMake(CGRectGetMaxX(self.contentLabel.frame) + 10,self.contentLabel.frame.origin.y,self.frame.size.width / 2 - 20, 40);
+        self.callButton.titleLabel.font = YBFont(15);
+    }
+    
+    CGRect frame = self.frame;
+    frame.size.height = CGRectGetMaxY(self.bottomView.frame);
+    self.frame = frame;
+
 }
 
 @end
@@ -1137,10 +1175,9 @@
         moreBtn.tag                         = 1;
         moreBtn.titleLabel.font             = YBFont(14);
         moreBtn.layer.borderWidth           = 0.5;
-        moreBtn.adjustsImageWhenDisabled    = NO;
         moreBtn.layer.borderColor           = LineLightColor.CGColor;
         moreBtn.titleLabel.textAlignment    = NSTextAlignmentCenter;
-        [moreBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        [moreBtn setTitleColor:LineLightColor forState:UIControlStateDisabled];
         [moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [moreBtn addTarget:self action:@selector(moreBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:moreBtn];
@@ -1188,10 +1225,23 @@
 
 - (void)PassengerTravelButtonsArray:(NSArray *)array
 {
-    [self.button1 setTitle:array[0] forState:UIControlStateDisabled];
     [self.button1 setTitle:array[0] forState:UIControlStateNormal];
     [self.button2 setTitle:array[1] forState:UIControlStateNormal];
     [self.button3 setTitle:array[2] forState:UIControlStateNormal];
+}
+
+- (void)driver_sideCarpoolOrders:(NSArray *)array tagPage:(NSInteger)tag
+{
+    [self.button1 setEnabled:NO];
+    [self.button1 setTitle:array[0] forState:UIControlStateDisabled];
+    [self.button2 setTitle:array[1] forState:UIControlStateNormal];
+    [self.button3 setTitle:array[2] forState:UIControlStateNormal];
+    
+    if (tag == 3) {
+        [self.button1 setEnabled:YES];
+        [self.button1 setTitle:array[0] forState:UIControlStateNormal];
+    }
+    
 }
 
 - (void)moreBtnAction:(UIButton *)sender

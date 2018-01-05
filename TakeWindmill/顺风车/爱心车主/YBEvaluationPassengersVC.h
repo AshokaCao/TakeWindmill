@@ -10,4 +10,6 @@
 
 @interface YBEvaluationPassengersVC : UIViewController
 
+@property (nonatomic, strong) NSDictionary *passengerDict;
+
 @end

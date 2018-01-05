@@ -89,7 +89,7 @@
         [self.view addSubview:_heardView];
         
         _countLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, YBWidth / 2, 30)];
-        _countLabel.text     = @"当前有0位乘客";
+        _countLabel.text     = @"当前暂无乘客";
         _countLabel.font     = YBFont(13);
         _countLabel.textColor = [UIColor lightGrayColor];
         [_heardView addSubview:_countLabel];
@@ -187,6 +187,10 @@
 #pragma mark - 下拉刷新
 - (void)refresh
 {
+    if (self.passengerTravel) {
+        self.passengerTravel = nil;
+        [self.lookingTableVIew reloadData];
+    }
     [self nearbyPassengers];
     [self.lookingTableVIew.mj_header endRefreshing];
 }
@@ -198,7 +202,7 @@
     _routeSearch = [[BMKRouteSearch alloc]init];
     _routeSearch.delegate = self;
     
-    [MBProgressHUD showOnlyLoadToView:self.lookingTableVIew];
+    [MBProgressHUD showOnlyLoadToView:weakSelf.lookingTableVIew];
     
     NSString *urlStr = driverstartpointnearbypassengerlistPath;
     NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
@@ -213,12 +217,15 @@
             weakSelf.isDriver = YES;
             [weakSelf DriversTripDcit:weakSelf.orderInformation PassengerDict:weakSelf.passengerTravel[weakSelf.strokeRow]];
         }else{
+            [MBProgressHUD hideHUDForView:weakSelf.lookingTableVIew animated:YES];
             [MBProgressHUD showError:@"附近暂无乘客" toView:weakSelf.lookingTableVIew];
+            [self.lookingTableVIew.mj_header endRefreshing];
         }
     } failure:^(id dataArray) {
         YBLog(@"%@",dataArray);
         [MBProgressHUD hideHUDForView:weakSelf.lookingTableVIew animated:YES];
         [weakSelf.lookingTableVIew reloadData];
+        [self.lookingTableVIew.mj_header endRefreshing];
     }];
 
 }
@@ -253,7 +260,7 @@
     [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户id
     [dict setObject:self.strokeSysNo forKey:@"travelsysno"];//行程id
 
-    [YBRequest postWithURL:urlStr MutableDict:dict View:self.lookingTableVIew success:^(id dataArray) {
+    [YBRequest postWithURL:urlStr MutableDict:dict View:self.strokeView success:^(id dataArray) {
         YBLog(@"%@",dataArray);
         self.orderInformation = dataArray;
         [self.strokeView noPriceItineraryWithDict:dataArray];
@@ -404,6 +411,7 @@
                 [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
                     YBLog(@"规划后的匹配度%@",dataArray);
                     [MBProgressHUD hideHUDForView:weakSelf.lookingTableVIew animated:YES];
+                    
                     weakSelf.travelArray = dataArray[@"TravelInfoList"];
                     [weakSelf.lookingTableVIew reloadData];
                     weakSelf.countLabel.text = [NSString stringWithFormat:@"当前有%lu位乘客",weakSelf.travelArray.count];

@@ -31,6 +31,21 @@
  */
 @property (nonatomic, strong) UIButton *submitButton;
 
+/**
+ * 按钮数组
+ */
+@property (nonatomic, strong) YBEvaluationButtonView *evaluationView;
+
+/**
+ * 可选则的印象
+ */
+@property (nonatomic, strong) NSArray *evaluationArray;
+
+/**
+ * 评星
+ */
+@property (nonatomic, assign) CGFloat star;
+
 @end
 
 @implementation YBEvaluationPassengersVC
@@ -51,6 +66,15 @@
     return _submitButton;
 }
 
+- (YBEvaluationButtonView *)evaluationView
+{
+    if (!_evaluationView) {
+        _evaluationView = [[YBEvaluationButtonView alloc] init];
+        [self.scrollView addSubview:_evaluationView];
+    }
+    return _evaluationView;
+}
+
 - (UIScrollView *)scrollView
 {
     if (!_scrollView) {
@@ -67,7 +91,7 @@
     if (!_mationView) {
         YBOwnerInformationView *matin = [[YBOwnerInformationView alloc] initWithFrame:CGRectMake(10, 10, YBWidth - 20, 60)];
         [matin evaluatioOfPassengers];
-        [matin evaluatioOfPassengersDict:nil];
+        [matin evaluatioOfPassengersDict:self.passengerDict];
         [self.scrollView addSubview:matin];
         
         _mationView = matin;
@@ -101,6 +125,7 @@
 {
     self.title = @"评价乘客";
     self.view.backgroundColor = LightGreyColor;
+    //乘客信息
     [self mationView];
 
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(30, CGRectGetMaxY(self.mationView.frame) + 20, YBWidth - 60, 1)];
@@ -116,49 +141,16 @@
     [self.scrollView addSubview:label];
     
     //评星
-    [self rateView];
-//    self.rateView.userInteractionEnabled = NO;
-    
-    NSArray *array = @[@"成熟性感",@"这个美女不一般",@"美女",@"摄影达人",@"一辈子的武才人",@"话痨",@"晚上约么",@"Duang~Duang"];
-    CGFloat btnWith = 0.0;
-    NSInteger row   = 0;
-    NSInteger col   = 0;
-    for (int i = 0; i < array.count; i ++) {
-        
-        CGFloat buttonW = [YBTooler calculateTheStringWidth:array[i] font:12] + 20;
-        
-        UIButton *btn                   = [[UIButton alloc] init];
-        //row > 0 && col == 0
-        CGFloat with = btnWith + col * 10 + 60 + buttonW;
-        if (with > YBWidth) {
-            btnWith = 0;
-            col = 0;
-            row++;
-        }
-        btn.frame = CGRectMake(btnWith + col * 10 + 30, row * (30 + 10) + CGRectGetMaxY(self.rateView.frame) + 20, buttonW, 30);
-        btnWith += buttonW;
-        col ++;
-        btn.tag                         = i;
-        btn.titleLabel.font             = YBFont(12);
-        btn.titleLabel.textAlignment    = NSTextAlignmentCenter;
-        btn.layer.cornerRadius          = 5;
-        btn.layer.borderWidth           = 1;
-        btn.layer.borderColor           = [UIColor lightGrayColor].CGColor;
-        [btn setTitle:array[i] forState:UIControlStateNormal];
-        [btn setTitleColor:BtnOrangeColor forState:UIControlStateSelected];
-        [btn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(impressionLabelAction:) forControlEvents:UIControlEventTouchUpInside];
-        [self.scrollView addSubview:btn];
-    }
+    self.rateView.currentScore = 0.0;
     
     self.submitButton.frame = CGRectMake(10, self.scrollView.frame.size.height - 60, YBWidth - 20, 40);
 }
 
-- (void)submitButtonAction:(UIButton *)sender
-{
-    YBCompleteEvaluationPassengersVC *complete = [[YBCompleteEvaluationPassengersVC alloc] init];
-    [self.navigationController pushViewController:complete animated:YES];
-}
+//- (void)submitButtonAction:(UIButton *)sender
+//{
+//    YBCompleteEvaluationPassengersVC *complete = [[YBCompleteEvaluationPassengersVC alloc] init];
+//    [self.navigationController pushViewController:complete animated:YES];
+//}
 
 #pragma mark - 印象标签
 - (void)impressionLabelAction:(UIButton *)sender
@@ -172,9 +164,58 @@
     }
 }
 
--(void)starRateView:(XHStarRateView *)starRateView currentScore:(CGFloat)currentScore{
+- (void)starRateView:(XHStarRateView *)starRateView currentScore:(CGFloat)currentScore{
     NSLog(@"%ld----  %f",starRateView.tag,currentScore);
+    
+    self.star = currentScore;
+    if (currentScore  == 5) {//好评
+        [self commentContentPostType:@"11"];
+    }
+    else {//不好评
+        [self commentContentPostType:@"12"];
+    }
+}
+
+#pragma mark - 评价内容
+- (void)commentContentPostType:(NSString *)type
+{
+    NSString *urlStr = baseinfocommonlistPath;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:type forKey:@"typefid"];
+    
+    [YBRequest postWithURL:urlStr MutableDict:dict success:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+        self.evaluationArray = dataArray[@"BaseInfoCommonList"];
+        [self afterTheStarRatingArray:self.evaluationArray];
+    } failure:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+    }];
+}
+
+#pragma mark - 选择评星
+- (void)afterTheStarRatingArray:(NSArray *)array
+{
+    //评级按钮数组
+    self.evaluationView.frame   = CGRectMake(0, CGRectGetMaxY(self.rateView.frame), YBWidth, 100);
+    [self.evaluationView evaluationButtonIsDisplayed:array];
 }
 
 
+#pragma mark - 匿名提交
+- (void)submitButtonAction:(UIButton *)sender
+{
+    NSString *urlStr = travelcommentsavePath;
+    NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+    [dict setObject:self.passengerDict[@"SysNo"] forKey:@"travelsysno"];//行程SysNo
+    [dict setObject:[YBTooler getTheUserId:self.view] forKey:@"userid"];//用户Id
+    [dict setObject:@"2" forKey:@"typefid"];//评论类型，1-乘客，2-司机
+    [dict setObject:[NSString stringWithFormat:@"%f",self.star] forKey:@"star"]; //星级
+    
+    [YBRequest postWithURL:urlStr MutableDict:dict View:self.scrollView success:^(id dataArray) {
+        YBLog(@"%@",dataArray);
+        YBCompleteEvaluationPassengersVC *complete = [[YBCompleteEvaluationPassengersVC alloc] init];
+        [self.navigationController pushViewController:complete animated:YES];
+    } failure:^(id dataArray) {
+    }];
+}
 @end

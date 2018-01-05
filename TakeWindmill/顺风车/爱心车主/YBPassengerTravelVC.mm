@@ -9,6 +9,7 @@
 #import "YBPassengerTravelVC.h"
 #import "YBPassengerCanBeBuiltVC.h"
 #import "YBEvaluationPassengersVC.h"
+#import "YBDriverPassengerTravelVCViewController.h"
 
 #import "YBWaitingView.h"
 #import "YBThanksFee.h"
@@ -158,7 +159,7 @@
                 .LeeCancelAction(@"取消", ^{
                     // 取消点击事件Block
                 })
-                .LeeAction(@"确认", ^{
+                .LeeAction(@"确认同行", ^{
                     // 确认点击事件Block
                     sender.tag ++;
                     [weakSelf confirmCounterpartsPost];
@@ -214,6 +215,9 @@
     
     [YBRequest postWithURL:drivertravelbindpassengerPath MutableDict:dict View:self.waitingView success:^(id dataArray) {
         YBLog(@"点击确认同行%@",dataArray);
+        YBDriverPassengerTravelVCViewController *driver = [[YBDriverPassengerTravelVCViewController alloc] init];
+        driver.SysNo = self.driverDict[@"SysNo"];
+        [self.navigationController pushViewController:driver animated:YES];
     } failure:^(id dataArray) {
         YBLog(@"%@",dataArray);
     }];

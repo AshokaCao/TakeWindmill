@@ -120,6 +120,7 @@
     [MBProgressHUD showError:@"定位失败" toView:self.view];
 }
 
+
 //-(void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
 //{
 //    

@@ -233,9 +233,9 @@
         [[self viewController].navigationController pushViewController:passeng animated:YES];
     }
     if (self.isDriverNotCompleted == 2 && indexPath.section == 1 && self.myOrderArray.count != 0) { // 我的订单
-        YBDriverPassengerTravelVCViewController *drver = [[YBDriverPassengerTravelVCViewController alloc] init];
-        drver.SysNo = self.driverDict[@"SysNo"];
-        drver.TravelSysNo = self.myOrderArray[indexPath.row][@"SysNo"];
+        YBDriverPassengerTravelVCViewController *drver  = [[YBDriverPassengerTravelVCViewController alloc] init];
+        drver.SysNo                                     = self.driverDict[@"SysNo"];
+        drver.currentPassenger                          = (int)indexPath.row;
         [[self viewController].navigationController pushViewController:drver animated:YES];
     }
     if (indexPath.section == sect - 1){ // 常用路线

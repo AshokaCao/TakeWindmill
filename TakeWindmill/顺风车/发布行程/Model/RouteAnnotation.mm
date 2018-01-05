@@ -24,7 +24,7 @@
             view = [mapview dequeueReusableAnnotationViewWithIdentifier:@"start_node"];
             if (view == nil) {
                 view = [[BMKAnnotationView alloc] initWithAnnotation:self reuseIdentifier:@"start_node"];
-                view.image = [UIImage imageNamed:@"起点"];
+                view.image = [UIImage imageNamed:@"小车2"];
                 view.centerOffset = CGPointMake(0, -(view.frame.size.height * 0.5));
             }
         }

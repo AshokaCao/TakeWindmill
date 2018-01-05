@@ -233,6 +233,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     YBPassengerTravelVC *passeng = [[YBPassengerTravelVC alloc] init];
+    passeng.TravelSysNo          = self.informationArray[indexPath.row][@"SysNo"];
     [self.navigationController pushViewController:passeng animated:YES];
 }
 

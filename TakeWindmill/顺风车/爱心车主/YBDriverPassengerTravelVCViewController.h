@@ -16,9 +16,8 @@
 @property (nonatomic, strong) NSString *SysNo;
 
 /**
- * 乘客行程的id
+ * 当前显示的乘客
  */
-@property (nonatomic, strong) NSString *TravelSysNo;
-
+@property (nonatomic, assign) int currentPassenger;
 
 @end

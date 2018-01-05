@@ -200,8 +200,9 @@ typedef void(^clickTheButtonBlock)(UIButton *sender);
  */
 - (void)driverPassengerTravel:(NSDictionary *)driverDict;
 //是否是确认同行
+- (void)changeheCurrentDisplayInformation:(NSDictionary *)dict;
 - (void)passengerTravel_ConfirmPeer:(NSInteger)page;
-
+- (void)passengerTravel_ConfirmPeerFrame:(NSInteger)page;
 @end
 
 
@@ -222,6 +223,10 @@ typedef void(^selectButtonBlock)(UIButton *sender);
  */
 - (void)PassengerTravelButtonsArray:(NSArray *)array;
 
+/**
+ * 司机端_拼车接单
+ */
+- (void)driver_sideCarpoolOrders:(NSArray *)array tagPage:(NSInteger)tag;
 @end
 
 
