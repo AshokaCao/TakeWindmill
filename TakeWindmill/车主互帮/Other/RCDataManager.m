@@ -1,7 +1,3 @@
-
-
-
-
 //
 //  RCDataManager.m
 //  RCIM
@@ -15,6 +11,7 @@
 #import "YBTaxiStepModel.h"
 #import "YBTaxiModel.h"
 #import "YBDownwindModel.h"
+#import "YBUserListModel.h"
 @implementation RCDataManager{
     NSMutableArray *dataSoure;
 }
@@ -159,36 +156,50 @@
     parm[@"userid"] = userID;
     //parm[@"username"] = userID;
     //parm[@"headimgurl"] = userID;
+    YBLog(@"dataArray=1融云userid=%@",userID);
     
+    WEAK_SELF;
     [YBRequest postWithURL:RongcloudGettoken MutableDict:parm success:^(id dataArray) {
-        YBLog(@"dataArray=1=%@",dataArray);
+        YBLog(@"dataArray=1融云=%@",dataArray);
         //[MBProgressHUD showError:@"认证成功"toView:self.view];
         
         NSString * Token= dataArray[@"Token"];
-        YBLog(@"Token==%@",Token);
+        YBLog(@"Token融云==%@",Token);
         [[RCIM sharedRCIM] connectWithToken:Token  success:^(NSString *userId) {
-            YBLog(@"==登陆成功。当前登录的用户ID：%@", userId);
-            /*
-            RCUserInfo * userInfo;
-            if ([userID isEqualToString:@"8FA57A8A259E42EB95766C7E04E3BC1A"]) {
-
-                userInfo = [[RCUserInfo alloc]initWithUserId:@"8FA57A8A259E42EB95766C7E04E3BC1A" name:@"王五" portrait:@"http://121.40.76.10:93/images/driver/servicecard.png"];
-            }else{
-                userInfo = [[RCUserInfo alloc]initWithUserId:@"A651B4968A96438F924A4F7139687C1F" name:@"HSH" portrait:@"http://121.40.76.10:93/images/driver/identcard.png"];
-            }
-            [RCIMClient sharedRCIMClient].currentUserInfo = userInfo;*/
+            YBLog(@"=融云=登陆成功。当前登录的用户ID：%@", userId);
+            
+            NSMutableDictionary *dict = [YBTooler dictinitWithMD5];
+            NSString *userID = [YBUserDefaults valueForKey:_userId];
+            dict[@"userid"] = userID;
+            
+            [YBRequest postWithURL:UserList MutableDict:dict success:^(id dataArray) {
+                YBLog(@"UserList - %@",dataArray);
+                NSDictionary *dic = dataArray;
+                NSDictionary *newDic = [NSDictionary changeType:dic];
+                
+                if (dic.count) {
+                    YBUserListModel *userModel = [YBUserListModel modelWithDic:newDic];
+                    RCUserInfo * userInfo = [[RCUserInfo alloc]initWithUserId:userId name:userModel.NickName portrait:userModel.HeadImgUrl];
+                     [RCIMClient sharedRCIMClient].currentUserInfo = userInfo;
+                    
+                }
+                
+            } failure:^(id dataArray) {
+               // [MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:weakSelf.view];
+            }];
+            
             
         } error:^(RCConnectErrorCode status) {
-            YBLog(@"==登陆的错误码为:%ld", status);
+            YBLog(@"融云==登陆的错误码为:%ld", status);
         } tokenIncorrect:^{
             //token过期或者不正确。
             //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
             //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
-            YBLog(@"==token错误");
+            YBLog(@"融云==token错误");
         }];
         
     } failure:^(id dataArray) {
-        YBLog(@"failureDataArray=2=%@",dataArray);
+        YBLog(@"融云failureDataArray=2=%@",dataArray);
         //[MBProgressHUD showError:dataArray[@"ErrorMessage"] toView:self.view];
     }];
     
@@ -235,7 +246,6 @@
     NSLog(@"content==%@",message.content);
    
     if([message.content isMemberOfClass:YBTaxiModel.class] || [message.content isMemberOfClass:YBTaxiStepModel.class]){
-        
         NSMutableDictionary *diction = [NSMutableDictionary dictionary];
         [diction setValue:message.content forKey:@"TaxiNotigication"];
         

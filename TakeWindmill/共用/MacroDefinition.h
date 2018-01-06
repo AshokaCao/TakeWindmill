@@ -8,8 +8,6 @@
 
 //百度地图apk
 #define BMMapKey @"GRLxwuup0DkvSAeg8Ab3cawpcB5RPNSc"
-//融云 key
-#define rongAppKey @"82hegw5u8k8ex"
 //记录状态
 #define YBUserDefaults [NSUserDefaults standardUserDefaults] 
 //用户账号
@@ -37,6 +35,9 @@
 //下载图片
 #define DownloadPhoto(name)      [NSString stringWithFormat:@"http://img.bibizl.com/images/driver/%@.png",name]
 
+#define rongAppKey @"e0x9wycfege9q"//融云 key
+
+
 #else
 /**
  *======================测试环境
@@ -46,6 +47,8 @@
 #define UploadPhoto @"http://121.40.76.10:93/UploadService.ashx"
 //下载图片
 #define DownloadPhoto(name)      [NSString stringWithFormat:@"http://121.40.76.10:93/images/driver/%@.png",name]
+//#define rongAppKey @"82hegw5u8k8ex"//融云 key
+#define rongAppKey @"e0x9wycfege9q"//融云 key
 
 #endif
 

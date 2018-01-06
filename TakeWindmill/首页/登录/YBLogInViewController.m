@@ -127,7 +127,7 @@
     [dict setObject:pwd  forKey:@"userpwd"];
     
     [YBRequest postWithURL:URLStr MutableDict:dict View:self.view success:^(id dataArray) {
-        YBLog(@"%@",dataArray);
+        YBLog(@"login==%@",dataArray);
 //        self.typeDict = dataArray;
         [YBUserDefaults setObject:account forKey:accountNumber];
         [YBUserDefaults setBool:YES forKey:isLogin];
